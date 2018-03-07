@@ -4,9 +4,9 @@
    abbrev = "RDBD"
    category = "std"
    docName = "draft-ietf-uta-brotman-rdbd-01"
-   ipr = ""
-   area = ""
-   workgroup = ""
+   ipr = "trust200902"
+   area = "Applications"
+   workgroup = "uta"
    keyword = [""]
 
    date = 2018-03-07T00:00:00Z
