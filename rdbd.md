@@ -86,7 +86,12 @@ There are a few options when publishing the reference to the parent domain.
 
 A sample TXT record for `dept-example.com` would appear as:
 
-"v=RDBD1;d=example.com;s=2018a;h=3f3af3a3fa3298t32g;"
+"v=RDBD1;s=2018a;d=example.com;
+h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
+Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/RMGYK8SmkbzzLKqzce
+9K56oNRsP3GUaympykq/tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2
+aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
+8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
 
 # DNS Record for Parent Domain
 
@@ -97,12 +102,14 @@ A sample TXT record for `dept-example.com` would appear as:
 
 A sample TXT record for the parent domain of `example.com`:
 
-"v=RDBD1;s=2018a;d=example.com;
-h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
-Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/RMGYK8SmkbzzLKqzce
-9K56oNRsP3GUaympykq/tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2
-aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
-8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
+"v=RDBD1;s=2018a;
+k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
+ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
+9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL
+6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy
+5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfV
+wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
+1QIDAQAB"
 
 # Validation 
 
