@@ -69,7 +69,7 @@ The following terms are used throughout this document:
 # Creating a Signature for the Secondary Domain
 
 Appendix C of {@!RFC6376] has some reference material on 
-how to create a set of keys for use in this type of situation. The key
+how to create a set of keys for use in this type of use case. The key
 length is recommended to be 2048 bits instead of the 1024 in that
 appendix.
 
