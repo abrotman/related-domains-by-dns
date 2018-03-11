@@ -97,9 +97,16 @@ A sample TXT record for `dept-example.com` would appear as:
 
 A sample TXT record for the parent domain of `example.com`:
 
-"v=RDBD1;s=2018a;k=af3ajalkuay3f7yaiuyf3lua3ylkjfh;"
+"v=RDBD1;s=2018a;d=example.com;
+h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
+Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/RMGYK8SmkbzzLKqzce
+9K56oNRsP3GUaympykq/tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2
+aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
+8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
 
 # Validation 
+
+
 
 # Appendix
 
