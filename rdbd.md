@@ -33,12 +33,12 @@ DNS", or "RDBD".
 # Introduction
 
 Determining relationships between domains can be one of the more difficult
-investigations on the Internet.  It is typical to see
-something such as `example.com` and `dept-example.com` and be unsure if 
-there is an actual relationship between thosetwo domains, or if it  might be an 
-attacker attempting to impersonate the original domain.  Providers
-may err on the side of caution and mark the secondary domain as spam
-or invalid because it is not clear that they should be related.
+investigations on the Internet.  It is typical to see something such as 
+`example.com` and `dept-example.com` and be unsure if there is an actual
+relationship between those two domains, or if it might be an attacker 
+attempting to impersonate the original domain.  Providers may err on 
+the side of caution and mark the secondary domain as spam or invalid 
+because it is not clear that they should be related.
 
 By using "Related Domains By DNS", or "RDBD", it will be possible to
 determine that there is a relationship between those two domains.
@@ -68,7 +68,7 @@ The following terms are used throughout this document:
    
 # Creating a Signature for the Secondary Domain
 
-Appendix C of {@!RFC6376] has some reference material on 
+Appendix C of [@!RFC6376] has some reference material on 
 how to create a set of keys for use in this type of use case. The key
 length is recommended to be at least 2048 bits instead of the 1024 
 recommended in that appendix.
@@ -97,8 +97,9 @@ aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
 
 * `v`: Version string, which should be set to `RDBD1`.
 * `s`: The selector, which is the same as defined in [@!RFC6376] and
-  used to denote a specific public key published by the Parent Domain.
-* `k`: The public key published for this selector.
+  is a string used to denote a specific public key published by the 
+  Parent Domain.
+* `k`: The public key published for this selector, encoded using base64.
 
 A sample TXT record for the parent domain of `example.com`:
 
@@ -113,7 +114,16 @@ wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
 
 # Validation 
 
+The validation process merely notes a relationship between the domains,
+and is not meant to guarantee that the data should be more trustworthy.
 
+
+# Steps to validate
+
+A validating system should use the combination of the Secondary Domain
+and key from the Parent Domain record to be able to recreate the hash 
+that is stored in the record for the Secondary Domain.  This is
+demonstrated in the Appendices.
 
 # Appendix
 
@@ -126,6 +136,7 @@ openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM
 
 Keys in use:
 
+rsa.public:
 -----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEA2LNjBAdNAtZOMdd3hlemZF8a0onOcEo5g1KWnKzryDCfH4LZ
 kXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy
@@ -154,7 +165,7 @@ JXnJnZVQWBL0s10yPg9oITWVBcZ3MqgOqsN1QamN9KjzA46ILtpWptz2q3Nw2Tkl
 m7RBP9R9gM9mnl9/azK7Y5uj11/O3cNJLEIWcraKqydPfvxNyEtP
 -----END RSA PRIVATE KEY-----
 
-
+rsa.private:
 -----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
 ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
@@ -196,3 +207,21 @@ $ openssl base64 -d -in foo.base64 -out sign.sha256
 $ openssl dgst -sha256 -verify rsa.public -signature sign.sha256 domain.txt
 Verified OK
 
+# Security Concerns
+
+## DNSSEC
+
+This mechanism does not require DNSSEC. It could be possible for an
+attacker to falsify DNS query requests while investigating a
+relationship. Consider that in these cases, a relationship could be
+falsified.  Deploying signed records with DNSSEC could be considered
+an advantage, and an additional defense against that type of attack.
+
+
+# Contributors
+
+
+
+
+
+{backmatter}
