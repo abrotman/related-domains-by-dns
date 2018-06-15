@@ -9,7 +9,7 @@
    workgroup = "uta"
    keyword = [""]
 
-   date = 2018-03-07T00:00:00Z
+   date = 2018-06-16T00:00:00Z
    
    [[author]]
    initials="A."
@@ -41,11 +41,15 @@ the side of caution and mark the secondary domain as spam or invalid
 because it is not clear that they should be related.
 
 By using "Related Domains By DNS", or "RDBD", it will be possible to
-determine that there is a relationship between those two domains.
+determine that the secondary domain is related to the primary domain.
 This mechanism will include a public key hosted at the parent domain
 ("example.com") and a reference from the secondary domain 
 ("dept-example.com") along with a hash of the text representation of 
 that domain.
+
+There already exists Vouch By Reference (VBR) [@NeedReference], however
+this only applies to email.  This is a more general purpose solution
+that could be applied to other use cases, as well as the SMTP realm.
 
 This document will explain the various options to be used, how to
 create a record, and the method of validation.
@@ -123,7 +127,7 @@ and is not meant to guarantee that the data should be more trustworthy.
 A validating system should use the combination of the Secondary Domain
 and key from the Parent Domain record to be able to recreate the hash 
 that is stored in the record for the Secondary Domain.  This is
-demonstrated in the Appendices.
+demonstrated in the appendices.
 
 # Appendix
 
@@ -136,7 +140,7 @@ openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM
 
 Keys in use:
 
-rsa.public:
+rsa.private:
 -----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEA2LNjBAdNAtZOMdd3hlemZF8a0onOcEo5g1KWnKzryDCfH4LZ
 kXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy
@@ -165,7 +169,7 @@ JXnJnZVQWBL0s10yPg9oITWVBcZ3MqgOqsN1QamN9KjzA46ILtpWptz2q3Nw2Tkl
 m7RBP9R9gM9mnl9/azK7Y5uj11/O3cNJLEIWcraKqydPfvxNyEtP
 -----END RSA PRIVATE KEY-----
 
-rsa.private:
+rsa.public:
 -----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
 ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
@@ -225,3 +229,4 @@ an advantage, and an additional defense against that type of attack.
 
 
 {backmatter}
+
