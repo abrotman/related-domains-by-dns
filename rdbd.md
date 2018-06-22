@@ -47,7 +47,7 @@ This mechanism will include a public key hosted at the parent domain
 ("dept-example.com") along with a hash of the text representation of 
 that domain.
 
-There already exists Vouch By Reference (VBR) [@NeedReference], however
+There already exists Vouch By Reference (VBR) [@?RFC5518], however
 this only applies to email.  This is a more general purpose solution
 that could be applied to other use cases, as well as the SMTP realm.
 
