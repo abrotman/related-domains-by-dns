@@ -9,7 +9,7 @@
    workgroup = "uta"
    keyword = [""]
 
-   date = 2018-06-22T00:00:00Z
+   date = 2018-08-24T00:00:00Z
    
    [[author]]
    initials="A."
@@ -18,6 +18,14 @@
    organization="Comcast, Inc"
      [author.address]
      email="alex_brotman@comcast.com"
+
+   [[author]]
+   initials="S."
+   surname="Ferrell"
+   fullname="Stephen Ferrell"
+   organization="Trinity College"
+     [author.address]
+     email="stephen.farrell@cs.tcd.ie"
 
 %%%
 
@@ -85,7 +93,7 @@ There are a few options when publishing the reference to the parent domain.
 * `d`: The Parent Domain.  This should be in the form of "example.com".
 * `s`: The selector, which is the same as defined in [@!RFC6376] and
   used to denote which published public key should be used.
-* `h`: The base64 encoded sha256 hash of the secondary domain, creating 
+* `h`: The base64 encoded sha256 signature of the secondary domain, creating 
   using the private key.
 
 A sample TXT record for `dept-example.com` would appear as:
@@ -118,9 +126,9 @@ wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
 
 # Validation 
 
-The validation process merely notes a relationship between the domains,
-and is not meant to guarantee that the data should be more trustworthy.
-
+The validated signature is solely meant to be proof that two domains 
+are related.  The existence of this relationship is not meant to 
+state that the data from either domain should be more trustworthy.  
 
 # Steps to validate
 
@@ -128,6 +136,15 @@ A validating system should use the combination of the Secondary Domain
 and key from the Parent Domain record to be able to recreate the hash 
 that is stored in the record for the Secondary Domain.  This is
 demonstrated in the appendices.
+
+# Lookup Loops
+
+It's conceivable that an attacker could create a loop of lookups, such as
+a.com->b.com->c.com->a.com or similar.  This could cause a resource issue
+for any automated system.  A system SHOULD only perform three lookups from
+the original domain (a.com->b.com->c.com->d.com).  The Secondary and Parent
+SHOULD attempt to keep the link direct and limited to a single lookup, but
+it is understood this may not always be possible.
 
 # Appendix
 
@@ -211,15 +228,21 @@ $ openssl base64 -d -in foo.base64 -out sign.sha256
 $ openssl dgst -sha256 -verify rsa.public -signature sign.sha256 domain.txt
 Verified OK
 
-# Security Concerns
+# Security Considerations
 
 ## DNSSEC
 
 This mechanism does not require DNSSEC. It could be possible for an
-attacker to falsify DNS query requests while investigating a
+attacker to falsify DNS query responses while investigating a
 relationship. Consider that in these cases, a relationship could be
-falsified.  Deploying signed records with DNSSEC could be considered
+falsified.  Conversely, an attacker could delete the response that would
+normally demonstrate the relationship, causing the investigating party to
+believe there is no link between the two domains.
+
+Deploying signed records with DNSSEC could be considered
 an advantage, and an additional defense against that type of attack.
+
+
 
 
 # Contributors
