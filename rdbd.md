@@ -3,13 +3,13 @@
    Title = "Related Domains By DNS"
    abbrev = "RDBD"
    category = "std"
-   docName = "draft-ietf-uta-brotman-rdbd-01"
+   docName = "draft-ietf-uta-brotman-rdbd-00"
    ipr = "trust200902"
    area = "Applications"
    workgroup = "uta"
    keyword = [""]
 
-   date = 2018-08-24T00:00:00Z
+   date = 2018-08-28T00:00:00Z
    
    [[author]]
    initials="A."
@@ -90,7 +90,7 @@ recommended in that appendix.
 There are a few options when publishing the reference to the parent domain.
 
 * `v`: Version string, which should be set to `RDBD1`.
-* `d`: The Parent Domain.  This should be in the form of "example.com".
+* `d`: The Parent Domain.  This should be in the form of `example.com`.
 * `s`: The selector, which is the same as defined in [@!RFC6376] and
   used to denote which published public key should be used.
 * `h`: The base64 encoded sha256 signature of the secondary domain, creating 
@@ -241,7 +241,6 @@ believe there is no link between the two domains.
 
 Deploying signed records with DNSSEC could be considered
 an advantage, and an additional defense against that type of attack.
-
 
 
 
