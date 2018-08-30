@@ -23,7 +23,7 @@
    initials="S."
    surname="Farrell"
    fullname="Stephen Farrell"
-   organization="Trinity College"
+   organization="Trinity College Dublin"
      [author.address]
      email="stephen.farrell@cs.tcd.ie"
 
