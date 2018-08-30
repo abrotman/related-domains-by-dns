@@ -21,7 +21,7 @@
 
    [[author]]
    initials="S."
-   surname="Ferrell"
+   surname="Farrell"
    fullname="Stephen Farrell"
    organization="Trinity College"
      [author.address]
