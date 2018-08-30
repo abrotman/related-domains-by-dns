@@ -3,10 +3,10 @@
    Title = "Related Domains By DNS"
    abbrev = "RDBD"
    category = "std"
-   docName = "draft-ietf-uta-brotman-rdbd-00"
+   docName = "draft-ietf-dnsop-brotman-rdbd-00"
    ipr = "trust200902"
    area = "Applications"
-   workgroup = "uta"
+   workgroup = "dnsop"
    keyword = [""]
 
    date = 2018-08-28T00:00:00Z
@@ -40,26 +40,42 @@ DNS", or "RDBD".
 
 # Introduction
 
+[[There's a github repo for this -- 
+issues and PRs are welcome there. 
+https://github.com/abrotman/related-domains-by-dns
+
+Current issues include:
+
+* #1: use TXT or RR?
+* #2: stick with a 1:n thing or design for m:n relationshops
+* #3: include an indicator for the kind of relationship or not?
+* #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed later
+* #5: specify input for singing more precisely - e.g. is there a CR or NULL or not
+]]
+
 Determining relationships between domains can be one of the more difficult
 investigations on the Internet.  It is typical to see something such as 
 `example.com` and `dept-example.com` and be unsure if there is an actual
-relationship between those two domains, or if it might be an attacker 
-attempting to impersonate the original domain.  Providers may err on 
-the side of caution and mark the secondary domain as spam or invalid 
-because it is not clear that they should be related.
+relationship between those two domains, or if one might be an attacker 
+attempting to impersonate the other.  Service providers of various
+kinds may err on 
+the side of caution and mark the secondary domain being more likely spammy or invalid 
+because it is not clear that they are in fact related.
 
-By using "Related Domains By DNS", or "RDBD", it will be possible to
-determine that the secondary domain is related to the primary domain.
-This mechanism will include a public key hosted at the parent domain
+Using "Related Domains By DNS", or "RDBD", it is possible to
+indicate that the secondary domain is related to the primary domain.
+This mechanism is modelled on how DKIM [@?RFC6376] handles public
+keys and signatures - a public key is hosted at the parent domain
 ("example.com") and a reference from the secondary domain 
-("dept-example.com") along with a hash of the text representation of 
-that domain.
+("dept-example.com") contains a signature (verifiable with
+the "example.com" public key) over the text representation of 
+the secondary domain name.
 
 There already exists Vouch By Reference (VBR) [@?RFC5518], however
-this only applies to email.  This is a more general purpose solution
-that could be applied to other use cases, as well as the SMTP realm.
+this only applies to email.  RDBD is a more general purpose solution
+that could be applied to other use cases, as well as for SMTP.
 
-This document will explain the various options to be used, how to
+This document describes the various options, how to
 create a record, and the method of validation.
 
 ## Terminology
@@ -76,14 +92,6 @@ The following terms are used throughout this document:
    
 * Secondary domain: This will refer to the domain that has been created, 
   that would like to reference the parent domain, such as "dept-example.com".
-   
-   
-# Creating a Signature for the Secondary Domain
-
-Appendix C of [@!RFC6376] has some reference material on 
-how to create a set of keys for use in this type of use case. The key
-length is recommended to be at least 2048 bits instead of the 1024 
-recommended in that appendix.
 
 # DNS Record for Secondary Domain
 
@@ -93,7 +101,7 @@ There are a few options when publishing the reference to the parent domain.
 * `d`: The Parent Domain.  This should be in the form of `example.com`.
 * `s`: The selector, which is the same as defined in [@!RFC6376] and
   used to denote which published public key should be used.
-* `h`: The base64 encoded sha256 signature of the secondary domain, creating 
+* `h`: The base64 encoded signature over the secondary domain name, created
   using the private key.
 
 A sample TXT record for `dept-example.com` would appear as:
@@ -104,6 +112,10 @@ Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/RMGYK8SmkbzzLKqzce
 9K56oNRsP3GUaympykq/tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2
 aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
 8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
+
+The input to signing is simply the name of the secondary domain.
+For internationalised domain names, the punycode version is the
+input to signing.
 
 # DNS Record for Parent Domain
 
@@ -126,18 +138,32 @@ wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
 
 # Validation 
 
-The validated signature is solely meant to be proof that two domains 
+The validated signature is solely meant to be evidence that the two domains 
 are related.  The existence of this relationship is not meant to 
-state that the data from either domain should be more trustworthy.  
+state that the data from either domain should be considered as more trustworthy.  
 
 # Steps to validate
 
 A validating system should use the combination of the Secondary Domain
-and key from the Parent Domain record to be able to recreate the hash 
+name and public key from the Parent Domain record to be able to verify the signature
 that is stored in the record for the Secondary Domain.  This is
-demonstrated in the appendices.
+demonstrated in the appendix.
 
-# Lookup Loops
+# Security Considerations
+
+## DNSSEC
+
+RDND does not require DNSSEC. It could be possible for an
+attacker to falsify DNS query responses for someone investigating a
+relationship. 
+Conversely, an attacker could delete the response that would
+normally demonstrate the relationship, causing the investigating party to
+believe there is no link between the two domains.
+
+Deploying signed records with DNSSEC should allow for detection
+of either attack.
+
+## Lookup Loops
 
 It's conceivable that an attacker could create a loop of lookups, such as
 a.com->b.com->c.com->a.com or similar.  This could cause a resource issue
@@ -146,7 +172,14 @@ the original domain (a.com->b.com->c.com->d.com).  The Secondary and Parent
 SHOULD attempt to keep the link direct and limited to a single lookup, but
 it is understood this may not always be possible.
 
-# Appendix
+{backmatter}
+
+# Creating a Signature for the Secondary Domain
+
+Appendix C of [@!RFC6376] has some reference material on 
+how to create a set of keys for use in this type of use case. The key
+length is recommended to be at least 2048 bits instead of the 1024 
+recommended in that appendix.
 
 ## Sample Signature
 
@@ -228,27 +261,6 @@ $ openssl base64 -d -in foo.base64 -out sign.sha256
 $ openssl dgst -sha256 -verify rsa.public -signature sign.sha256 domain.txt
 Verified OK
 
-# Security Considerations
-
-## DNSSEC
-
-This mechanism does not require DNSSEC. It could be possible for an
-attacker to falsify DNS query responses while investigating a
-relationship. Consider that in these cases, a relationship could be
-falsified.  Conversely, an attacker could delete the response that would
-normally demonstrate the relationship, causing the investigating party to
-believe there is no link between the two domains.
-
-Deploying signed records with DNSSEC could be considered
-an advantage, and an additional defense against that type of attack.
 
 
-
-# Contributors
-
-
-
-
-
-{backmatter}
 

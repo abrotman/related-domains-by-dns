@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-uta-brotman-rdbd-00">
+<rfc ipr="trust200902" category="std" docName="draft-ietf-dnsop-brotman-rdbd-00">
 <?rfc toc="yes"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
@@ -27,8 +27,8 @@
 <uri></uri>
 </address>
 </author>
-<author initials="S." surname="Ferrell" fullname="Stephen Ferrell">
-<organization>Trinity College</organization>
+<author initials="S." surname="Farrell" fullname="Stephen Farrell">
+<organization>Trinity College Dublin</organization>
 <address>
 <postal>
 <street></street>
@@ -45,7 +45,7 @@
 <date year="2018" month="August" day="28"/>
 
 <area>Applications</area>
-<workgroup>uta</workgroup>
+<workgroup>dnsop</workgroup>
 <keyword></keyword>
 
 
@@ -62,26 +62,45 @@ DNS&quot;, or &quot;RDBD&quot;.
 <middle>
 
 <section anchor="introduction" title="Introduction">
+<t>[[There's a github repo for this --
+issues and PRs are welcome there.
+<eref target="https://github.com/abrotman/related-domains-by-dns"/>
+</t>
+<t>Current issues include:
+</t>
+<t>
+<list style="symbols">
+<t>#1: use TXT or RR?</t>
+<t>#2: stick with a 1:n thing or design for m:n relationshops</t>
+<t>#3: include an indicator for the kind of relationship or not?</t>
+<t>#4: &quot;h=&quot; is wrong for a signature, but &quot;s=&quot; is selector, bikeshed later</t>
+<t>#5: specify input for singing more precisely - e.g. is there a CR or NULL or not
+]]</t>
+</list>
+</t>
 <t>Determining relationships between domains can be one of the more difficult
 investigations on the Internet.  It is typical to see something such as
 <spanx style="verb">example.com</spanx> and <spanx style="verb">dept-example.com</spanx> and be unsure if there is an actual
-relationship between those two domains, or if it might be an attacker
-attempting to impersonate the original domain.  Providers may err on
-the side of caution and mark the secondary domain as spam or invalid
-because it is not clear that they should be related.
+relationship between those two domains, or if one might be an attacker
+attempting to impersonate the other.  Service providers of various
+kinds may err on
+the side of caution and mark the secondary domain being more likely spammy or invalid
+because it is not clear that they are in fact related.
 </t>
-<t>By using &quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;, it will be possible to
-determine that the secondary domain is related to the primary domain.
-This mechanism will include a public key hosted at the parent domain
+<t>Using &quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;, it is possible to
+indicate that the secondary domain is related to the primary domain.
+This mechanism is modelled on how DKIM <xref target="RFC6376"/> handles public
+keys and signatures - a public key is hosted at the parent domain
 (&quot;example.com&quot;) and a reference from the secondary domain
-(&quot;dept-example.com&quot;) along with a hash of the text representation of
-that domain.
+(&quot;dept-example.com&quot;) contains a signature (verifiable with
+the &quot;example.com&quot; public key) over the text representation of
+the secondary domain name.
 </t>
 <t>There already exists Vouch By Reference (VBR) <xref target="RFC5518"/>, however
-this only applies to email.  This is a more general purpose solution
-that could be applied to other use cases, as well as the SMTP realm.
+this only applies to email.  RDBD is a more general purpose solution
+that could be applied to other use cases, as well as for SMTP.
 </t>
-<t>This document will explain the various options to be used, how to
+<t>This document describes the various options, how to
 create a record, and the method of validation.
 </t>
 
@@ -104,14 +123,6 @@ that would like to reference the parent domain, such as &quot;dept-example.com&q
 </section>
 </section>
 
-<section anchor="creating-a-signature-for-the-secondary-domain" title="Creating a Signature for the Secondary Domain">
-<t>Appendix C of <xref target="RFC6376"/> has some reference material on
-how to create a set of keys for use in this type of use case. The key
-length is recommended to be at least 2048 bits instead of the 1024
-recommended in that appendix.
-</t>
-</section>
-
 <section anchor="dns-record-for-secondary-domain" title="DNS Record for Secondary Domain">
 <t>There are a few options when publishing the reference to the parent domain.
 </t>
@@ -121,7 +132,7 @@ recommended in that appendix.
 <t><spanx style="verb">d</spanx>: The Parent Domain.  This should be in the form of <spanx style="verb">example.com</spanx>.</t>
 <t><spanx style="verb">s</spanx>: The selector, which is the same as defined in <xref target="RFC6376"/> and
 used to denote which published public key should be used.</t>
-<t><spanx style="verb">h</spanx>: The base64 encoded sha256 signature of the secondary domain, creating
+<t><spanx style="verb">h</spanx>: The base64 encoded signature over the secondary domain name, created
 using the private key.</t>
 </list>
 </t>
@@ -133,6 +144,10 @@ Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/RMGYK8SmkbzzLKqzce
 9K56oNRsP3GUaympykq/tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2
 aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
 8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ==&quot;
+</t>
+<t>The input to signing is simply the name of the secondary domain.
+For internationalised domain names, the punycode version is the
+input to signing.
 </t>
 </section>
 
@@ -160,17 +175,32 @@ wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
 </section>
 
 <section anchor="validation" title="Validation">
-<t>The validated signature is solely meant to be proof that two domains
+<t>The validated signature is solely meant to be evidence that the two domains
 are related.  The existence of this relationship is not meant to
-state that the data from either domain should be more trustworthy.
+state that the data from either domain should be considered as more trustworthy.
 </t>
 </section>
 
 <section anchor="steps-to-validate" title="Steps to validate">
 <t>A validating system should use the combination of the Secondary Domain
-and key from the Parent Domain record to be able to recreate the hash
+name and public key from the Parent Domain record to be able to verify the signature
 that is stored in the record for the Secondary Domain.  This is
-demonstrated in the appendices.
+demonstrated in the appendix.
+</t>
+</section>
+
+<section anchor="security-considerations" title="Security Considerations">
+
+<section anchor="dnssec" title="DNSSEC">
+<t>RDND does not require DNSSEC. It could be possible for an
+attacker to falsify DNS query responses for someone investigating a
+relationship.
+Conversely, an attacker could delete the response that would
+normally demonstrate the relationship, causing the investigating party to
+believe there is no link between the two domains.
+</t>
+<t>Deploying signed records with DNSSEC should allow for detection
+of either attack.
 </t>
 </section>
 
@@ -183,8 +213,23 @@ SHOULD attempt to keep the link direct and limited to a single lookup, but
 it is understood this may not always be possible.
 </t>
 </section>
+</section>
 
-<section anchor="appendix" title="Appendix">
+</middle>
+<back>
+<references title="Normative References">
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6376.xml"?>
+</references>
+<references title="Informative References">
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5518.xml"?>
+</references>
+
+<section anchor="creating-a-signature-for-the-secondary-domain" title="Creating a Signature for the Secondary Domain">
+<t>Appendix C of <xref target="RFC6376"/> has some reference material on
+how to create a set of keys for use in this type of use case. The key
+length is recommended to be at least 2048 bits instead of the 1024
+recommended in that appendix.
+</t>
 
 <section anchor="sample-signature" title="Sample Signature">
 <t>Creation of keys:
@@ -267,34 +312,6 @@ Verified OK
 </t>
 </section>
 </section>
-
-<section anchor="security-considerations" title="Security Considerations">
-
-<section anchor="dnssec" title="DNSSEC">
-<t>This mechanism does not require DNSSEC. It could be possible for an
-attacker to falsify DNS query responses while investigating a
-relationship. Consider that in these cases, a relationship could be
-falsified.  Conversely, an attacker could delete the response that would
-normally demonstrate the relationship, causing the investigating party to
-believe there is no link between the two domains.
-</t>
-<t>Deploying signed records with DNSSEC could be considered
-an advantage, and an additional defense against that type of attack.
-</t>
-</section>
-</section>
-
-<section anchor="contributors" title="Contributors">
-</section>
-
-</middle>
-<back>
-<references title="Normative References">
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6376.xml"?>
-</references>
-<references title="Informative References">
-<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5518.xml"?>
-</references>
 
 </back>
 </rfc>

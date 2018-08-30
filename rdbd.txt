@@ -2,15 +2,15 @@
 
 
 
-uta                                                           A. Brotman
+dnsop                                                         A. Brotman
 Internet-Draft                                              Comcast, Inc
-Intended status: Standards Track                              S. Ferrell
-Expires: March 1, 2019                                   Trinity College
+Intended status: Standards Track                              S. Farrell
+Expires: March 1, 2019                            Trinity College Dublin
                                                          August 28, 2018
 
 
                          Related Domains By DNS
-                     draft-ietf-uta-brotman-rdbd-00
+                    draft-ietf-dnsop-brotman-rdbd-00
 
 Abstract
 
@@ -26,7 +26,7 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at http://datatracker.ietf.org/drafts/current/.
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
@@ -42,7 +42,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Brotman & Ferrell         Expires March 1, 2019                 [Page 1]
+Brotman & Farrell         Expires March 1, 2019                 [Page 1]
 
 Internet-Draft                    RDBD                       August 2018
 
@@ -62,57 +62,71 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Creating a Signature for the Secondary Domain . . . . . . . .   3
-   3.  DNS Record for Secondary Domain . . . . . . . . . . . . . . .   3
-   4.  DNS Record for Parent Domain  . . . . . . . . . . . . . . . .   4
-   5.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   4
-   6.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   4
-   7.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . . . .   4
-   8.  Appendix  . . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     8.1.  Sample Signature  . . . . . . . . . . . . . . . . . . . .   5
-   9.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
-     9.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   6
-   10. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .   7
-   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
-     11.1.  Normative References . . . . . . . . . . . . . . . . . .   7
-     11.2.  Informative References . . . . . . . . . . . . . . . . .   7
+   2.  DNS Record for Secondary Domain . . . . . . . . . . . . . . .   3
+   3.  DNS Record for Parent Domain  . . . . . . . . . . . . . . . .   4
+   4.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   5.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   4
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
+     6.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   5
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   5
+   Appendix A.  Creating a Signature for the Secondary Domain  . . .   5
+     A.1.  Sample Signature  . . . . . . . . . . . . . . . . . . . .   6
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
 
 1.  Introduction
+
+   [[There's a github repo for this -- issues and PRs are welcome there.
+   <https://github.com/abrotman/related-domains-by-dns>
+
+   Current issues include:
+
+   o  #1: use TXT or RR?
+
+   o  #2: stick with a 1:n thing or design for m:n relationshops
+
+   o  #3: include an indicator for the kind of relationship or not?
+
+   o  #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed
+      later
+
+   o  #5: specify input for singing more precisely - e.g. is there a CR
+      or NULL or not ]]
 
    Determining relationships between domains can be one of the more
    difficult investigations on the Internet.  It is typical to see
    something such as "example.com" and "dept-example.com" and be unsure
    if there is an actual relationship between those two domains, or if
-   it might be an attacker attempting to impersonate the original
-   domain.  Providers may err on the side of caution and mark the
-   secondary domain as spam or invalid because it is not clear that they
-   should be related.
+   one might be an attacker attempting to impersonate the other.
+   Service providers of various kinds may err on the side of caution and
+   mark the secondary domain being more likely spammy or invalid because
+   it is not clear that they are in fact related.
 
-   By using "Related Domains By DNS", or "RDBD", it will be possible to
-   determine that the secondary domain is related to the primary domain.
-   This mechanism will include a public key hosted at the parent domain
-   ("example.com") and a reference from the secondary domain ("dept-
-   example.com") along with a hash of the text representation of that
-   domain.
-
-   There already exists Vouch By Reference (VBR) [RFC5518], however this
-   only applies to email.  This is a more general purpose solution that
-   could be applied to other use cases, as well as the SMTP realm.
-
-   This document will explain the various options to be used, how to
-   create a record, and the method of validation.
+   Using "Related Domains By DNS", or "RDBD", it is possible to indicate
+   that the secondary domain is related to the primary domain.  This
 
 
 
-
-
-
-
-Brotman & Ferrell         Expires March 1, 2019                 [Page 2]
+Brotman & Farrell         Expires March 1, 2019                 [Page 2]
 
 Internet-Draft                    RDBD                       August 2018
 
+
+   mechanism is modelled on how DKIM [RFC6376] handles public keys and
+   signatures - a public key is hosted at the parent domain
+   ("example.com") and a reference from the secondary domain ("dept-
+   example.com") contains a signature (verifiable with the "example.com"
+   public key) over the text representation of the secondary domain
+   name.
+
+   There already exists Vouch By Reference (VBR) [RFC5518], however this
+   only applies to email.  RDBD is a more general purpose solution that
+   could be applied to other use cases, as well as for SMTP.
+
+   This document describes the various options, how to create a record,
+   and the method of validation.
 
 1.1.  Terminology
 
@@ -130,14 +144,7 @@ Internet-Draft                    RDBD                       August 2018
       created, that would like to reference the parent domain, such as
       "dept-example.com".
 
-2.  Creating a Signature for the Secondary Domain
-
-   Appendix C of [RFC6376] has some reference material on how to create
-   a set of keys for use in this type of use case.  The key length is
-   recommended to be at least 2048 bits instead of the 1024 recommended
-   in that appendix.
-
-3.  DNS Record for Secondary Domain
+2.  DNS Record for Secondary Domain
 
    There are a few options when publishing the reference to the parent
    domain.
@@ -150,10 +157,18 @@ Internet-Draft                    RDBD                       August 2018
    o  "s": The selector, which is the same as defined in [RFC6376] and
       used to denote which published public key should be used.
 
-   o  "h": The base64 encoded sha256 signature of the secondary domain,
-      creating using the private key.
+   o  "h": The base64 encoded signature over the secondary domain name,
+      created using the private key.
 
    A sample TXT record for "dept-example.com" would appear as:
+
+
+
+
+Brotman & Farrell         Expires March 1, 2019                 [Page 3]
+
+Internet-Draft                    RDBD                       August 2018
+
 
    "v=RDBD1;s=2018a;d=example.com; h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrp
    S9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
@@ -163,14 +178,11 @@ Internet-Draft                    RDBD                       August 2018
    tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
    8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
 
+   The input to signing is simply the name of the secondary domain.  For
+   internationalised domain names, the punycode version is the input to
+   signing.
 
-
-Brotman & Ferrell         Expires March 1, 2019                 [Page 3]
-
-Internet-Draft                    RDBD                       August 2018
-
-
-4.  DNS Record for Parent Domain
+3.  DNS Record for Parent Domain
 
    o  "v": Version string, which should be set to "RDBD1".
 
@@ -192,20 +204,43 @@ Internet-Draft                    RDBD                       August 2018
    wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
    1QIDAQAB"
 
-5.  Validation
+4.  Validation
 
-   The validated signature is solely meant to be proof that two domains
-   are related.  The existence of this relationship is not meant to
-   state that the data from either domain should be more trustworthy.
+   The validated signature is solely meant to be evidence that the two
+   domains are related.  The existence of this relationship is not meant
+   to state that the data from either domain should be considered as
+   more trustworthy.
 
-6.  Steps to validate
+5.  Steps to validate
 
    A validating system should use the combination of the Secondary
-   Domain and key from the Parent Domain record to be able to recreate
-   the hash that is stored in the record for the Secondary Domain.  This
-   is demonstrated in the appendices.
+   Domain name and public key from the Parent Domain record to be able
+   to verify the signature that is stored in the record for the
+   Secondary Domain.  This is demonstrated in the appendix.
 
-7.  Lookup Loops
+
+
+
+Brotman & Farrell         Expires March 1, 2019                 [Page 4]
+
+Internet-Draft                    RDBD                       August 2018
+
+
+6.  Security Considerations
+
+6.1.  DNSSEC
+
+   RDND does not require DNSSEC.  It could be possible for an attacker
+   to falsify DNS query responses for someone investigating a
+   relationship.  Conversely, an attacker could delete the response that
+   would normally demonstrate the relationship, causing the
+   investigating party to believe there is no link between the two
+   domains.
+
+   Deploying signed records with DNSSEC should allow for detection of
+   either attack.
+
+6.2.  Lookup Loops
 
    It's conceivable that an attacker could create a loop of lookups,
    such as a.com->b.com->c.com->a.com or similar.  This could cause a
@@ -215,20 +250,39 @@ Internet-Draft                    RDBD                       August 2018
    attempt to keep the link direct and limited to a single lookup, but
    it is understood this may not always be possible.
 
+7.  References
+
+7.1.  Normative References
+
+   [RFC6376]  Crocker, D., Ed., Hansen, T., Ed., and M. Kucherawy, Ed.,
+              "DomainKeys Identified Mail (DKIM) Signatures", STD 76,
+              RFC 6376, DOI 10.17487/RFC6376, September 2011,
+              <https://www.rfc-editor.org/info/rfc6376>.
+
+7.2.  Informative References
+
+   [RFC5518]  Hoffman, P., Levine, J., and A. Hathcock, "Vouch By
+              Reference", RFC 5518, DOI 10.17487/RFC5518, April 2009,
+              <https://www.rfc-editor.org/info/rfc5518>.
+
+Appendix A.  Creating a Signature for the Secondary Domain
+
+   Appendix C of [RFC6376] has some reference material on how to create
+   a set of keys for use in this type of use case.  The key length is
+   recommended to be at least 2048 bits instead of the 1024 recommended
+   in that appendix.
 
 
 
 
 
 
-Brotman & Ferrell         Expires March 1, 2019                 [Page 4]
+Brotman & Farrell         Expires March 1, 2019                 [Page 5]
 
 Internet-Draft                    RDBD                       August 2018
 
 
-8.  Appendix
-
-8.1.  Sample Signature
+A.1.  Sample Signature
 
    Creation of keys:
 
@@ -274,15 +328,15 @@ Internet-Draft                    RDBD                       August 2018
    wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
    1QIDAQAB -----END PUBLIC KEY-----
 
+   File containing domain, domain.txt:
 
 
 
-Brotman & Ferrell         Expires March 1, 2019                 [Page 5]
+
+Brotman & Farrell         Expires March 1, 2019                 [Page 6]
 
 Internet-Draft                    RDBD                       August 2018
 
-
-   File containing domain, domain.txt:
 
    $ cat domain.txt foo-example.com
 
@@ -313,48 +367,6 @@ Internet-Draft                    RDBD                       August 2018
    $ openssl dgst -sha256 -verify rsa.public -signature sign.sha256
    domain.txt Verified OK
 
-9.  Security Considerations
-
-9.1.  DNSSEC
-
-   This mechanism does not require DNSSEC.  It could be possible for an
-   attacker to falsify DNS query responses while investigating a
-   relationship.  Consider that in these cases, a relationship could be
-   falsified.  Conversely, an attacker could delete the response that
-   would normally demonstrate the relationship, causing the
-   investigating party to believe there is no link between the two
-   domains.
-
-   Deploying signed records with DNSSEC could be considered an
-   advantage, and an additional defense against that type of attack.
-
-
-
-
-
-
-Brotman & Ferrell         Expires March 1, 2019                 [Page 6]
-
-Internet-Draft                    RDBD                       August 2018
-
-
-10.  Contributors
-
-11.  References
-
-11.1.  Normative References
-
-   [RFC6376]  Crocker, D., Ed., Hansen, T., Ed., and M. Kucherawy, Ed.,
-              "DomainKeys Identified Mail (DKIM) Signatures", STD 76,
-              RFC 6376, DOI 10.17487/RFC6376, September 2011,
-              <https://www.rfc-editor.org/info/rfc6376>.
-
-11.2.  Informative References
-
-   [RFC5518]  Hoffman, P., Levine, J., and A. Hathcock, "Vouch By
-              Reference", RFC 5518, DOI 10.17487/RFC5518, April 2009,
-              <https://www.rfc-editor.org/info/rfc5518>.
-
 Authors' Addresses
 
    Alex Brotman
@@ -363,8 +375,8 @@ Authors' Addresses
    Email: alex_brotman@comcast.com
 
 
-   Stephen Ferrell
-   Trinity College
+   Stephen Farrell
+   Trinity College Dublin
 
    Email: stephen.farrell@cs.tcd.ie
 
@@ -377,16 +389,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-Brotman & Ferrell         Expires March 1, 2019                 [Page 7]
+Brotman & Farrell         Expires March 1, 2019                 [Page 7]
