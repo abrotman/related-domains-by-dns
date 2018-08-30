@@ -1,0 +1,392 @@
+
+
+
+
+uta                                                           A. Brotman
+Internet-Draft                                              Comcast, Inc
+Intended status: Standards Track                              S. Ferrell
+Expires: March 1, 2019                                   Trinity College
+                                                         August 28, 2018
+
+
+                         Related Domains By DNS
+                     draft-ietf-uta-brotman-rdbd-00
+
+Abstract
+
+   This document outlines a mechanism by which a domain can create a
+   relationship to a different domain, called "Related Domains By DNS",
+   or "RDBD".
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on March 1, 2019.
+
+Copyright Notice
+
+   Copyright (c) 2018 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+Brotman & Ferrell         Expires March 1, 2019                 [Page 1]
+
+Internet-Draft                    RDBD                       August 2018
+
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
+   2.  Creating a Signature for the Secondary Domain . . . . . . . .   3
+   3.  DNS Record for Secondary Domain . . . . . . . . . . . . . . .   3
+   4.  DNS Record for Parent Domain  . . . . . . . . . . . . . . . .   4
+   5.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   6.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   4
+   7.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . . . .   4
+   8.  Appendix  . . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     8.1.  Sample Signature  . . . . . . . . . . . . . . . . . . . .   5
+   9.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+     9.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+   10. Contributors  . . . . . . . . . . . . . . . . . . . . . . . .   7
+   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     11.1.  Normative References . . . . . . . . . . . . . . . . . .   7
+     11.2.  Informative References . . . . . . . . . . . . . . . . .   7
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
+
+1.  Introduction
+
+   Determining relationships between domains can be one of the more
+   difficult investigations on the Internet.  It is typical to see
+   something such as "example.com" and "dept-example.com" and be unsure
+   if there is an actual relationship between those two domains, or if
+   it might be an attacker attempting to impersonate the original
+   domain.  Providers may err on the side of caution and mark the
+   secondary domain as spam or invalid because it is not clear that they
+   should be related.
+
+   By using "Related Domains By DNS", or "RDBD", it will be possible to
+   determine that the secondary domain is related to the primary domain.
+   This mechanism will include a public key hosted at the parent domain
+   ("example.com") and a reference from the secondary domain ("dept-
+   example.com") along with a hash of the text representation of that
+   domain.
+
+   There already exists Vouch By Reference (VBR) [RFC5518], however this
+   only applies to email.  This is a more general purpose solution that
+   could be applied to other use cases, as well as the SMTP realm.
+
+   This document will explain the various options to be used, how to
+   create a record, and the method of validation.
+
+
+
+
+
+
+
+Brotman & Ferrell         Expires March 1, 2019                 [Page 2]
+
+Internet-Draft                    RDBD                       August 2018
+
+
+1.1.  Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   [RFC2119].
+
+   The following terms are used throughout this document:
+
+   o  Parent domain: This refers to the master domain that is to be
+      referenced, such as "example.com".
+
+   o  Secondary domain: This will refer to the domain that has been
+      created, that would like to reference the parent domain, such as
+      "dept-example.com".
+
+2.  Creating a Signature for the Secondary Domain
+
+   Appendix C of [RFC6376] has some reference material on how to create
+   a set of keys for use in this type of use case.  The key length is
+   recommended to be at least 2048 bits instead of the 1024 recommended
+   in that appendix.
+
+3.  DNS Record for Secondary Domain
+
+   There are a few options when publishing the reference to the parent
+   domain.
+
+   o  "v": Version string, which should be set to "RDBD1".
+
+   o  "d": The Parent Domain.  This should be in the form of
+      "example.com".
+
+   o  "s": The selector, which is the same as defined in [RFC6376] and
+      used to denote which published public key should be used.
+
+   o  "h": The base64 encoded sha256 signature of the secondary domain,
+      creating using the private key.
+
+   A sample TXT record for "dept-example.com" would appear as:
+
+   "v=RDBD1;s=2018a;d=example.com; h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrp
+   S9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
+   Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/
+   RMGYK8SmkbzzLKqzce 9K56oNRsP3GUaympykq/
+   tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2 aJE7PSotJ/
+   tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
+   8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
+
+
+
+Brotman & Ferrell         Expires March 1, 2019                 [Page 3]
+
+Internet-Draft                    RDBD                       August 2018
+
+
+4.  DNS Record for Parent Domain
+
+   o  "v": Version string, which should be set to "RDBD1".
+
+   o  "s": The selector, which is the same as defined in [RFC6376] and
+      is a string used to denote a specific public key published by the
+      Parent Domain.
+
+   o  "k": The public key published for this selector, encoded using
+      base64.
+
+   A sample TXT record for the parent domain of "example.com":
+
+   "v=RDBD1;s=2018a;
+   k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
+   ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
+   9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL
+   6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy
+   5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfV
+   wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
+   1QIDAQAB"
+
+5.  Validation
+
+   The validated signature is solely meant to be proof that two domains
+   are related.  The existence of this relationship is not meant to
+   state that the data from either domain should be more trustworthy.
+
+6.  Steps to validate
+
+   A validating system should use the combination of the Secondary
+   Domain and key from the Parent Domain record to be able to recreate
+   the hash that is stored in the record for the Secondary Domain.  This
+   is demonstrated in the appendices.
+
+7.  Lookup Loops
+
+   It's conceivable that an attacker could create a loop of lookups,
+   such as a.com->b.com->c.com->a.com or similar.  This could cause a
+   resource issue for any automated system.  A system SHOULD only
+   perform three lookups from the original domain
+   (a.com->b.com->c.com->d.com).  The Secondary and Parent SHOULD
+   attempt to keep the link direct and limited to a single lookup, but
+   it is understood this may not always be possible.
+
+
+
+
+
+
+
+Brotman & Ferrell         Expires March 1, 2019                 [Page 4]
+
+Internet-Draft                    RDBD                       August 2018
+
+
+8.  Appendix
+
+8.1.  Sample Signature
+
+   Creation of keys:
+
+   openssl genrsa -out rsa.private 2048 openssl rsa -in rsa.private -out
+   rsa.public -pubout -outform PEM
+
+   Keys in use:
+
+   rsa.private: -----BEGIN RSA PRIVATE KEY-----
+   MIIEowIBAAKCAQEA2LNjBAdNAtZOMdd3hlemZF8a0onOcEo5g1KWnKzryDCfH4LZ
+   kXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy
+   7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL6MDWLU9ZSWlqskzLVPgwqtT80xch
+   U65HipKkr2luSAySZyyNEf58pRea3D3pBkLy5hCDhr2+6GF2q9lJ9qMopd2P/ZXx
+   Hkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfVwrs4495a8OUkOBy7V4YkgKbFYSSk
+   GPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj1QIDAQABAoIBAH/eAgwrfq6w4/0X
+   Bgk4iQ9q6vnWpQCvW5Z40jRq+MnsnshKPrVL+krIGU/fvt7vaIzIPFTGrf7VWxl3
+   +oZg/1sRFPYUItjaluqjaxEhWvHH1saYCb2lAV1x9QtkgjBv4F6GZqfi1MJfro32
+   QP36s/hIaVjdHHNsB7BkDgr6VEVIR5y2PmW4aLjHCiqsyDIUM4zRcl4exzw+rst1
+   z2seOhhJrnYdc+VnkEg5GKENldZ3tZoY3je/OsfNJtKjpArPRqkP1qve3h3uD+PK
+   obZ7BM+xok29Fxf6AgC99eDr9BatTa/a8q7NYMkVRLq/JdOF1XUuDDNd3r93Ae4n
+   54qqucECgYEA/Xuct8ALG2/6Kd4Lmm9i055LVxdwB+1wG1JNE1IB+OI+6B8W49po vK/
+   fFVHMEV2BoRr4EB58Xxa+oICBImIzTUQXYQnMbDzL2N+X3FrkDSGCPZQy7GzD
+   wFdpY3ceNShou1bRt4/hPWLLI35ZXM3yqBJeGhbTUmYVdWrkXTNo2wUCgYEA2tpE
+   +bg9iIYUJAg/CEpdWn+8ZxhRnBDziN88Grli+arSWaMWE809GyPaeiplbwywnXRb
+   vliskE43CcgstnhRKY8dWB2AQnRESvsJKO8rw/ONSxlWTpFc78xxmmNSvOBs4Srv
+   quMc6HTMaetCM5/l0PddCY3/rls9FTESf36RXpECgYEA5AF6mHYwB4AT3/ERMtsa
+   ZAuw7Sfx58+V1Z2UItrTV1H7D8RXTKE7MO5plb2796rKXWXq2GTzrnzA/5JXldwL
+   FWc4OFsd/AY7vlpxOQ6wr3cCte1GWRAEjFCURZnyHBK7Ejgn8BuFmTfyTXzrWOUP
+   bksHRiRd9XJJvxJlU8hYexkCgYBhM9i24THTVVnUtyTn1b+o1lsjnxWAL7c674uO
+   gxCGu2w6C8leeiXNzBrZb8Mlk4lOJcQpwtDCNzsSySmy0bWas8ngvRmeam16sAzd
+   dX0Gx0HWPSasNrwEddVvMPYqlbNGPv+78quAQ4AW+zqoGzjDm1pjSAJrunJi2yzQ
+   G7MNQQKBgCZktECUg2xr8vgVTB586sB7PiHp2j8Wabxh+dMiNUEB7qg4HZdzh8XA
+   JXnJnZVQWBL0s10yPg9oITWVBcZ3MqgOqsN1QamN9KjzA46ILtpWptz2q3Nw2Tkl
+   m7RBP9R9gM9mnl9/azK7Y5uj11/O3cNJLEIWcraKqydPfvxNyEtP -----END RSA
+   PRIVATE KEY-----
+
+   rsa.public: -----BEGIN PUBLIC KEY-----
+   MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
+   ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
+   9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL
+   6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy
+   5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfV
+   wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
+   1QIDAQAB -----END PUBLIC KEY-----
+
+
+
+
+Brotman & Ferrell         Expires March 1, 2019                 [Page 5]
+
+Internet-Draft                    RDBD                       August 2018
+
+
+   File containing domain, domain.txt:
+
+   $ cat domain.txt foo-example.com
+
+   $ openssl dgst -sha256 -sign rsa.private -out foo.sign domain.txt
+
+   $ base64 foo.sign OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mK
+   ktkpzQhbZlLuKLYFzljF7uHl5
+   Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/
+   RMGYK8SmkbzzLKqzce 9K56oNRsP3GUaympykq/
+   tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2 aJE7PSotJ/
+   tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
+   8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ==
+
+   The published record would be: "v=RDBD1;s=2018a;d=example.com; h=OQHY
+   RUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7u
+   Hl5 Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/
+   RMGYK8SmkbzzLKqzce 9K56oNRsP3GUaympykq/
+   tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2 aJE7PSotJ/
+   tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
+   8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
+
+   To verify:
+
+   with "foo.base64" containing the above signature:
+
+   $ openssl base64 -d -in foo.base64 -out sign.sha256
+
+   $ openssl dgst -sha256 -verify rsa.public -signature sign.sha256
+   domain.txt Verified OK
+
+9.  Security Considerations
+
+9.1.  DNSSEC
+
+   This mechanism does not require DNSSEC.  It could be possible for an
+   attacker to falsify DNS query responses while investigating a
+   relationship.  Consider that in these cases, a relationship could be
+   falsified.  Conversely, an attacker could delete the response that
+   would normally demonstrate the relationship, causing the
+   investigating party to believe there is no link between the two
+   domains.
+
+   Deploying signed records with DNSSEC could be considered an
+   advantage, and an additional defense against that type of attack.
+
+
+
+
+
+
+Brotman & Ferrell         Expires March 1, 2019                 [Page 6]
+
+Internet-Draft                    RDBD                       August 2018
+
+
+10.  Contributors
+
+11.  References
+
+11.1.  Normative References
+
+   [RFC6376]  Crocker, D., Ed., Hansen, T., Ed., and M. Kucherawy, Ed.,
+              "DomainKeys Identified Mail (DKIM) Signatures", STD 76,
+              RFC 6376, DOI 10.17487/RFC6376, September 2011,
+              <https://www.rfc-editor.org/info/rfc6376>.
+
+11.2.  Informative References
+
+   [RFC5518]  Hoffman, P., Levine, J., and A. Hathcock, "Vouch By
+              Reference", RFC 5518, DOI 10.17487/RFC5518, April 2009,
+              <https://www.rfc-editor.org/info/rfc5518>.
+
+Authors' Addresses
+
+   Alex Brotman
+   Comcast, Inc
+
+   Email: alex_brotman@comcast.com
+
+
+   Stephen Ferrell
+   Trinity College
+
+   Email: stephen.farrell@cs.tcd.ie
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Brotman & Ferrell         Expires March 1, 2019                 [Page 7]
