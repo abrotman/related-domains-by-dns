@@ -22,7 +22,7 @@
    [[author]]
    initials="S."
    surname="Ferrell"
-   fullname="Stephen Ferrell"
+   fullname="Stephen Farrell"
    organization="Trinity College"
      [author.address]
      email="stephen.farrell@cs.tcd.ie"
