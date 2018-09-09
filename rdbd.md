@@ -9,7 +9,7 @@
    workgroup = "dnsop"
    keyword = [""]
 
-   date = 2018-08-28T00:00:00Z
+   date = 2018-09-09T00:00:00Z
    
    [[author]]
    initials="A."
@@ -70,6 +70,11 @@ keys and signatures - a public key is hosted at the parent domain
 ("dept-example.com") contains a signature (verifiable with
 the "example.com" public key) over the text representation of 
 the secondary domain name.
+
+RDBD is intended to demonstrate a relationship between registered
+domains, not individual hostnames.  That is to say that the
+relationship should exist between "example.com" and "dept-example.com",
+not "foo.example.com" and "bar.dept-example.com".
 
 There already exists Vouch By Reference (VBR) [@?RFC5518], however
 this only applies to email.  RDBD is a more general purpose solution
