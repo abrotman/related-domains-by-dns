@@ -32,9 +32,9 @@
 
 .# Abstract
 
-This document outlines a mechanism by which a domain can create a
-relationship to a different domain, called "Related Domains By 
-DNS", or "RDBD".
+This document outlines a mechanism by which a registered domain can 
+create a relationship to a different registered domain, called 
+"Related Domains By DNS", or "RDBD".
 
 {mainmatter}
 
@@ -46,11 +46,11 @@ https://github.com/abrotman/related-domains-by-dns
 
 Current issues include:
 
-* #1: use TXT or RR?
+* #1: use TXT or RR? (ATB: RR, but TXT for now)
 * #2: stick with a 1:n thing or design for m:n relationshops
 * #3: include an indicator for the kind of relationship or not?
 * #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed later
-* #5: specify input for singing more precisely - e.g. is there a CR or NULL or not
+* #5: specify input for signing more precisely - e.g. is there a CR or NULL or not
 ]]
 
 Determining relationships between domains can be one of the more difficult
@@ -58,23 +58,23 @@ investigations on the Internet.  It is typical to see something such as
 `example.com` and `dept-example.com` and be unsure if there is an actual
 relationship between those two domains, or if one might be an attacker 
 attempting to impersonate the other.  Service providers of various
-kinds may err on 
-the side of caution and mark the secondary domain being more likely spammy or invalid 
-because it is not clear that they are in fact related.
+kinds may err on the side of caution and mark the secondary domain being 
+more likely spammy or invalid because it is not clear that they are in fact 
+related.
 
 Using "Related Domains By DNS", or "RDBD", it is possible to
 indicate that the secondary domain is related to the primary domain.
 This mechanism is modelled on how DKIM [@?RFC6376] handles public
 keys and signatures - a public key is hosted at the parent domain
-("example.com") and a reference from the secondary domain 
-("dept-example.com") contains a signature (verifiable with
-the "example.com" public key) over the text representation of 
+(`example.com`) and a reference from the secondary domain 
+(`dept-example.com`) contains a signature (verifiable with
+the `example.com` public key) over the text representation of 
 the secondary domain name.
 
 RDBD is intended to demonstrate a relationship between registered
 domains, not individual hostnames.  That is to say that the
-relationship should exist between "example.com" and "dept-example.com",
-not "foo.example.com" and "bar.dept-example.com".
+relationship should exist between `example.com` and `dept-example.com`,
+not `foo.example.com` and `bar.dept-example.com`.
 
 There already exists Vouch By Reference (VBR) [@?RFC5518], however
 this only applies to email.  RDBD is a more general purpose solution
@@ -96,7 +96,7 @@ The following terms are used throughout this document:
   referenced, such as `example.com`.
    
 * Secondary domain: This will refer to the domain that has been created, 
-  that would like to reference the parent domain, such as "dept-example.com".
+  that would like to reference the parent domain, such as `dept-example.com`.
 
 # DNS Record for Secondary Domain
 
@@ -133,13 +133,13 @@ input to signing.
 A sample TXT record for the parent domain of `example.com`:
 
 "v=RDBD1;s=2018a;
-k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
-ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
-9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL
-6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy
-5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfV
-wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
-1QIDAQAB"
+k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hl
+emZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8
+Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERl
+QL6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBk
+Ly5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQ
+fVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIq
+Tj1QIDAQAB"
 
 # Validation 
 
