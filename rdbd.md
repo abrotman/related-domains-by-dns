@@ -47,7 +47,7 @@ https://github.com/abrotman/related-domains-by-dns
 Current issues include:
 
 * #1: use TXT or RR? (ATB: RR, but TXT for now)
-* #2: stick with a 1:n thing or design for m:n relationshops
+* #2: stick with a 1:n thing or design for m:n relationshops (ATB: m:n is possible (I believe) as it stands, using selectors)
 * #3: include an indicator for the kind of relationship or not?
 * #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed later
 * #5: specify input for signing more precisely - e.g. is there a CR or NULL or not
