@@ -59,8 +59,10 @@ investigations on the Internet.  It is typical to see something such as
 relationship between those two domains, or if one might be an attacker 
 attempting to impersonate the other.  Service providers of various
 kinds may err on the side of caution and mark the secondary domain being 
-more likely spammy or invalid because it is not clear that they are in fact 
-related.
+untrustworthy or abusive because it is not clear that they are in 
+fact related. Another possible use case could be where a company
+has two websites in different languages, and would like to correlate
+their ownership more easily, consider `example.at` and `example.de`.
 
 Using "Related Domains By DNS", or "RDBD", it is possible to
 indicate that the secondary domain is related to the primary domain.
