@@ -53,11 +53,12 @@ Current issues include:
 * #5: specify input for signing more precisely - e.g. is there a CR or NULL or not
 ]]
 
-Determining relationships between domains can be one of the more difficult
+Determining relationships between registered domains can be one of the more difficult
 investigations on the Internet.  It is typical to see something such as 
 `example.com` and `dept-example.com` and be unsure if there is an actual
 relationship between those two domains, or if one might be an attacker 
-attempting to impersonate the other.  Service providers of various
+attempting to impersonate the other.  In some cases, anecdotal evidence from places
+such as DNS or WHOIS/RDAP may suffice.  However, service providers of various
 kinds may err on the side of caution and mark the secondary domain being 
 untrustworthy or abusive because it is not clear that they are in 
 fact related. Another possible use case could be where a company
