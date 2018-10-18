@@ -63,7 +63,8 @@ kinds may err on the side of caution and mark the secondary domain being
 untrustworthy or abusive because it is not clear that they are in 
 fact related. Another possible use case could be where a company
 has two websites in different languages, and would like to correlate
-their ownership more easily, consider `example.at` and `example.de`.
+their ownership more easily, consider `example.at` and `example.de`
+registered by regional offices of the same company.
 
 Using "Related Domains By DNS", or "RDBD", it is possible to
 indicate that the secondary domain is related to the primary domain.
@@ -80,8 +81,8 @@ relationship should exist between `example.com` and `dept-example.com`,
 not `foo.example.com` and `bar.dept-example.com`.
 
 There already exists Vouch By Reference (VBR) [@?RFC5518], however
-this only applies to email.  RDBD is a more general purpose solution
-that could be applied to other use cases, as well as for SMTP.
+this only applies to email.  RDBD could be a more general purpose solution
+that could be applied to other use cases, as well as for SMTP transactions.
 
 This document describes the various options, how to
 create a record, and the method of validation.
