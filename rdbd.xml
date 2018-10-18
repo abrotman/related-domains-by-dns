@@ -42,7 +42,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2018" month="August" day="28"/>
+<date year="2018" month="October" day="18"/>
 
 <area>Applications</area>
 <workgroup>dnsop</workgroup>
@@ -50,9 +50,9 @@
 
 
 <abstract>
-<t>This document outlines a mechanism by which a domain can create a
-relationship to a different domain, called &quot;Related Domains By
-DNS&quot;, or &quot;RDBD&quot;.
+<t>This document outlines a mechanism by which a registered domain can
+create a relationship to a different registered domain, called
+&quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;.
 </t>
 </abstract>
 
@@ -70,35 +70,44 @@ issues and PRs are welcome there.
 </t>
 <t>
 <list style="symbols">
-<t>#1: use TXT or RR?</t>
-<t>#2: stick with a 1:n thing or design for m:n relationshops</t>
+<t>#1: use TXT or RR? (ATB: RR, but TXT for now)</t>
+<t>#2: stick with a 1:n thing or design for m:n relationshops (ATB: m:n is possible (I believe) as it stands, using selectors)</t>
 <t>#3: include an indicator for the kind of relationship or not?</t>
 <t>#4: &quot;h=&quot; is wrong for a signature, but &quot;s=&quot; is selector, bikeshed later</t>
-<t>#5: specify input for singing more precisely - e.g. is there a CR or NULL or not
+<t>#5: specify input for signing more precisely - e.g. is there a CR or NULL or not
 ]]</t>
 </list>
 </t>
-<t>Determining relationships between domains can be one of the more difficult
+<t>Determining relationships between registered domains can be one of the more difficult
 investigations on the Internet.  It is typical to see something such as
 <spanx style="verb">example.com</spanx> and <spanx style="verb">dept-example.com</spanx> and be unsure if there is an actual
 relationship between those two domains, or if one might be an attacker
-attempting to impersonate the other.  Service providers of various
-kinds may err on
-the side of caution and mark the secondary domain being more likely spammy or invalid
-because it is not clear that they are in fact related.
+attempting to impersonate the other.  In some cases, anecdotal evidence from places
+such as DNS or WHOIS/RDAP may suffice.  However, service providers of various
+kinds may err on the side of caution and mark the secondary domain being
+untrustworthy or abusive because it is not clear that they are in
+fact related. Another possible use case could be where a company
+has two websites in different languages, and would like to correlate
+their ownership more easily, consider <spanx style="verb">example.at</spanx> and <spanx style="verb">example.de</spanx>
+registered by regional offices of the same company.
 </t>
 <t>Using &quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;, it is possible to
 indicate that the secondary domain is related to the primary domain.
 This mechanism is modelled on how DKIM <xref target="RFC6376"/> handles public
 keys and signatures - a public key is hosted at the parent domain
-(&quot;example.com&quot;) and a reference from the secondary domain
-(&quot;dept-example.com&quot;) contains a signature (verifiable with
-the &quot;example.com&quot; public key) over the text representation of
+(<spanx style="verb">example.com</spanx>) and a reference from the secondary domain
+(<spanx style="verb">dept-example.com</spanx>) contains a signature (verifiable with
+the <spanx style="verb">example.com</spanx> public key) over the text representation of
 the secondary domain name.
 </t>
+<t>RDBD is intended to demonstrate a relationship between registered
+domains, not individual hostnames.  That is to say that the
+relationship should exist between <spanx style="verb">example.com</spanx> and <spanx style="verb">dept-example.com</spanx>,
+not <spanx style="verb">foo.example.com</spanx> and <spanx style="verb">bar.dept-example.com</spanx>.
+</t>
 <t>There already exists Vouch By Reference (VBR) <xref target="RFC5518"/>, however
-this only applies to email.  RDBD is a more general purpose solution
-that could be applied to other use cases, as well as for SMTP.
+this only applies to email.  RDBD could be a more general purpose solution
+that could be applied to other use cases, as well as for SMTP transactions.
 </t>
 <t>This document describes the various options, how to
 create a record, and the method of validation.
@@ -117,7 +126,7 @@ create a record, and the method of validation.
 <t>Parent domain: This refers to the master domain that is to be
 referenced, such as <spanx style="verb">example.com</spanx>.</t>
 <t>Secondary domain: This will refer to the domain that has been created,
-that would like to reference the parent domain, such as &quot;dept-example.com&quot;.</t>
+that would like to reference the parent domain, such as <spanx style="verb">dept-example.com</spanx>.</t>
 </list>
 </t>
 </section>
@@ -164,13 +173,13 @@ Parent Domain.</t>
 <t>A sample TXT record for the parent domain of <spanx style="verb">example.com</spanx>:
 </t>
 <t>&quot;v=RDBD1;s=2018a;
-k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
-ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
-9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL
-6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy
-5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfV
-wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
-1QIDAQAB&quot;
+k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hl
+emZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8
+Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERl
+QL6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBk
+Ly5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQ
+fVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIq
+Tj1QIDAQAB&quot;
 </t>
 </section>
 
