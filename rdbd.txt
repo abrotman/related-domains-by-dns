@@ -5,8 +5,8 @@
 dnsop                                                         A. Brotman
 Internet-Draft                                              Comcast, Inc
 Intended status: Standards Track                              S. Farrell
-Expires: March 1, 2019                            Trinity College Dublin
-                                                         August 28, 2018
+Expires: April 21, 2019                           Trinity College Dublin
+                                                        October 18, 2018
 
 
                          Related Domains By DNS
@@ -14,9 +14,9 @@ Expires: March 1, 2019                            Trinity College Dublin
 
 Abstract
 
-   This document outlines a mechanism by which a domain can create a
-   relationship to a different domain, called "Related Domains By DNS",
-   or "RDBD".
+   This document outlines a mechanism by which a registered domain can
+   create a relationship to a different registered domain, called
+   "Related Domains By DNS", or "RDBD".
 
 Status of This Memo
 
@@ -26,14 +26,14 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at https://datatracker.ietf.org/drafts/current/.
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 1, 2019.
+   This Internet-Draft will expire on April 21, 2019.
 
 Copyright Notice
 
@@ -42,7 +42,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (https://trustee.ietf.org/license-info) in effect on the date of
+   (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Brotman & Farrell         Expires March 1, 2019                 [Page 1]
+Brotman & Farrell        Expires April 21, 2019                 [Page 1]
 
-Internet-Draft                    RDBD                       August 2018
+Internet-Draft                    RDBD                      October 2018
 
 
 Table of Contents
@@ -64,15 +64,15 @@ Table of Contents
      1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
    2.  DNS Record for Secondary Domain . . . . . . . . . . . . . . .   3
    3.  DNS Record for Parent Domain  . . . . . . . . . . . . . . . .   4
-   4.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   4
-   5.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   4
+   4.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+   5.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   5
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
      6.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
      6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   5
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .   5
-   Appendix A.  Creating a Signature for the Secondary Domain  . . .   5
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
+   Appendix A.  Creating a Signature for the Secondary Domain  . . .   6
      A.1.  Sample Signature  . . . . . . . . . . . . . . . . . . . .   6
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
 
@@ -83,37 +83,43 @@ Table of Contents
 
    Current issues include:
 
-   o  #1: use TXT or RR?
+   o  #1: use TXT or RR?  (ATB: RR, but TXT for now)
 
-   o  #2: stick with a 1:n thing or design for m:n relationshops
+   o  #2: stick with a 1:n thing or design for m:n relationshops (ATB:
+      m:n is possible (I believe) as it stands, using selectors)
 
    o  #3: include an indicator for the kind of relationship or not?
 
    o  #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed
       later
 
-   o  #5: specify input for singing more precisely - e.g. is there a CR
+   o  #5: specify input for signing more precisely - e.g. is there a CR
       or NULL or not ]]
 
-   Determining relationships between domains can be one of the more
-   difficult investigations on the Internet.  It is typical to see
-   something such as "example.com" and "dept-example.com" and be unsure
-   if there is an actual relationship between those two domains, or if
-   one might be an attacker attempting to impersonate the other.
-   Service providers of various kinds may err on the side of caution and
-   mark the secondary domain being more likely spammy or invalid because
-   it is not clear that they are in fact related.
+   Determining relationships between registered domains can be one of
+   the more difficult investigations on the Internet.  It is typical to
+   see something such as "example.com" and "dept-example.com" and be
+   unsure if there is an actual relationship between those two domains,
+   or if one might be an attacker attempting to impersonate the other.
+   In some cases, anecdotal evidence from places such as DNS or WHOIS/
+   RDAP may suffice.  However, service providers of various kinds may
+   err on the side of caution and mark the secondary domain being
+   untrustworthy or abusive because it is not clear that they are in
+   fact related.  Another possible use case could be where a company has
+
+
+
+Brotman & Farrell        Expires April 21, 2019                 [Page 2]
+
+Internet-Draft                    RDBD                      October 2018
+
+
+   two websites in different languages, and would like to correlate
+   their ownership more easily, consider "example.at" and "example.de"
+   registered by regional offices of the same company.
 
    Using "Related Domains By DNS", or "RDBD", it is possible to indicate
    that the secondary domain is related to the primary domain.  This
-
-
-
-Brotman & Farrell         Expires March 1, 2019                 [Page 2]
-
-Internet-Draft                    RDBD                       August 2018
-
-
    mechanism is modelled on how DKIM [RFC6376] handles public keys and
    signatures - a public key is hosted at the parent domain
    ("example.com") and a reference from the secondary domain ("dept-
@@ -121,9 +127,15 @@ Internet-Draft                    RDBD                       August 2018
    public key) over the text representation of the secondary domain
    name.
 
+   RDBD is intended to demonstrate a relationship between registered
+   domains, not individual hostnames.  That is to say that the
+   relationship should exist between "example.com" and "dept-
+   example.com", not "foo.example.com" and "bar.dept-example.com".
+
    There already exists Vouch By Reference (VBR) [RFC5518], however this
-   only applies to email.  RDBD is a more general purpose solution that
-   could be applied to other use cases, as well as for SMTP.
+   only applies to email.  RDBD could be a more general purpose solution
+   that could be applied to other use cases, as well as for SMTP
+   transactions.
 
    This document describes the various options, how to create a record,
    and the method of validation.
@@ -151,6 +163,13 @@ Internet-Draft                    RDBD                       August 2018
 
    o  "v": Version string, which should be set to "RDBD1".
 
+
+
+Brotman & Farrell        Expires April 21, 2019                 [Page 3]
+
+Internet-Draft                    RDBD                      October 2018
+
+
    o  "d": The Parent Domain.  This should be in the form of
       "example.com".
 
@@ -161,14 +180,6 @@ Internet-Draft                    RDBD                       August 2018
       created using the private key.
 
    A sample TXT record for "dept-example.com" would appear as:
-
-
-
-
-Brotman & Farrell         Expires March 1, 2019                 [Page 3]
-
-Internet-Draft                    RDBD                       August 2018
-
 
    "v=RDBD1;s=2018a;d=example.com; h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrp
    S9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
@@ -196,13 +207,24 @@ Internet-Draft                    RDBD                       August 2018
    A sample TXT record for the parent domain of "example.com":
 
    "v=RDBD1;s=2018a;
-   k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
-   ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
-   9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL
-   6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy
-   5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfV
-   wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
-   1QIDAQAB"
+   k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hl
+   emZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8
+   Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERl
+   QL6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBk
+   Ly5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQ
+   fVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIq
+   Tj1QIDAQAB"
+
+
+
+
+
+
+
+Brotman & Farrell        Expires April 21, 2019                 [Page 4]
+
+Internet-Draft                    RDBD                      October 2018
+
 
 4.  Validation
 
@@ -217,14 +239,6 @@ Internet-Draft                    RDBD                       August 2018
    Domain name and public key from the Parent Domain record to be able
    to verify the signature that is stored in the record for the
    Secondary Domain.  This is demonstrated in the appendix.
-
-
-
-
-Brotman & Farrell         Expires March 1, 2019                 [Page 4]
-
-Internet-Draft                    RDBD                       August 2018
-
 
 6.  Security Considerations
 
@@ -259,6 +273,15 @@ Internet-Draft                    RDBD                       August 2018
               RFC 6376, DOI 10.17487/RFC6376, September 2011,
               <https://www.rfc-editor.org/info/rfc6376>.
 
+
+
+
+
+Brotman & Farrell        Expires April 21, 2019                 [Page 5]
+
+Internet-Draft                    RDBD                      October 2018
+
+
 7.2.  Informative References
 
    [RFC5518]  Hoffman, P., Levine, J., and A. Hathcock, "Vouch By
@@ -271,16 +294,6 @@ Appendix A.  Creating a Signature for the Secondary Domain
    a set of keys for use in this type of use case.  The key length is
    recommended to be at least 2048 bits instead of the 1024 recommended
    in that appendix.
-
-
-
-
-
-
-Brotman & Farrell         Expires March 1, 2019                 [Page 5]
-
-Internet-Draft                    RDBD                       August 2018
-
 
 A.1.  Sample Signature
 
@@ -316,6 +329,15 @@ A.1.  Sample Signature
    dX0Gx0HWPSasNrwEddVvMPYqlbNGPv+78quAQ4AW+zqoGzjDm1pjSAJrunJi2yzQ
    G7MNQQKBgCZktECUg2xr8vgVTB586sB7PiHp2j8Wabxh+dMiNUEB7qg4HZdzh8XA
    JXnJnZVQWBL0s10yPg9oITWVBcZ3MqgOqsN1QamN9KjzA46ILtpWptz2q3Nw2Tkl
+
+
+
+
+Brotman & Farrell        Expires April 21, 2019                 [Page 6]
+
+Internet-Draft                    RDBD                      October 2018
+
+
    m7RBP9R9gM9mnl9/azK7Y5uj11/O3cNJLEIWcraKqydPfvxNyEtP -----END RSA
    PRIVATE KEY-----
 
@@ -329,14 +351,6 @@ A.1.  Sample Signature
    1QIDAQAB -----END PUBLIC KEY-----
 
    File containing domain, domain.txt:
-
-
-
-
-Brotman & Farrell         Expires March 1, 2019                 [Page 6]
-
-Internet-Draft                    RDBD                       August 2018
-
 
    $ cat domain.txt foo-example.com
 
@@ -369,6 +383,17 @@ Internet-Draft                    RDBD                       August 2018
 
 Authors' Addresses
 
+
+
+
+
+
+
+Brotman & Farrell        Expires April 21, 2019                 [Page 7]
+
+Internet-Draft                    RDBD                      October 2018
+
+
    Alex Brotman
    Comcast, Inc
 
@@ -389,4 +414,35 @@ Authors' Addresses
 
 
 
-Brotman & Farrell         Expires March 1, 2019                 [Page 7]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Brotman & Farrell        Expires April 21, 2019                 [Page 8]
