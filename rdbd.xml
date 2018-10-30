@@ -156,7 +156,11 @@ aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
 </t>
 <t>The input to signing is simply the name of the secondary domain.
 For internationalised domain names, the punycode version is the
-input to signing.
+input to signing. [[SF: That probably also needs the primary domain
+as input, otherwise I could copy the primary domain RR to another
+place and it'd then appear to be the right primary. We'd likely
+also want the sig-alg as input and maybe more too. That'd affect
+other text as well I guess, which I've not fixed up.]]
 </t>
 </section>
 
@@ -291,7 +295,8 @@ wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
 <t>File containing domain, domain.txt:
 </t>
 <t>$ cat domain.txt
-foo-example.com
+</t>
+<t>foo-example.com
 </t>
 <t>$ openssl dgst -sha256 -sign rsa.private -out foo.sign domain.txt
 </t>
