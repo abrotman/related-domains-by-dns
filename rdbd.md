@@ -116,15 +116,25 @@ There are a few options when publishing the reference to the parent domain.
 A sample TXT record for `dept-example.com` would appear as:
 
 "v=RDBD1;s=2018a;d=example.com;
-h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
-Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/RMGYK8SmkbzzLKqzce
-9K56oNRsP3GUaympykq/tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2
-aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
-8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
+h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/phI4EcalpxhDfADPgCRwxASztR12BMq0
+MLWJZZYxN1zuBE3joFED7EHRoDlFQti/GtRFg9lyOSLac58dyty3rdU2oLDSubbk21YYZZV7VsUh
+OqbGxrhe6LdY0f59aw7cGg2R+YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3
+HDmWVEmZg7GcSbT062zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
+m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
 
-The input to signing is simply the name of the secondary domain.
+The input to signing is noted as:
+
+s=example-dept.com&p=example.com
+
+Where:
+
+s: The secondary domain
+p: THe primary domain
+
 For internationalised domain names, the punycode version is the
-input to signing. [[SF: That probably also needs the primary domain
+input to signing. 
+
+[[SF: That probably also needs the primary domain
 as input, otherwise I could copy the primary domain RR to another
 place and it'd then appear to be the right primary. We'd likely
 also want the sig-alg as input and maybe more too. That'd affect
