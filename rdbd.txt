@@ -195,7 +195,8 @@ Internet-Draft                    RDBD                     November 2018
 
    Where:
 
-   s: The secondary domain p: THe primary domain
+   s: The secondary domain 
+   p: The primary domain
 
    For internationalised domain names, the punycode version is the input
    to signing.
