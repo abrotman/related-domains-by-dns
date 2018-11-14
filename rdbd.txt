@@ -5,8 +5,8 @@
 dnsop                                                         A. Brotman
 Internet-Draft                                              Comcast, Inc
 Intended status: Standards Track                              S. Farrell
-Expires: April 21, 2019                           Trinity College Dublin
-                                                        October 18, 2018
+Expires: May 17, 2019                             Trinity College Dublin
+                                                       November 13, 2018
 
 
                          Related Domains By DNS
@@ -26,14 +26,14 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at https://datatracker.ietf.org/drafts/current/.
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 21, 2019.
+   This Internet-Draft will expire on May 17, 2019.
 
 Copyright Notice
 
@@ -42,7 +42,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (https://trustee.ietf.org/license-info) in effect on the date of
+   (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Brotman & Farrell        Expires April 21, 2019                 [Page 1]
+Brotman & Farrell         Expires May 17, 2019                  [Page 1]
 
-Internet-Draft                    RDBD                      October 2018
+Internet-Draft                    RDBD                     November 2018
 
 
 Table of Contents
@@ -68,9 +68,9 @@ Table of Contents
    5.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   5
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
      6.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   5
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
+     6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   6
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
    Appendix A.  Creating a Signature for the Secondary Domain  . . .   6
      A.1.  Sample Signature  . . . . . . . . . . . . . . . . . . . .   6
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Brotman & Farrell        Expires April 21, 2019                 [Page 2]
+Brotman & Farrell         Expires May 17, 2019                  [Page 2]
 
-Internet-Draft                    RDBD                      October 2018
+Internet-Draft                    RDBD                     November 2018
 
 
    two websites in different languages, and would like to correlate
@@ -165,9 +165,9 @@ Internet-Draft                    RDBD                      October 2018
 
 
 
-Brotman & Farrell        Expires April 21, 2019                 [Page 3]
+Brotman & Farrell         Expires May 17, 2019                  [Page 3]
 
-Internet-Draft                    RDBD                      October 2018
+Internet-Draft                    RDBD                     November 2018
 
 
    o  "d": The Parent Domain.  This should be in the form of
@@ -181,21 +181,30 @@ Internet-Draft                    RDBD                      October 2018
 
    A sample TXT record for "dept-example.com" would appear as:
 
-   "v=RDBD1;s=2018a;d=example.com; h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrp
-   S9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
-   Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/
-   RMGYK8SmkbzzLKqzce 9K56oNRsP3GUaympykq/
-   tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2 aJE7PSotJ/
-   tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
-   8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
+   "v=RDBD1;s=2018a;d=example.com;
+   h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/
+   phI4EcalpxhDfADPgCRwxASztR12BMq0 MLWJZZYxN1zuBE3joFED7EHRoDlFQti/
+   GtRFg9lyOSLac58dyty3rdU2oLDSubbk21YYZZV7VsUh OqbGxrhe6LdY0f59aw7cGg2R
+   +YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3 HDmWVEmZg7GcSbT0
+   62zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
+   m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
 
-   The input to signing is simply the name of the secondary domain.  For
-   internationalised domain names, the punycode version is the input to
-   signing.  [[SF: That probably also needs the primary domain as input,
-   otherwise I could copy the primary domain RR to another place and
-   it'd then appear to be the right primary.  We'd likely also want the
-   sig-alg as input and maybe more too.  That'd affect other text as
-   well I guess, which I've not fixed up.]]
+   The input to signing is noted as:
+
+   s=example-dept.com&p=example.com
+
+   Where:
+
+   s: The secondary domain p: THe primary domain
+
+   For internationalised domain names, the punycode version is the input
+   to signing.
+
+   [[SF: That probably also needs the primary domain as input, otherwise
+   I could copy the primary domain RR to another place and it'd then
+   appear to be the right primary.  We'd likely also want the sig-alg as
+   input and maybe more too.  That'd affect other text as well I guess,
+   which I've not fixed up.]]
 
 3.  DNS Record for Parent Domain
 
@@ -210,6 +219,13 @@ Internet-Draft                    RDBD                      October 2018
 
    A sample TXT record for the parent domain of "example.com":
 
+
+
+Brotman & Farrell         Expires May 17, 2019                  [Page 4]
+
+Internet-Draft                    RDBD                     November 2018
+
+
    "v=RDBD1;s=2018a;
    k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hl
    emZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8
@@ -219,12 +235,14 @@ Internet-Draft                    RDBD                      October 2018
    fVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIq
    Tj1QIDAQAB"
 
+   And the TXT location for this record would be:
 
+   "2018a._rdbd.example.com"
 
-Brotman & Farrell        Expires April 21, 2019                 [Page 4]
-
-Internet-Draft                    RDBD                      October 2018
-
+   This is constructed by using the selector (s=) in the secondary
+   domain's reference to the first domain.  The absence of the record in
+   this location MUST be considered a failure to validate, and a failure
+   to establish the relationship.
 
 4.  Validation
 
@@ -254,6 +272,16 @@ Internet-Draft                    RDBD                      October 2018
    Deploying signed records with DNSSEC should allow for detection of
    either attack.
 
+
+
+
+
+
+Brotman & Farrell         Expires May 17, 2019                  [Page 5]
+
+Internet-Draft                    RDBD                     November 2018
+
+
 6.2.  Lookup Loops
 
    It's conceivable that an attacker could create a loop of lookups,
@@ -272,15 +300,6 @@ Internet-Draft                    RDBD                      October 2018
               "DomainKeys Identified Mail (DKIM) Signatures", STD 76,
               RFC 6376, DOI 10.17487/RFC6376, September 2011,
               <https://www.rfc-editor.org/info/rfc6376>.
-
-
-
-
-
-Brotman & Farrell        Expires April 21, 2019                 [Page 5]
-
-Internet-Draft                    RDBD                      October 2018
-
 
 7.2.  Informative References
 
@@ -311,6 +330,14 @@ A.1.  Sample Signature
    U65HipKkr2luSAySZyyNEf58pRea3D3pBkLy5hCDhr2+6GF2q9lJ9qMopd2P/ZXx
    Hkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfVwrs4495a8OUkOBy7V4YkgKbFYSSk
    GPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj1QIDAQABAoIBAH/eAgwrfq6w4/0X
+
+
+
+Brotman & Farrell         Expires May 17, 2019                  [Page 6]
+
+Internet-Draft                    RDBD                     November 2018
+
+
    Bgk4iQ9q6vnWpQCvW5Z40jRq+MnsnshKPrVL+krIGU/fvt7vaIzIPFTGrf7VWxl3
    +oZg/1sRFPYUItjaluqjaxEhWvHH1saYCb2lAV1x9QtkgjBv4F6GZqfi1MJfro32
    QP36s/hIaVjdHHNsB7BkDgr6VEVIR5y2PmW4aLjHCiqsyDIUM4zRcl4exzw+rst1
@@ -329,15 +356,6 @@ A.1.  Sample Signature
    dX0Gx0HWPSasNrwEddVvMPYqlbNGPv+78quAQ4AW+zqoGzjDm1pjSAJrunJi2yzQ
    G7MNQQKBgCZktECUg2xr8vgVTB586sB7PiHp2j8Wabxh+dMiNUEB7qg4HZdzh8XA
    JXnJnZVQWBL0s10yPg9oITWVBcZ3MqgOqsN1QamN9KjzA46ILtpWptz2q3Nw2Tkl
-
-
-
-
-Brotman & Farrell        Expires April 21, 2019                 [Page 6]
-
-Internet-Draft                    RDBD                      October 2018
-
-
    m7RBP9R9gM9mnl9/azK7Y5uj11/O3cNJLEIWcraKqydPfvxNyEtP -----END RSA
    PRIVATE KEY-----
 
@@ -354,25 +372,32 @@ Internet-Draft                    RDBD                      October 2018
 
    $ cat domain.txt
 
-   foo-example.com
+   s=foo-example.com&p=example.com
 
    $ openssl dgst -sha256 -sign rsa.private -out foo.sign domain.txt
 
-   $ base64 foo.sign OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mK
-   ktkpzQhbZlLuKLYFzljF7uHl5
-   Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/
-   RMGYK8SmkbzzLKqzce 9K56oNRsP3GUaympykq/
-   tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2 aJE7PSotJ/
-   tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
-   8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ==
+   $ base64 foo.sign TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/
+   phI4EcalpxhDfADPgCRwxASztR12BMq0 MLWJZZYxN1zuBE3joFED7EHRoDlFQti/
+   GtRFg9lyOSLac58dyty3rdU2oLDSubbk21YYZZV7VsUh OqbGxrhe6LdY0f59aw7cGg2R
+   +YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3 HDmWVEmZg7GcSbT0
+   62zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
+   m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg==
 
-   The published record would be: "v=RDBD1;s=2018a;d=example.com; h=OQHY
-   RUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7u
-   Hl5 Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/
-   RMGYK8SmkbzzLKqzce 9K56oNRsP3GUaympykq/
-   tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2 aJE7PSotJ/
-   tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
-   8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
+   The published record would be: "v=RDBD1;s=2018a;d=example.com;
+   h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/
+   phI4EcalpxhDfADPgCRwxASztR12BMq0 MLWJZZYxN1zuBE3joFED7EHRoDlFQti/
+
+
+
+Brotman & Farrell         Expires May 17, 2019                  [Page 7]
+
+Internet-Draft                    RDBD                     November 2018
+
+
+   GtRFg9lyOSLac58dyty3rdU2oLDSubbk21YYZZV7VsUh OqbGxrhe6LdY0f59aw7cGg2R
+   +YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3 HDmWVEmZg7GcSbT0
+   62zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
+   m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
 
    To verify:
 
@@ -382,17 +407,6 @@ Internet-Draft                    RDBD                      October 2018
 
    $ openssl dgst -sha256 -verify rsa.public -signature sign.sha256
    domain.txt Verified OK
-
-
-
-
-
-
-
-Brotman & Farrell        Expires April 21, 2019                 [Page 7]
-
-Internet-Draft                    RDBD                      October 2018
-
 
 Authors' Addresses
 
@@ -431,18 +445,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Brotman & Farrell        Expires April 21, 2019                 [Page 8]
+Brotman & Farrell         Expires May 17, 2019                  [Page 8]
