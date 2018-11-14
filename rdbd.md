@@ -9,7 +9,7 @@
    workgroup = "dnsop"
    keyword = [""]
 
-   date = 2018-10-18T00:00:00Z
+   date = 2018-11-13T00:00:00Z
    
    [[author]]
    initials="A."
@@ -149,6 +149,15 @@ Ly5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQ
 fVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIq
 Tj1QIDAQAB"
 
+And the TXT location for this record would be:
+
+`2018a._rdbd.example.com`
+
+This is constructed by using the selector (s=) in the secondary
+domain's reference to the first domain. The absence of the record
+in this location MUST be considered a failure to validate, and
+a failure to establish the relationship.
+
 # Validation 
 
 The validated signature is solely meant to be evidence that the two domains 
@@ -247,24 +256,24 @@ File containing domain, domain.txt:
 
 $ cat domain.txt
 
-foo-example.com
+s=foo-example.com&p=example.com
 
 $ openssl dgst -sha256 -sign rsa.private -out foo.sign domain.txt
 
 $ base64 foo.sign
-OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
-Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/RMGYK8SmkbzzLKqzce
-9K56oNRsP3GUaympykq/tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2
-aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
-8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ==
+TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/phI4EcalpxhDfADPgCRwxASztR12BMq0
+MLWJZZYxN1zuBE3joFED7EHRoDlFQti/GtRFg9lyOSLac58dyty3rdU2oLDSubbk21YYZZV7VsUh
+OqbGxrhe6LdY0f59aw7cGg2R+YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3
+HDmWVEmZg7GcSbT062zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
+m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg==
 
 The published record would be:
 "v=RDBD1;s=2018a;d=example.com;
-h=OQHYRUmBjTAYrMlAjZFvq5HTMJFVBcdJCrpS9JbOTAY+v1wa4mKktkpzQhbZlLuKLYFzljF7uHl5
-Z5g5x+oyUhQxaDzBFtPYB0sIRZIrqftr09jfnlX4wdHhmgZn00m/D3DJ0/RMGYK8SmkbzzLKqzce
-9K56oNRsP3GUaympykq/tj512IfVJDxTt4ccqAopVYEvLYuFnQ0d6lP4FC20CTGaNlD+vdZgryl2
-aJE7PSotJ/tDc5u6jmpRa0uhzwyE2Xmbr1X5+gymF99sT4lnfvsUsk6Nlpbk1SXdB52GZJ4qr6Km
-8tEVvDK0soJ89FhTwpb0NsTBAQxFpcaTyka7uQ=="
+h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/phI4EcalpxhDfADPgCRwxASztR12BMq0
+MLWJZZYxN1zuBE3joFED7EHRoDlFQti/GtRFg9lyOSLac58dyty3rdU2oLDSubbk21YYZZV7VsUh
+OqbGxrhe6LdY0f59aw7cGg2R+YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3
+HDmWVEmZg7GcSbT062zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
+m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
 
 To verify:
 
