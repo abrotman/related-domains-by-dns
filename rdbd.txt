@@ -26,7 +26,7 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at http://datatracker.ietf.org/drafts/current/.
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
@@ -42,7 +42,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -68,7 +68,7 @@ Table of Contents
    5.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   5
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
      6.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   6
+     6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   5
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
@@ -83,7 +83,7 @@ Table of Contents
 
    Current issues include:
 
-   o  #1: use TXT or RR?  (ATB: RR, but TXT for now)
+   o  #1: use TXT or new RR?  (ATB: new RR, but TXT for now)
 
    o  #2: stick with a 1:n thing or design for m:n relationshops (ATB:
       m:n is possible (I believe) as it stands, using selectors)
@@ -124,8 +124,8 @@ Internet-Draft                    RDBD                     November 2018
    signatures - a public key is hosted at the parent domain
    ("example.com") and a reference from the secondary domain ("dept-
    example.com") contains a signature (verifiable with the "example.com"
-   public key) over the text representation of the secondary domain
-   name.
+   public key) over the text representation ('A-label') of the primmary
+   and secondary domain names.
 
    RDBD is intended to demonstrate a relationship between registered
    domains, not individual hostnames.  That is to say that the
@@ -149,12 +149,11 @@ Internet-Draft                    RDBD                     November 2018
 
    The following terms are used throughout this document:
 
-   o  Parent domain: This refers to the master domain that is to be
-      referenced, such as "example.com".
+   o  Parent domain: This refers to the domain that is to be referenced,
+      such as "example.com".
 
-   o  Secondary domain: This will refer to the domain that has been
-      created, that would like to reference the parent domain, such as
-      "dept-example.com".
+   o  Secondary domain: This will refer to the domain that references
+      the parent domain, such as "dept-example.com".
 
 2.  DNS Record for Secondary Domain
 
@@ -162,6 +161,7 @@ Internet-Draft                    RDBD                     November 2018
    domain.
 
    o  "v": Version string, which should be set to "RDBD1".
+
 
 
 
@@ -176,8 +176,8 @@ Internet-Draft                    RDBD                     November 2018
    o  "s": The selector, which is the same as defined in [RFC6376] and
       used to denote which published public key should be used.
 
-   o  "h": The base64 encoded signature over the secondary domain name,
-      created using the private key.
+   o  "h": The base64 encoded signature over the primary and secondary
+      domain namess, created using the private key.
 
    A sample TXT record for "dept-example.com" would appear as:
 
@@ -189,23 +189,16 @@ Internet-Draft                    RDBD                     November 2018
    62zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
    m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
 
-   The input to signing is noted as:
+   The input to signing is:
 
    s=example-dept.com&p=example.com
 
    Where:
 
-   s: The secondary domain 
-   p: The primary domain
+   s: The secondary domain p: The primary domain
 
-   For internationalised domain names, the punycode version is the input
-   to signing.
-
-   [[SF: That probably also needs the primary domain as input, otherwise
-   I could copy the primary domain RR to another place and it'd then
-   appear to be the right primary.  We'd likely also want the sig-alg as
-   input and maybe more too.  That'd affect other text as well I guess,
-   which I've not fixed up.]]
+   For internationalised domain names, the punycode ('A-label') version
+   is the input to signing.
 
 3.  DNS Record for Parent Domain
 
@@ -220,6 +213,12 @@ Internet-Draft                    RDBD                     November 2018
 
    A sample TXT record for the parent domain of "example.com":
 
+   "v=RDBD1;s=2018a;
+   k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hl
+   emZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8
+   Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERl
+   QL6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBk
+
 
 
 Brotman & Farrell         Expires May 17, 2019                  [Page 4]
@@ -227,11 +226,6 @@ Brotman & Farrell         Expires May 17, 2019                  [Page 4]
 Internet-Draft                    RDBD                     November 2018
 
 
-   "v=RDBD1;s=2018a;
-   k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hl
-   emZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8
-   Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERl
-   QL6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBk
    Ly5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQ
    fVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIq
    Tj1QIDAQAB"
@@ -273,8 +267,13 @@ Internet-Draft                    RDBD                     November 2018
    Deploying signed records with DNSSEC should allow for detection of
    either attack.
 
+6.2.  Lookup Loops
 
-
+   It's conceivable that an attacker could create a loop of lookups,
+   such as a.com->b.com->c.com->a.com or similar.  This could cause a
+   resource issue for any automated system.  A system SHOULD only
+   perform three lookups from the original domain
+   (a.com->b.com->c.com->d.com).  The Secondary and Parent SHOULD
 
 
 
@@ -283,13 +282,6 @@ Brotman & Farrell         Expires May 17, 2019                  [Page 5]
 Internet-Draft                    RDBD                     November 2018
 
 
-6.2.  Lookup Loops
-
-   It's conceivable that an attacker could create a loop of lookups,
-   such as a.com->b.com->c.com->a.com or similar.  This could cause a
-   resource issue for any automated system.  A system SHOULD only
-   perform three lookups from the original domain
-   (a.com->b.com->c.com->d.com).  The Secondary and Parent SHOULD
    attempt to keep the link direct and limited to a single lookup, but
    it is understood this may not always be possible.
 
@@ -331,6 +323,13 @@ A.1.  Sample Signature
    U65HipKkr2luSAySZyyNEf58pRea3D3pBkLy5hCDhr2+6GF2q9lJ9qMopd2P/ZXx
    Hkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfVwrs4495a8OUkOBy7V4YkgKbFYSSk
    GPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj1QIDAQABAoIBAH/eAgwrfq6w4/0X
+   Bgk4iQ9q6vnWpQCvW5Z40jRq+MnsnshKPrVL+krIGU/fvt7vaIzIPFTGrf7VWxl3
+   +oZg/1sRFPYUItjaluqjaxEhWvHH1saYCb2lAV1x9QtkgjBv4F6GZqfi1MJfro32
+   QP36s/hIaVjdHHNsB7BkDgr6VEVIR5y2PmW4aLjHCiqsyDIUM4zRcl4exzw+rst1
+   z2seOhhJrnYdc+VnkEg5GKENldZ3tZoY3je/OsfNJtKjpArPRqkP1qve3h3uD+PK
+   obZ7BM+xok29Fxf6AgC99eDr9BatTa/a8q7NYMkVRLq/JdOF1XUuDDNd3r93Ae4n
+   54qqucECgYEA/Xuct8ALG2/6Kd4Lmm9i055LVxdwB+1wG1JNE1IB+OI+6B8W49po vK/
+   fFVHMEV2BoRr4EB58Xxa+oICBImIzTUQXYQnMbDzL2N+X3FrkDSGCPZQy7GzD
 
 
 
@@ -339,13 +338,6 @@ Brotman & Farrell         Expires May 17, 2019                  [Page 6]
 Internet-Draft                    RDBD                     November 2018
 
 
-   Bgk4iQ9q6vnWpQCvW5Z40jRq+MnsnshKPrVL+krIGU/fvt7vaIzIPFTGrf7VWxl3
-   +oZg/1sRFPYUItjaluqjaxEhWvHH1saYCb2lAV1x9QtkgjBv4F6GZqfi1MJfro32
-   QP36s/hIaVjdHHNsB7BkDgr6VEVIR5y2PmW4aLjHCiqsyDIUM4zRcl4exzw+rst1
-   z2seOhhJrnYdc+VnkEg5GKENldZ3tZoY3je/OsfNJtKjpArPRqkP1qve3h3uD+PK
-   obZ7BM+xok29Fxf6AgC99eDr9BatTa/a8q7NYMkVRLq/JdOF1XUuDDNd3r93Ae4n
-   54qqucECgYEA/Xuct8ALG2/6Kd4Lmm9i055LVxdwB+1wG1JNE1IB+OI+6B8W49po vK/
-   fFVHMEV2BoRr4EB58Xxa+oICBImIzTUQXYQnMbDzL2N+X3FrkDSGCPZQy7GzD
    wFdpY3ceNShou1bRt4/hPWLLI35ZXM3yqBJeGhbTUmYVdWrkXTNo2wUCgYEA2tpE
    +bg9iIYUJAg/CEpdWn+8ZxhRnBDziN88Grli+arSWaMWE809GyPaeiplbwywnXRb
    vliskE43CcgstnhRKY8dWB2AQnRESvsJKO8rw/ONSxlWTpFc78xxmmNSvOBs4Srv
@@ -387,6 +379,13 @@ Internet-Draft                    RDBD                     November 2018
    The published record would be: "v=RDBD1;s=2018a;d=example.com;
    h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/
    phI4EcalpxhDfADPgCRwxASztR12BMq0 MLWJZZYxN1zuBE3joFED7EHRoDlFQti/
+   GtRFg9lyOSLac58dyty3rdU2oLDSubbk21YYZZV7VsUh OqbGxrhe6LdY0f59aw7cGg2R
+   +YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3 HDmWVEmZg7GcSbT0
+   62zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
+   m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
+
+   To verify:
+
 
 
 
@@ -394,13 +393,6 @@ Brotman & Farrell         Expires May 17, 2019                  [Page 7]
 
 Internet-Draft                    RDBD                     November 2018
 
-
-   GtRFg9lyOSLac58dyty3rdU2oLDSubbk21YYZZV7VsUh OqbGxrhe6LdY0f59aw7cGg2R
-   +YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3 HDmWVEmZg7GcSbT0
-   62zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
-   m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
-
-   To verify:
 
    with "foo.base64" containing the above signature:
 
@@ -421,6 +413,13 @@ Authors' Addresses
    Trinity College Dublin
 
    Email: stephen.farrell@cs.tcd.ie
+
+
+
+
+
+
+
 
 
 

@@ -70,7 +70,7 @@ issues and PRs are welcome there.
 </t>
 <t>
 <list style="symbols">
-<t>#1: use TXT or RR? (ATB: RR, but TXT for now)</t>
+<t>#1: use TXT or new RR? (ATB: new RR, but TXT for now)</t>
 <t>#2: stick with a 1:n thing or design for m:n relationshops (ATB: m:n is possible (I believe) as it stands, using selectors)</t>
 <t>#3: include an indicator for the kind of relationship or not?</t>
 <t>#4: &quot;h=&quot; is wrong for a signature, but &quot;s=&quot; is selector, bikeshed later</t>
@@ -97,8 +97,8 @@ This mechanism is modelled on how DKIM <xref target="RFC6376"/> handles public
 keys and signatures - a public key is hosted at the parent domain
 (<spanx style="verb">example.com</spanx>) and a reference from the secondary domain
 (<spanx style="verb">dept-example.com</spanx>) contains a signature (verifiable with
-the <spanx style="verb">example.com</spanx> public key) over the text representation of
-the secondary domain name.
+the <spanx style="verb">example.com</spanx> public key) over the text representation ('A-label') of
+the primmary and secondary domain names.
 </t>
 <t>RDBD is intended to demonstrate a relationship between registered
 domains, not individual hostnames.  That is to say that the
@@ -123,10 +123,10 @@ create a record, and the method of validation.
 </t>
 <t>
 <list style="symbols">
-<t>Parent domain: This refers to the master domain that is to be
+<t>Parent domain: This refers to the domain that is to be
 referenced, such as <spanx style="verb">example.com</spanx>.</t>
-<t>Secondary domain: This will refer to the domain that has been created,
-that would like to reference the parent domain, such as <spanx style="verb">dept-example.com</spanx>.</t>
+<t>Secondary domain: This will refer to the domain that references
+the parent domain, such as <spanx style="verb">dept-example.com</spanx>.</t>
 </list>
 </t>
 </section>
@@ -141,7 +141,7 @@ that would like to reference the parent domain, such as <spanx style="verb">dept
 <t><spanx style="verb">d</spanx>: The Parent Domain.  This should be in the form of <spanx style="verb">example.com</spanx>.</t>
 <t><spanx style="verb">s</spanx>: The selector, which is the same as defined in <xref target="RFC6376"/> and
 used to denote which published public key should be used.</t>
-<t><spanx style="verb">h</spanx>: The base64 encoded signature over the secondary domain name, created
+<t><spanx style="verb">h</spanx>: The base64 encoded signature over the primary and secondary domain namess, created
 using the private key.</t>
 </list>
 </t>
@@ -154,23 +154,17 @@ OqbGxrhe6LdY0f59aw7cGg2R+YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3
 HDmWVEmZg7GcSbT062zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
 m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg==&quot;
 </t>
-<t>The input to signing is noted as:
+<t>The input to signing is:
 </t>
 <t>s=example-dept.com&amp;p=example.com
 </t>
 <t>Where:
 </t>
 <t>s: The secondary domain
-p: THe primary domain
+p: The primary domain
 </t>
-<t>For internationalised domain names, the punycode version is the
+<t>For internationalised domain names, the punycode ('A-label') version is the
 input to signing.
-</t>
-<t>[[SF: That probably also needs the primary domain
-as input, otherwise I could copy the primary domain RR to another
-place and it'd then appear to be the right primary. We'd likely
-also want the sig-alg as input and maybe more too. That'd affect
-other text as well I guess, which I've not fixed up.]]
 </t>
 </section>
 

@@ -46,7 +46,7 @@ https://github.com/abrotman/related-domains-by-dns
 
 Current issues include:
 
-* #1: use TXT or RR? (ATB: RR, but TXT for now)
+* #1: use TXT or new RR? (ATB: new RR, but TXT for now)
 * #2: stick with a 1:n thing or design for m:n relationshops (ATB: m:n is possible (I believe) as it stands, using selectors)
 * #3: include an indicator for the kind of relationship or not?
 * #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed later
@@ -72,8 +72,8 @@ This mechanism is modelled on how DKIM [@?RFC6376] handles public
 keys and signatures - a public key is hosted at the parent domain
 (`example.com`) and a reference from the secondary domain 
 (`dept-example.com`) contains a signature (verifiable with
-the `example.com` public key) over the text representation of 
-the secondary domain name.
+the `example.com` public key) over the text representation ('A-label') of 
+the primmary and secondary domain names.
 
 RDBD is intended to demonstrate a relationship between registered
 domains, not individual hostnames.  That is to say that the
@@ -96,11 +96,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 
 The following terms are used throughout this document:
    
-* Parent domain: This refers to the master domain that is to be
+* Parent domain: This refers to the domain that is to be
   referenced, such as `example.com`.
    
-* Secondary domain: This will refer to the domain that has been created, 
-  that would like to reference the parent domain, such as `dept-example.com`.
+* Secondary domain: This will refer to the domain that references
+  the parent domain, such as `dept-example.com`.
 
 # DNS Record for Secondary Domain
 
@@ -110,7 +110,7 @@ There are a few options when publishing the reference to the parent domain.
 * `d`: The Parent Domain.  This should be in the form of `example.com`.
 * `s`: The selector, which is the same as defined in [@!RFC6376] and
   used to denote which published public key should be used.
-* `h`: The base64 encoded signature over the secondary domain name, created
+* `h`: The base64 encoded signature over the primary and secondary domain namess, created
   using the private key.
 
 A sample TXT record for `dept-example.com` would appear as:
@@ -122,23 +122,17 @@ OqbGxrhe6LdY0f59aw7cGg2R+YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3
 HDmWVEmZg7GcSbT062zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
 m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
 
-The input to signing is noted as:
+The input to signing is:
 
 s=example-dept.com&p=example.com
 
 Where:
 
 s: The secondary domain
-p: THe primary domain
+p: The primary domain
 
-For internationalised domain names, the punycode version is the
+For internationalised domain names, the punycode ('A-label') version is the
 input to signing. 
-
-[[SF: That probably also needs the primary domain
-as input, otherwise I could copy the primary domain RR to another
-place and it'd then appear to be the right primary. We'd likely
-also want the sig-alg as input and maybe more too. That'd affect
-other text as well I guess, which I've not fixed up.]]
 
 # DNS Record for Parent Domain
 
