@@ -124,7 +124,7 @@ m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
 
 The input to signing is:
 
-s=example-dept.com&p=example.com
+s=dept-example.com&p=example.com
 
 Where:
 
