@@ -64,7 +64,8 @@ untrustworthy or abusive because it is not clear that they are in
 fact related. Another possible use case could be where a company
 has two websites in different languages, and would like to correlate
 their ownership more easily, consider `example.at` and `example.de`
-registered by regional offices of the same company.
+registered by regional offices of the same company.  A third example could
+be an acquisition where both domains continue to operate.
 
 Using "Related Domains By DNS", or "RDBD", it is possible to
 indicate that the secondary domain is related to the primary domain.
