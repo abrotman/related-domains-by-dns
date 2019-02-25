@@ -2,15 +2,15 @@
 
 
 
-dnsop                                                         A. Brotman
+Network Working Group                                         A. Brotman
 Internet-Draft                                              Comcast, Inc
 Intended status: Standards Track                              S. Farrell
-Expires: May 17, 2019                             Trinity College Dublin
-                                                       November 13, 2018
+Expires: August 29, 2019                          Trinity College Dublin
+                                                       February 25, 2019
 
 
                          Related Domains By DNS
-                    draft-ietf-dnsop-brotman-rdbd-00
+                         draft-brotman-rdbd-00
 
 Abstract
 
@@ -33,11 +33,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 17, 2019.
+   This Internet-Draft will expire on August 29, 2019.
 
 Copyright Notice
 
-   Copyright (c) 2018 IETF Trust and the persons identified as the
+   Copyright (c) 2019 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Brotman & Farrell         Expires May 17, 2019                  [Page 1]
+Brotman & Farrell        Expires August 29, 2019                [Page 1]
 
-Internet-Draft                    RDBD                     November 2018
+Internet-Draft                    RDBD                     February 2019
 
 
 Table of Contents
@@ -109,14 +109,15 @@ Table of Contents
 
 
 
-Brotman & Farrell         Expires May 17, 2019                  [Page 2]
+Brotman & Farrell        Expires August 29, 2019                [Page 2]
 
-Internet-Draft                    RDBD                     November 2018
+Internet-Draft                    RDBD                     February 2019
 
 
    two websites in different languages, and would like to correlate
    their ownership more easily, consider "example.at" and "example.de"
-   registered by regional offices of the same company.
+   registered by regional offices of the same company.  A third example
+   could be an acquisition where both domains continue to operate.
 
    Using "Related Domains By DNS", or "RDBD", it is possible to indicate
    that the secondary domain is related to the primary domain.  This
@@ -164,10 +165,9 @@ Internet-Draft                    RDBD                     November 2018
 
 
 
-
-Brotman & Farrell         Expires May 17, 2019                  [Page 3]
+Brotman & Farrell        Expires August 29, 2019                [Page 3]
 
-Internet-Draft                    RDBD                     November 2018
+Internet-Draft                    RDBD                     February 2019
 
 
    o  "d": The Parent Domain.  This should be in the form of
@@ -221,9 +221,9 @@ Internet-Draft                    RDBD                     November 2018
 
 
 
-Brotman & Farrell         Expires May 17, 2019                  [Page 4]
+Brotman & Farrell        Expires August 29, 2019                [Page 4]
 
-Internet-Draft                    RDBD                     November 2018
+Internet-Draft                    RDBD                     February 2019
 
 
    Ly5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQ
@@ -277,9 +277,9 @@ Internet-Draft                    RDBD                     November 2018
 
 
 
-Brotman & Farrell         Expires May 17, 2019                  [Page 5]
+Brotman & Farrell        Expires August 29, 2019                [Page 5]
 
-Internet-Draft                    RDBD                     November 2018
+Internet-Draft                    RDBD                     February 2019
 
 
    attempt to keep the link direct and limited to a single lookup, but
@@ -333,9 +333,9 @@ A.1.  Sample Signature
 
 
 
-Brotman & Farrell         Expires May 17, 2019                  [Page 6]
+Brotman & Farrell        Expires August 29, 2019                [Page 6]
 
-Internet-Draft                    RDBD                     November 2018
+Internet-Draft                    RDBD                     February 2019
 
 
    wFdpY3ceNShou1bRt4/hPWLLI35ZXM3yqBJeGhbTUmYVdWrkXTNo2wUCgYEA2tpE
@@ -389,9 +389,9 @@ Internet-Draft                    RDBD                     November 2018
 
 
 
-Brotman & Farrell         Expires May 17, 2019                  [Page 7]
+Brotman & Farrell        Expires August 29, 2019                [Page 7]
 
-Internet-Draft                    RDBD                     November 2018
+Internet-Draft                    RDBD                     February 2019
 
 
    with "foo.base64" containing the above signature:
@@ -445,4 +445,4 @@ Authors' Addresses
 
 
 
-Brotman & Farrell         Expires May 17, 2019                  [Page 8]
+Brotman & Farrell        Expires August 29, 2019                [Page 8]
