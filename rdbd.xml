@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
-<rfc ipr="trust200902" category="std" docName="draft-ietf-dnsop-brotman-rdbd-00">
+<rfc ipr="trust200902" category="std" docName="draft-brotman-rdbd-00">
 <?rfc toc="yes"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
@@ -42,10 +42,10 @@
 <uri></uri>
 </address>
 </author>
-<date year="2018" month="November" day="13"/>
+<date year="2019" month="February" day="25"/>
 
 <area>Applications</area>
-<workgroup>dnsop</workgroup>
+<workgroup></workgroup>
 <keyword></keyword>
 
 
@@ -89,7 +89,8 @@ untrustworthy or abusive because it is not clear that they are in
 fact related. Another possible use case could be where a company
 has two websites in different languages, and would like to correlate
 their ownership more easily, consider <spanx style="verb">example.at</spanx> and <spanx style="verb">example.de</spanx>
-registered by regional offices of the same company.
+registered by regional offices of the same company.  A third example could
+be an acquisition where both domains continue to operate.
 </t>
 <t>Using &quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;, it is possible to
 indicate that the secondary domain is related to the primary domain.
