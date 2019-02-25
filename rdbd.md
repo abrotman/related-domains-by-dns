@@ -3,7 +3,7 @@
    Title = "Related Domains By DNS"
    abbrev = "RDBD"
    category = "std"
-   docName = "draft-ietf-brotman-rdbd-00"
+   docName = "draft-brotman-rdbd-00"
    ipr = "trust200902"
    area = "Applications"
    keyword = [""]
