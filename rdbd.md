@@ -3,10 +3,9 @@
    Title = "Related Domains By DNS"
    abbrev = "RDBD"
    category = "std"
-   docName = "draft-ietf-dnsop-brotman-rdbd-00"
+   docName = "draft-ietf-brotman-rdbd-00"
    ipr = "trust200902"
    area = "Applications"
-   workgroup = "dnsop"
    keyword = [""]
 
    date = 2019-02-25T00:00:00Z
