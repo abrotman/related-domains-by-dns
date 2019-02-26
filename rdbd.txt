@@ -26,7 +26,7 @@ Status of This Memo
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
-   Drafts is at http://datatracker.ietf.org/drafts/current/.
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
@@ -42,7 +42,7 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-   (http://trustee.ietf.org/license-info) in effect on the date of
+   (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
@@ -62,13 +62,13 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  DNS Record for Secondary Domain . . . . . . . . . . . . . . .   3
+   2.  DNS Record for Secondary Domain . . . . . . . . . . . . . . .   4
    3.  DNS Record for Parent Domain  . . . . . . . . . . . . . . . .   4
    4.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   5
    5.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   5
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
      6.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   5
+     6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   6
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
@@ -94,7 +94,25 @@ Table of Contents
       later
 
    o  #5: specify input for signing more precisely - e.g. is there a CR
-      or NULL or not ]]
+      or NULL or not
+
+   These aren't yet github issues:
+
+   o  #N: make sure we say explicitly where child's TXT RR is below
+      _rdbd.example.net (if we stick with TXT)
+
+   o  #N: keep an eye on <https://datatracker.ietf.org/doc/draft-ietf-
+      dnsop-attrleaf> and add entry there if using the "_rdbd" prefix.
+
+   ]]
+
+
+
+
+Brotman & Farrell        Expires August 29, 2019                [Page 2]
+
+Internet-Draft                    RDBD                     February 2019
+
 
    Determining relationships between registered domains can be one of
    the more difficult investigations on the Internet.  It is typical to
@@ -106,14 +124,6 @@ Table of Contents
    err on the side of caution and mark the secondary domain being
    untrustworthy or abusive because it is not clear that they are in
    fact related.  Another possible use case could be where a company has
-
-
-
-Brotman & Farrell        Expires August 29, 2019                [Page 2]
-
-Internet-Draft                    RDBD                     February 2019
-
-
    two websites in different languages, and would like to correlate
    their ownership more easily, consider "example.at" and "example.de"
    registered by regional offices of the same company.  A third example
@@ -153,6 +163,13 @@ Internet-Draft                    RDBD                     February 2019
    o  Parent domain: This refers to the domain that is to be referenced,
       such as "example.com".
 
+
+
+Brotman & Farrell        Expires August 29, 2019                [Page 3]
+
+Internet-Draft                    RDBD                     February 2019
+
+
    o  Secondary domain: This will refer to the domain that references
       the parent domain, such as "dept-example.com".
 
@@ -162,13 +179,6 @@ Internet-Draft                    RDBD                     February 2019
    domain.
 
    o  "v": Version string, which should be set to "RDBD1".
-
-
-
-Brotman & Farrell        Expires August 29, 2019                [Page 3]
-
-Internet-Draft                    RDBD                     February 2019
-
 
    o  "d": The Parent Domain.  This should be in the form of
       "example.com".
@@ -208,6 +218,14 @@ Internet-Draft                    RDBD                     February 2019
       is a string used to denote a specific public key published by the
       Parent Domain.
 
+
+
+
+Brotman & Farrell        Expires August 29, 2019                [Page 4]
+
+Internet-Draft                    RDBD                     February 2019
+
+
    o  "k": The public key published for this selector, encoded using
       base64.
 
@@ -218,14 +236,6 @@ Internet-Draft                    RDBD                     February 2019
    emZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8
    Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERl
    QL6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBk
-
-
-
-Brotman & Farrell        Expires August 29, 2019                [Page 4]
-
-Internet-Draft                    RDBD                     February 2019
-
-
    Ly5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQ
    fVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIq
    Tj1QIDAQAB"
@@ -264,6 +274,14 @@ Internet-Draft                    RDBD                     February 2019
    investigating party to believe there is no link between the two
    domains.
 
+
+
+
+Brotman & Farrell        Expires August 29, 2019                [Page 5]
+
+Internet-Draft                    RDBD                     February 2019
+
+
    Deploying signed records with DNSSEC should allow for detection of
    either attack.
 
@@ -274,14 +292,6 @@ Internet-Draft                    RDBD                     February 2019
    resource issue for any automated system.  A system SHOULD only
    perform three lookups from the original domain
    (a.com->b.com->c.com->d.com).  The Secondary and Parent SHOULD
-
-
-
-Brotman & Farrell        Expires August 29, 2019                [Page 5]
-
-Internet-Draft                    RDBD                     February 2019
-
-
    attempt to keep the link direct and limited to a single lookup, but
    it is understood this may not always be possible.
 
@@ -320,6 +330,14 @@ A.1.  Sample Signature
    MIIEowIBAAKCAQEA2LNjBAdNAtZOMdd3hlemZF8a0onOcEo5g1KWnKzryDCfH4LZ
    kXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy
    7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL6MDWLU9ZSWlqskzLVPgwqtT80xch
+
+
+
+Brotman & Farrell        Expires August 29, 2019                [Page 6]
+
+Internet-Draft                    RDBD                     February 2019
+
+
    U65HipKkr2luSAySZyyNEf58pRea3D3pBkLy5hCDhr2+6GF2q9lJ9qMopd2P/ZXx
    Hkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfVwrs4495a8OUkOBy7V4YkgKbFYSSk
    GPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj1QIDAQABAoIBAH/eAgwrfq6w4/0X
@@ -330,14 +348,6 @@ A.1.  Sample Signature
    obZ7BM+xok29Fxf6AgC99eDr9BatTa/a8q7NYMkVRLq/JdOF1XUuDDNd3r93Ae4n
    54qqucECgYEA/Xuct8ALG2/6Kd4Lmm9i055LVxdwB+1wG1JNE1IB+OI+6B8W49po vK/
    fFVHMEV2BoRr4EB58Xxa+oICBImIzTUQXYQnMbDzL2N+X3FrkDSGCPZQy7GzD
-
-
-
-Brotman & Farrell        Expires August 29, 2019                [Page 6]
-
-Internet-Draft                    RDBD                     February 2019
-
-
    wFdpY3ceNShou1bRt4/hPWLLI35ZXM3yqBJeGhbTUmYVdWrkXTNo2wUCgYEA2tpE
    +bg9iIYUJAg/CEpdWn+8ZxhRnBDziN88Grli+arSWaMWE809GyPaeiplbwywnXRb
    vliskE43CcgstnhRKY8dWB2AQnRESvsJKO8rw/ONSxlWTpFc78xxmmNSvOBs4Srv
@@ -376,6 +386,14 @@ Internet-Draft                    RDBD                     February 2019
    62zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
    m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg==
 
+
+
+
+Brotman & Farrell        Expires August 29, 2019                [Page 7]
+
+Internet-Draft                    RDBD                     February 2019
+
+
    The published record would be: "v=RDBD1;s=2018a;d=example.com;
    h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/
    phI4EcalpxhDfADPgCRwxASztR12BMq0 MLWJZZYxN1zuBE3joFED7EHRoDlFQti/
@@ -385,14 +403,6 @@ Internet-Draft                    RDBD                     February 2019
    m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg=="
 
    To verify:
-
-
-
-
-Brotman & Farrell        Expires August 29, 2019                [Page 7]
-
-Internet-Draft                    RDBD                     February 2019
-
 
    with "foo.base64" containing the above signature:
 
@@ -413,16 +423,6 @@ Authors' Addresses
    Trinity College Dublin
 
    Email: stephen.farrell@cs.tcd.ie
-
-
-
-
-
-
-
-
-
-
 
 
 

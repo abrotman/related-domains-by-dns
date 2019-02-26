@@ -50,6 +50,12 @@ Current issues include:
 * #3: include an indicator for the kind of relationship or not?
 * #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed later
 * #5: specify input for signing more precisely - e.g. is there a CR or NULL or not
+
+These aren't yet github issues:
+
+* #N: make sure we say explicitly where child's TXT RR is below _rdbd.example.net (if we stick with TXT) 
+* #N: keep an eye on https://datatracker.ietf.org/doc/draft-ietf-dnsop-attrleaf and add entry there if using the ``_rdbd`` prefix.
+
 ]]
 
 Determining relationships between registered domains can be one of the more difficult

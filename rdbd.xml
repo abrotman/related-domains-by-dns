@@ -74,9 +74,18 @@ issues and PRs are welcome there.
 <t>#2: stick with a 1:n thing or design for m:n relationshops (ATB: m:n is possible (I believe) as it stands, using selectors)</t>
 <t>#3: include an indicator for the kind of relationship or not?</t>
 <t>#4: &quot;h=&quot; is wrong for a signature, but &quot;s=&quot; is selector, bikeshed later</t>
-<t>#5: specify input for signing more precisely - e.g. is there a CR or NULL or not
-]]</t>
+<t>#5: specify input for signing more precisely - e.g. is there a CR or NULL or not</t>
 </list>
+</t>
+<t>These aren't yet github issues:
+</t>
+<t>
+<list style="symbols">
+<t>#N: make sure we say explicitly where child's TXT RR is below _rdbd.example.net (if we stick with TXT)</t>
+<t>#N: keep an eye on <eref target="https://datatracker.ietf.org/doc/draft-ietf-dnsop-attrleaf"/> and add entry there if using the <spanx style="verb">_rdbd</spanx> prefix.</t>
+</list>
+</t>
+<t>]]
 </t>
 <t>Determining relationships between registered domains can be one of the more difficult
 investigations on the Internet.  It is typical to see something such as
