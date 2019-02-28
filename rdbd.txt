@@ -61,7 +61,7 @@ Internet-Draft                    RDBD                     February 2019
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   4
    2.  DNS Record for Secondary Domain . . . . . . . . . . . . . . .   4
    3.  DNS Record for Parent Domain  . . . . . . . . . . . . . . . .   5
    4.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   5
@@ -104,8 +104,8 @@ Table of Contents
    o  #N: keep an eye on <https://datatracker.ietf.org/doc/draft-ietf-
       dnsop-attrleaf> and add entry there if using the "_rdbd" prefix.
 
-   o  #N: don't overloaad parent/primary and secondary - invent some new
-      terms
+   o  #N: various design suggestions from JL (involving ditching
+      signatures:-)
 
 
 
@@ -113,6 +113,9 @@ Brotman & Farrell        Expires August 30, 2019                [Page 2]
 
 Internet-Draft                    RDBD                     February 2019
 
+
+   o  #N: don't overloaad parent/primary and secondary - invent some new
+      terms
 
    o  #N: stick with unidirectional or make it bidirectional?  (AOS)
 
@@ -155,12 +158,9 @@ Internet-Draft                    RDBD                     February 2019
    This document describes the various options, how to create a record,
    and the method of validation.
 
-1.1.  Terminology
 
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in
-   [RFC2119].
+
+
 
 
 
@@ -169,6 +169,13 @@ Brotman & Farrell        Expires August 30, 2019                [Page 3]
 
 Internet-Draft                    RDBD                     February 2019
 
+
+1.1.  Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   [RFC2119].
 
    The following terms are used throughout this document:
 
@@ -212,19 +219,15 @@ Internet-Draft                    RDBD                     February 2019
 
    s: The secondary domain p: The primary domain
 
-   For internationalised domain names, the punycode ('A-label') version
-   is the input to signing.
-
-
-
-
-
 
 
 Brotman & Farrell        Expires August 30, 2019                [Page 4]
 
 Internet-Draft                    RDBD                     February 2019
 
+
+   For internationalised domain names, the punycode ('A-label') version
+   is the input to signing.
 
 3.  DNS Record for Parent Domain
 
@@ -270,9 +273,6 @@ Internet-Draft                    RDBD                     February 2019
    Domain name and public key from the Parent Domain record to be able
    to verify the signature that is stored in the record for the
    Secondary Domain.  This is demonstrated in the appendix.
-
-
-
 
 
 
