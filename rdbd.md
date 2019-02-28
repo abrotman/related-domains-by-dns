@@ -55,6 +55,8 @@ These aren't yet github issues:
 
 * #N: make sure we say explicitly where child's TXT RR is below _rdbd.example.net (if we stick with TXT) 
 * #N: keep an eye on https://datatracker.ietf.org/doc/draft-ietf-dnsop-attrleaf and add entry there if using the ``_rdbd`` prefix.
+* #N: don't overloaad parent/primary and secondary - invent some new terms
+* #N: stick with unidirectional or make it bidirectional? (AOS)
 
 ]]
 

@@ -83,6 +83,8 @@ issues and PRs are welcome there.
 <list style="symbols">
 <t>#N: make sure we say explicitly where child's TXT RR is below _rdbd.example.net (if we stick with TXT)</t>
 <t>#N: keep an eye on <eref target="https://datatracker.ietf.org/doc/draft-ietf-dnsop-attrleaf"/> and add entry there if using the <spanx style="verb">_rdbd</spanx> prefix.</t>
+<t>#N: don't overloaad parent/primary and secondary - invent some new terms</t>
+<t>#N: stick with unidirectional or make it bidirectional? (AOS)</t>
 </list>
 </t>
 <t>]]

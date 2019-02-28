@@ -63,17 +63,17 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
    2.  DNS Record for Secondary Domain . . . . . . . . . . . . . . .   4
-   3.  DNS Record for Parent Domain  . . . . . . . . . . . . . . . .   4
+   3.  DNS Record for Parent Domain  . . . . . . . . . . . . . . . .   5
    4.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   5
    5.  Steps to validate . . . . . . . . . . . . . . . . . . . . . .   5
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
-     6.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+     6.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   6
      6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   6
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
      7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
    Appendix A.  Creating a Signature for the Secondary Domain  . . .   6
-     A.1.  Sample Signature  . . . . . . . . . . . . . . . . . . . .   6
+     A.1.  Sample Signature  . . . . . . . . . . . . . . . . . . . .   7
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
@@ -104,8 +104,8 @@ Table of Contents
    o  #N: keep an eye on <https://datatracker.ietf.org/doc/draft-ietf-
       dnsop-attrleaf> and add entry there if using the "_rdbd" prefix.
 
-   ]]
-
+   o  #N: don't overloaad parent/primary and secondary - invent some new
+      terms
 
 
 
@@ -113,6 +113,10 @@ Brotman & Farrell        Expires August 30, 2019                [Page 2]
 
 Internet-Draft                    RDBD                     February 2019
 
+
+   o  #N: stick with unidirectional or make it bidirectional?  (AOS)
+
+   ]]
 
    Determining relationships between registered domains can be one of
    the more difficult investigations on the Internet.  It is typical to
@@ -158,10 +162,6 @@ Internet-Draft                    RDBD                     February 2019
    "OPTIONAL" in this document are to be interpreted as described in
    [RFC2119].
 
-   The following terms are used throughout this document:
-
-   o  Parent domain: This refers to the domain that is to be referenced,
-      such as "example.com".
 
 
 
@@ -169,6 +169,11 @@ Brotman & Farrell        Expires August 30, 2019                [Page 3]
 
 Internet-Draft                    RDBD                     February 2019
 
+
+   The following terms are used throughout this document:
+
+   o  Parent domain: This refers to the domain that is to be referenced,
+      such as "example.com".
 
    o  Secondary domain: This will refer to the domain that references
       the parent domain, such as "dept-example.com".
@@ -210,13 +215,8 @@ Internet-Draft                    RDBD                     February 2019
    For internationalised domain names, the punycode ('A-label') version
    is the input to signing.
 
-3.  DNS Record for Parent Domain
 
-   o  "v": Version string, which should be set to "RDBD1".
 
-   o  "s": The selector, which is the same as defined in [RFC6376] and
-      is a string used to denote a specific public key published by the
-      Parent Domain.
 
 
 
@@ -225,6 +225,14 @@ Brotman & Farrell        Expires August 30, 2019                [Page 4]
 
 Internet-Draft                    RDBD                     February 2019
 
+
+3.  DNS Record for Parent Domain
+
+   o  "v": Version string, which should be set to "RDBD1".
+
+   o  "s": The selector, which is the same as defined in [RFC6376] and
+      is a string used to denote a specific public key published by the
+      Parent Domain.
 
    o  "k": The public key published for this selector, encoded using
       base64.
@@ -263,6 +271,17 @@ Internet-Draft                    RDBD                     February 2019
    to verify the signature that is stored in the record for the
    Secondary Domain.  This is demonstrated in the appendix.
 
+
+
+
+
+
+
+Brotman & Farrell        Expires August 30, 2019                [Page 5]
+
+Internet-Draft                    RDBD                     February 2019
+
+
 6.  Security Considerations
 
 6.1.  DNSSEC
@@ -273,14 +292,6 @@ Internet-Draft                    RDBD                     February 2019
    would normally demonstrate the relationship, causing the
    investigating party to believe there is no link between the two
    domains.
-
-
-
-
-Brotman & Farrell        Expires August 30, 2019                [Page 5]
-
-Internet-Draft                    RDBD                     February 2019
-
 
    Deploying signed records with DNSSEC should allow for detection of
    either attack.
@@ -317,6 +328,16 @@ Appendix A.  Creating a Signature for the Secondary Domain
    recommended to be at least 2048 bits instead of the 1024 recommended
    in that appendix.
 
+
+
+
+
+
+Brotman & Farrell        Expires August 30, 2019                [Page 6]
+
+Internet-Draft                    RDBD                     February 2019
+
+
 A.1.  Sample Signature
 
    Creation of keys:
@@ -330,14 +351,6 @@ A.1.  Sample Signature
    MIIEowIBAAKCAQEA2LNjBAdNAtZOMdd3hlemZF8a0onOcEo5g1KWnKzryDCfH4LZ
    kXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy
    7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL6MDWLU9ZSWlqskzLVPgwqtT80xch
-
-
-
-Brotman & Farrell        Expires August 30, 2019                [Page 6]
-
-Internet-Draft                    RDBD                     February 2019
-
-
    U65HipKkr2luSAySZyyNEf58pRea3D3pBkLy5hCDhr2+6GF2q9lJ9qMopd2P/ZXx
    Hkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfVwrs4495a8OUkOBy7V4YkgKbFYSSk
    GPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj1QIDAQABAoIBAH/eAgwrfq6w4/0X
@@ -373,6 +386,14 @@ Internet-Draft                    RDBD                     February 2019
 
    File containing domain, domain.txt:
 
+
+
+
+Brotman & Farrell        Expires August 30, 2019                [Page 7]
+
+Internet-Draft                    RDBD                     February 2019
+
+
    $ cat domain.txt
 
    s=foo-example.com&p=example.com
@@ -385,14 +406,6 @@ Internet-Draft                    RDBD                     February 2019
    +YIX0dW9z+I3cOcZKtdlfea42AS6sL4vJBy+ytWmfJC62wDL5IT3 HDmWVEmZg7GcSbT0
    62zQBUX0Xo3sDOquXyA2qzat4Gbq3FJeSTFEc3UQipHFBohb0qIkbWv2IeHC
    m2nYjnaCi8P9o3y2nBn1rfzuHB2ctPnnTqK+eg==
-
-
-
-
-Brotman & Farrell        Expires August 30, 2019                [Page 7]
-
-Internet-Draft                    RDBD                     February 2019
-
 
    The published record would be: "v=RDBD1;s=2018a;d=example.com;
    h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/
@@ -423,19 +436,6 @@ Authors' Addresses
    Trinity College Dublin
 
    Email: stephen.farrell@cs.tcd.ie
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
