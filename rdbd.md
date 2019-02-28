@@ -122,7 +122,7 @@ There are a few options when publishing the reference to the parent domain.
 * `h`: The base64 encoded signature over the primary and secondary domain namess, created
   using the private key.
 
-A sample TXT record for `dept-example.com` would appear as:
+A sample RDBD record for `dept-example.com` would appear as:
 
 "v=RDBD1;s=2018a;d=example.com;
 h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/phI4EcalpxhDfADPgCRwxASztR12BMq0
@@ -151,7 +151,7 @@ input to signing.
   Parent Domain.
 * `k`: The public key published for this selector, encoded using base64.
 
-A sample TXT record for the parent domain of `example.com`:
+A sample RDBD record for the parent domain of `example.com`:
 
 "v=RDBD1;s=2018a;
 k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hl
@@ -188,7 +188,7 @@ demonstrated in the appendix.
 
 ## DNSSEC
 
-RDND does not require DNSSEC. It could be possible for an
+RDBD does not require DNSSEC. It could be possible for an
 attacker to falsify DNS query responses for someone investigating a
 relationship. 
 Conversely, an attacker could delete the response that would
@@ -206,6 +206,12 @@ for any automated system.  A system SHOULD only perform three lookups from
 the original domain (a.com->b.com->c.com->d.com).  The Secondary and Parent
 SHOULD attempt to keep the link direct and limited to a single lookup, but
 it is understood this may not always be possible.
+
+# IANA Considerations
+
+## RDBD RRTYPE
+
+This document uses a new DNS RR type, RDBD.  Not yet allocated by IANA.
 
 {backmatter}
 
