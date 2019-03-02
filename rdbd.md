@@ -3,12 +3,12 @@
    Title = "Related Domains By DNS"
    abbrev = "RDBD"
    category = "std"
-   docName = "draft-brotman-rdbd-00"
+   docName = "draft-brotman-rdbd-01"
    ipr = "trust200902"
    area = "Applications"
    keyword = [""]
 
-   date = 2019-02-26T00:00:00Z
+   date = 2019-03-06T00:00:00Z
    
    [[author]]
    initials="A."
@@ -45,7 +45,7 @@ https://github.com/abrotman/related-domains-by-dns
 
 Current issues include:
 
-* #1: use TXT or new RR? (ATB: new RR, but TXT for now)
+* #1: use TXT or new RR? (ATB: new RR, but TXT for now) RESOLVED?
 * #2: stick with a 1:n thing or design for m:n relationshops (ATB: m:n is possible (I believe) as it stands, using selectors)
 * #3: include an indicator for the kind of relationship or not?
 * #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed later
@@ -143,7 +143,7 @@ p: The primary domain
 For internationalised domain names, the punycode ('A-label') version is the
 input to signing. 
 
-# DNS Record for Parent Domain
+# DNS Record for Primary Domain
 
 * `v`: Version string, which should be set to `RDBD1`.
 * `s`: The selector, which is the same as defined in [@!RFC6376] and
