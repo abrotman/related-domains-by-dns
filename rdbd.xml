@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
-<rfc ipr="trust200902" category="std" docName="draft-brotman-rdbd-00">
+<rfc ipr="trust200902" category="std" docName="draft-brotman-rdbd-01">
 <?rfc toc="yes"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
@@ -42,7 +42,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2019" month="February" day="26"/>
+<date year="2019" month="March" day="6"/>
 
 <area>Applications</area>
 <workgroup></workgroup>
@@ -70,7 +70,7 @@ issues and PRs are welcome there.
 </t>
 <t>
 <list style="symbols">
-<t>#1: use TXT or new RR? (ATB: new RR, but TXT for now)</t>
+<t>#1: use TXT or new RR? (ATB: new RR, but TXT for now) RESOLVED?</t>
 <t>#2: stick with a 1:n thing or design for m:n relationshops (ATB: m:n is possible (I believe) as it stands, using selectors)</t>
 <t>#3: include an indicator for the kind of relationship or not?</t>
 <t>#4: &quot;h=&quot; is wrong for a signature, but &quot;s=&quot; is selector, bikeshed later</t>
@@ -103,6 +103,12 @@ has two websites in different languages, and would like to correlate
 their ownership more easily, consider <spanx style="verb">example.at</spanx> and <spanx style="verb">example.de</spanx>
 registered by regional offices of the same company.  A third example could
 be an acquisition where both domains continue to operate.
+A final example is when doing Internet surveys, we may be able to provide
+more accurate results if we have information as to which domains are related.
+</t>
+<t>It is not a goal of this specification to provide a high-level of
+assurance that two domains are definitely related, nor to provide
+fine-grained detail of the kind of relationship.
 </t>
 <t>Using &quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;, it is possible to
 indicate that the secondary domain is related to the primary domain.
@@ -158,7 +164,7 @@ used to denote which published public key should be used.</t>
 using the private key.</t>
 </list>
 </t>
-<t>A sample TXT record for <spanx style="verb">dept-example.com</spanx> would appear as:
+<t>A sample RDBD record for <spanx style="verb">dept-example.com</spanx> would appear as:
 </t>
 <t>&quot;v=RDBD1;s=2018a;d=example.com;
 h=TkKgbCV7xXWYES+I5y8KRvgQet7SOLUYTbJtjVyb2/H/phI4EcalpxhDfADPgCRwxASztR12BMq0
@@ -181,7 +187,7 @@ input to signing.
 </t>
 </section>
 
-<section anchor="dns-record-for-parent-domain" title="DNS Record for Parent Domain">
+<section anchor="dns-record-for-primary-domain" title="DNS Record for Primary Domain">
 <t>
 <list style="symbols">
 <t><spanx style="verb">v</spanx>: Version string, which should be set to <spanx style="verb">RDBD1</spanx>.</t>
@@ -191,7 +197,7 @@ Parent Domain.</t>
 <t><spanx style="verb">k</spanx>: The public key published for this selector, encoded using base64.</t>
 </list>
 </t>
-<t>A sample TXT record for the parent domain of <spanx style="verb">example.com</spanx>:
+<t>A sample RDBD record for the parent domain of <spanx style="verb">example.com</spanx>:
 </t>
 <t>&quot;v=RDBD1;s=2018a;
 k=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hl
@@ -231,7 +237,7 @@ demonstrated in the appendix.
 <section anchor="security-considerations" title="Security Considerations">
 
 <section anchor="dnssec" title="DNSSEC">
-<t>RDND does not require DNSSEC. It could be possible for an
+<t>RDBD does not require DNSSEC. It could be possible for an
 attacker to falsify DNS query responses for someone investigating a
 relationship.
 Conversely, an attacker could delete the response that would
@@ -250,6 +256,14 @@ for any automated system.  A system SHOULD only perform three lookups from
 the original domain (a.com-&gt;b.com-&gt;c.com-&gt;d.com).  The Secondary and Parent
 SHOULD attempt to keep the link direct and limited to a single lookup, but
 it is understood this may not always be possible.
+</t>
+</section>
+</section>
+
+<section anchor="iana-considerations" title="IANA Considerations">
+
+<section anchor="rdbd-rrtype" title="RDBD RRTYPE">
+<t>This document uses a new DNS RR type, RDBD.  Not yet allocated by IANA.
 </t>
 </section>
 </section>

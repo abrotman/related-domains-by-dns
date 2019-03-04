@@ -74,6 +74,12 @@ has two websites in different languages, and would like to correlate
 their ownership more easily, consider `example.at` and `example.de`
 registered by regional offices of the same company.  A third example could
 be an acquisition where both domains continue to operate.
+A final example is when doing Internet surveys, we may be able to provide
+more accurate results if we have information as to which domains are related.
+
+It is not a goal of this specification to provide a high-level of
+assurance that two domains are definitely related, nor to provide
+fine-grained detail of the kind of relationship. 
 
 Using "Related Domains By DNS", or "RDBD", it is possible to
 indicate that the secondary domain is related to the primary domain.
