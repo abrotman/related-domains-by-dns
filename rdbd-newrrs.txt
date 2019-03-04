@@ -67,12 +67,12 @@ Table of Contents
      2.2.  RDBD Resource Record Definition . . . . . . . . . . . . .   4
    3.  Directionality and Cardinality  . . . . . . . . . . . . . . .   5
    4.  Required Signature Algorithms . . . . . . . . . . . . . . . .   5
-   5.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+   5.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   6
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
      6.1.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   6
      6.2.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   6
    7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
-   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
    9.  Informative References  . . . . . . . . . . . . . . . . . . .   7
    Appendix A.  Creating a Signature for the Related Domain  . . . .   7
      A.1.  Sample RSA Signature  . . . . . . . . . . . . . . . . . .   7
@@ -173,7 +173,7 @@ Internet-Draft                    RDBD                        March 2019
 2.  New Resource Record Types
 
    We define two new RRTYPES, an optional one for the relating domain
-   (RDNDKEY) to store a public key for when signatures are in use and
+   (RDBDKEY) to store a public key for when signatures are in use and
    one for use in related domains (RDBD).
 
 2.1.  RDBDKEY Resource Record Definition
@@ -194,7 +194,7 @@ Internet-Draft                    RDBD                        March 2019
 
 2.2.  RDBD Resource Record Definition
 
-   The RDND resource record is published at the apex of the related
+   The RDBD resource record is published at the apex of the related
    domain zone.
 
    [[All going well, at some point we'll be able to say...]] IANA has
@@ -206,7 +206,7 @@ Internet-Draft                    RDBD                        March 2019
 
    The wire format for an RDBD RDATA consists of a two octet tag, a two-
    octet key-tag, a one-octet signature algorithm,k the relating domain
-   name length and value and an optional digital signature.
+   name length (one-octet) and value and an optional digital signature.
 
                            1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -227,8 +227,7 @@ Internet-Draft                    RDBD                        March 2019
 
 
    The rbddtag field MUST contain the value zero.  Later specifications
-   can define new rdbd-tag values.  [[Add IANA considerations for
-   that.]]
+   can define new rdbd-tag values.
 
    If the optional signature is omitted, the key-tag and sig-alg fields
    MUST be zero.  If an optional signture is included, the sig-alg field
@@ -259,20 +258,21 @@ Internet-Draft                    RDBD                        March 2019
    optionally sign those.
 
    If one domain has relationships with many others, then the relevant
-   RDND RRs (and RDBDKEY RRs) can be published to represent those.
+   RDBD RRs (and RDBDKEY RRs) can be published to represent those.
 
 4.  Required Signature Algorithms
 
-   Implementations of this specification MUST support use of RSA with
-   SHA256 (sig-alg==8) with at least 2048 bit RSA keys.  [RFC5702]
+   Implementations of this specification that support signing or
+   verifying signatures MUST support use of RSA with SHA256 (sig-alg==8)
+   with at least 2048 bit RSA keys.  [RFC5702]
 
-   Implementations of this specification SHOULD support use of Ed25519
-   (sig-alg==15).  [RFC8080]
+   Implementations of this specification that support signing or
+   verifying signatures SHOULD support use of Ed25519 (sig-alg==15).
+   [RFC8080]
 
-5.  Validation
 
-   A validated signature is solely meant to be evidence that the two
-   domains are related.  The existence of this relationship is not meant
+
+
 
 
 
@@ -282,6 +282,10 @@ Brotman & Farrell       Expires September 7, 2019               [Page 5]
 Internet-Draft                    RDBD                        March 2019
 
 
+5.  Validation
+
+   A validated signature is solely meant to be evidence that the two
+   domains are related.  The existence of this relationship is not meant
    to state that the data from either domain should be considered as
    more trustworthy.
 
@@ -301,31 +305,27 @@ Internet-Draft                    RDBD                        March 2019
 
    If the relating domain has DNSSEC deployed, but the related domain
    does not, then the optional signature can (in a sense) extend the
-   DNSSEC chain to cover the RDND RR in the related domain's zone.
+   DNSSEC chain to cover the RDBD RR in the related domain's zone.
 
 6.2.  Lookup Loops
 
    It's conceivable that an attacker could create a loop of lookups,
    such as a.com->b.com->c.com->a.com or similar.  This could cause a
    resource issue for any automated system.  A system SHOULD only
-   perform three lookups from the original domain
+   perform three lookups from the first domain
    (a.com->b.com->c.com->d.com).  The related and relating domains
-   SHOULD attempt to keep links direct and so that only a single lookup
-   is needed, but it is understood this may not always be possible.
+   SHOULD attempt to keep links direct and so that only the fewest
+   number of lookups is needed, but it is understood this may not always
+   be possible.
 
 7.  IANA Considerations
 
-   This document uses two new DNS RR types, RDBD and RDNDKEY.  Not yet
-   allocated by IANA.
+   This document introduces two new DNS RR types, RDBD and RDBDKEY.
+   Codepoints for those are Not yet allocated by IANA.
 
    New rdbd-tag value handling needs to be defined.  [[Maybe something
    like: 0-255: RFC required; 256-1023: reserved; 1024-2047: Private
    use; 2048-65535: FCFS.]]
-
-8.  Acknowledgements
-
-   [[TBD - add folks who've chimed in since the -00 published.]]
-
 
 
 
@@ -337,6 +337,10 @@ Brotman & Farrell       Expires September 7, 2019               [Page 6]
 
 Internet-Draft                    RDBD                        March 2019
 
+
+8.  Acknowledgements
+
+   [[TBD - add folks who've chimed in since the -00 published.]]
 
 9.  Informative References
 
@@ -379,10 +383,6 @@ A.1.  Sample RSA Signature
     $ openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM
 
    Sample Key:
-
-
-
-
 
 
 

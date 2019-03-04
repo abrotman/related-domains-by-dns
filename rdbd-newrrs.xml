@@ -132,7 +132,7 @@ referenced by the relating domain, such as <spanx style="verb">dept-example.com<
 </section>
 
 <section anchor="new-resource-record-types" title="New Resource Record Types">
-<t>We define two new RRTYPES, an optional one for the relating domain (RDNDKEY)
+<t>We define two new RRTYPES, an optional one for the relating domain (RDBDKEY)
 to store a public key for when signatures are in use and one for use in
 related domains (RDBD).
 </t>
@@ -155,7 +155,7 @@ RDBDKEY is a regular RR type.
 </section>
 
 <section anchor="rdbd-resource-record-definition" title="RDBD Resource Record Definition">
-<t>The RDND resource record is published at the apex of the related
+<t>The RDBD resource record is published at the apex of the related
 domain zone.
 </t>
 <t>[[All going well, at some point we'll be able to say...]]
@@ -167,8 +167,8 @@ Review.
 <t>The RDBD RR has no special Time to Live (TTL) requirements.
 </t>
 <t>The wire format for an RDBD RDATA consists of a two octet tag, a two-octet
-key-tag, a one-octet signature algorithm,k the relating domain name length and
-value and an optional digital signature.
+key-tag, a one-octet signature algorithm,k the relating domain name length (one-octet)
+and value and an optional digital signature.
 </t>
 
 <figure align="center"><artwork align="center" type="ascii-art">
@@ -183,7 +183,7 @@ value and an optional digital signature.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 </artwork></figure>
 <t>The rbddtag field MUST contain the value zero. Later specifications
-can define new rdbd-tag values. [[Add IANA considerations for that.]]
+can define new rdbd-tag values.
 </t>
 <t>If the optional signature is omitted, the key-tag and sig-alg fields
 MUST be zero.
@@ -217,15 +217,17 @@ so aren't yet fully documented.]]
 exist, then both domains can publish RDBD RRs and optionally sign those.
 </t>
 <t>If one domain has relationships with many others, then the relevant
-RDND RRs (and RDBDKEY RRs) can be published to represent those.
+RDBD RRs (and RDBDKEY RRs) can be published to represent those.
 </t>
 </section>
 
 <section anchor="required-signature-algorithms" title="Required Signature Algorithms">
-<t>Implementations of this specification MUST support use of RSA with
+<t>Implementations of this specification that support signing or verifying
+signatures MUST support use of RSA with
 SHA256 (sig-alg==8) with at least 2048 bit RSA keys. <xref target="RFC5702"/>
 </t>
-<t>Implementations of this specification SHOULD support use of Ed25519
+<t>Implementations of this specification that support signing or verifying
+signatures SHOULD support use of Ed25519
 (sig-alg==15). <xref target="RFC8080"/>
 </t>
 </section>
@@ -252,24 +254,24 @@ of either attack.
 </t>
 <t>If the relating domain has DNSSEC deployed, but the related domain
 does not, then the optional signature can (in a sense) extend the
-DNSSEC chain to cover the RDND RR in the related domain's zone.
+DNSSEC chain to cover the RDBD RR in the related domain's zone.
 </t>
 </section>
 
 <section anchor="lookup-loops" title="Lookup Loops">
 <t>It's conceivable that an attacker could create a loop of lookups, such as
-a.com-&gt;b.com-&gt;c.com-&gt;a.com or similar.  This could cause a resource issue
-for any automated system.  A system SHOULD only perform three lookups from
-the original domain (a.com-&gt;b.com-&gt;c.com-&gt;d.com).  The related and relating
-domains SHOULD attempt to keep links direct and so that only a single lookup
-is needed, but
-it is understood this may not always be possible.
+a.com-&gt;b.com-&gt;c.com-&gt;a.com or similar.  This could cause a resource issue for
+any automated system.  A system SHOULD only perform three lookups from the
+first domain (a.com-&gt;b.com-&gt;c.com-&gt;d.com).  The related and relating domains
+SHOULD attempt to keep links direct and so that only the fewest number of
+lookups is needed, but it is understood this may not always be possible.
 </t>
 </section>
 </section>
 
 <section anchor="iana-considerations" title="IANA Considerations">
-<t>This document uses two new DNS RR types, RDBD and RDNDKEY.  Not yet allocated by IANA.
+<t>This document introduces two new DNS RR types, RDBD and RDBDKEY.  Codepoints
+for those are Not yet allocated by IANA.
 </t>
 <t>New rdbd-tag value handling needs to be defined. [[Maybe something
 like: 0-255: RFC required; 256-1023: reserved; 1024-2047: Private

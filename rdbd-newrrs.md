@@ -105,7 +105,7 @@ referenced by the relating domain, such as `dept-example.com`.
 
 # New Resource Record Types
 
-We define two new RRTYPES, an optional one for the relating domain (RDNDKEY)
+We define two new RRTYPES, an optional one for the relating domain (RDBDKEY)
 to store a public key for when signatures are in use and one for use in 
 related domains (RDBD).
 
@@ -128,7 +128,7 @@ RDBDKEY is a regular RR type.
 
 ## RDBD Resource Record Definition
 
-The RDND resource record is published at the apex of the related 
+The RDBD resource record is published at the apex of the related 
 domain zone.
 
 [[All going well, at some point we'll be able to say...]]
@@ -140,8 +140,8 @@ The RDBD RR is class independent.
 The RDBD RR has no special Time to Live (TTL) requirements.
 
 The wire format for an RDBD RDATA consists of a two octet tag, a two-octet
-key-tag, a one-octet signature algorithm,k the relating domain name length and
-value and an optional digital signature.
+key-tag, a one-octet signature algorithm,k the relating domain name length (one-octet) 
+and value and an optional digital signature.
 
 ~~~ ascii-art
                         1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
@@ -156,7 +156,7 @@ value and an optional digital signature.
 ~~~
 
 The rbddtag field MUST contain the value zero. Later specifications
-can define new rdbd-tag values. [[Add IANA considerations for that.]]
+can define new rdbd-tag values. 
 
 If the optional signature is omitted, the key-tag and sig-alg fields 
 MUST be zero.
@@ -186,14 +186,16 @@ RDBD relationships are uni-directional. If bi-directional relationships
 exist, then both domains can publish RDBD RRs and optionally sign those.
 
 If one domain has relationships with many others, then the relevant
-RDND RRs (and RDBDKEY RRs) can be published to represent those.
+RDBD RRs (and RDBDKEY RRs) can be published to represent those.
 
 # Required Signature Algorithms
 
-Implementations of this specification MUST support use of RSA with
+Implementations of this specification that support signing or verifying
+signatures MUST support use of RSA with
 SHA256 (sig-alg==8) with at least 2048 bit RSA keys. [@?RFC5702]
 
-Implementations of this specification SHOULD support use of Ed25519 
+Implementations of this specification that support signing or verifying
+signatures SHOULD support use of Ed25519 
 (sig-alg==15). [@?RFC8080]
 
 # Validation 
@@ -218,21 +220,21 @@ of either attack.
 
 If the relating domain has DNSSEC deployed, but the related domain
 does not, then the optional signature can (in a sense) extend the
-DNSSEC chain to cover the RDND RR in the related domain's zone.
+DNSSEC chain to cover the RDBD RR in the related domain's zone.
 
 ## Lookup Loops
 
 It's conceivable that an attacker could create a loop of lookups, such as
-a.com->b.com->c.com->a.com or similar.  This could cause a resource issue
-for any automated system.  A system SHOULD only perform three lookups from
-the original domain (a.com->b.com->c.com->d.com).  The related and relating
-domains SHOULD attempt to keep links direct and so that only a single lookup
-is needed, but
-it is understood this may not always be possible.
+a.com->b.com->c.com->a.com or similar.  This could cause a resource issue for
+any automated system.  A system SHOULD only perform three lookups from the
+first domain (a.com->b.com->c.com->d.com).  The related and relating domains
+SHOULD attempt to keep links direct and so that only the fewest number of
+lookups is needed, but it is understood this may not always be possible.
 
 # IANA Considerations
 
-This document uses two new DNS RR types, RDBD and RDNDKEY.  Not yet allocated by IANA.
+This document introduces two new DNS RR types, RDBD and RDBDKEY.  Codepoints
+for those are Not yet allocated by IANA.
 
 New rdbd-tag value handling needs to be defined. [[Maybe something
 like: 0-255: RFC required; 256-1023: reserved; 1024-2047: Private
