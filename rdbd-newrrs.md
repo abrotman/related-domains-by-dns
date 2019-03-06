@@ -48,30 +48,39 @@ Determining relationships between registered domains can be one of the more diff
 investigations on the Internet.  It is typical to see something such as 
 `example.com` and `dept-example.com` and be unsure if there is an actual
 relationship between those two domains, or if one might be an attacker 
-attempting to impersonate the other.  In some cases, anecdotal evidence from places
-such as DNS or WHOIS/RDAP may suffice.  However, service providers of various
-kinds may err on the side of caution and mark the secondary domain being 
-untrustworthy or abusive because it is not clear that they are in 
-fact related. Another possible use case could be where a company
-has two websites in different languages, and would like to correlate
-their ownership more easily, consider `example.at` and `example.de`
-registered by regional offices of the same company.  A third example could
-be an acquisition where both domains continue to operate.
-A final example is when doing Internet surveys, we may be able to provide
-more accurate results if we have information as to which domains are related.
+attempting to impersonate the other.  In some cases, anecdotal evidence from 
+the DNS or WHOIS/RDAP may be sufficient.  However, service providers of various
+kinds may err on the side of caution and treat the related-domain as 
+untrustworthy or abusive because it is not clear that the two domains are in 
+fact related. This specification provides a way for one domain to 
+explicitly document a relationship with another, in the DNS.
+
+Possible use cases include: 
+- where a company has websites in different languages, and would like to
+  correlate their ownership more easily, consider `example.de` and `example.ie`
+  registered by regional offices of the same company;
+- following an acquisition, a domain holder might want to indicate that
+  example.net is now related to example.com in order to make a later migration
+  easier;
+- when doing Internet surveys, we should be able to provide more accurate results
+  if we have information as to which domains are related.
 
 It is not a goal of this specification to provide a high-level of
 assurance that two domains are definitely related, nor to provide
-fine-grained detail of the kind of relationship. 
+fine-grained detail about the kind of relationship that may 
+exist between domains.
 
 Using "Related Domains By DNS", or "RDBD", it is possible to
-indicate that the secondary domain is related to the primary domain.
-This mechanism is modelled on how DKIM [@?RFC6376] handles public
-keys and signatures - a public key is hosted at the parent domain
-(`example.com`) and a reference from the secondary domain 
-(`dept-example.com`) contains a signature (verifiable with
+declare that two domains are related.
+
+We include an optional digital signature mechanism that can somewhat improve the
+level of assurance with which an RDBD declaration can be handled.
+This mechanism is partly modelled on how DKIM [@?RFC6376] handles public
+keys and signatures - a public key is hosted at the relating-domain
+(e.g., `example.com`) and a reference from the related-domain 
+(e.g., `dept-example.com`) contains a signature (verifiable with
 the `example.com` public key) over the text representation ('A-label') of 
-the primmary and secondary domain names.
+the two domain names (plus a couple of other inputs).
 
 RDBD is intended to demonstrate a relationship between registered
 domains, not individual hostnames.  That is to say that the
@@ -84,14 +93,14 @@ that could be applied to other use cases, as well as for SMTP transactions.
 
 This document describes the various options, how to
 create records, and the method of validation, if the option to 
-use digital signatures is used.
+use digital signatures is chosen.
 
 ## Terminology
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
 "OPTIONAL" in this document are to be interpreted as described in
-[RFC2119].
+[@?RFC2119].
 
 The following terms are used throughout this document:
 
@@ -100,20 +109,20 @@ declarating a relationship exists. (This was called the
 "parent/primary" in -00). 
    
 * Related domain: This refers to the domain that is
-referenced by the relating domain, such as `dept-example.com`.
+referenced by the relating-domain, such as `dept-example.com`.
 (This was called the "secondary" in -00.)
 
 # New Resource Record Types
 
-We define two new RRTYPES, an optional one for the relating domain (RDBDKEY)
+We define two new RRTYPES, an optional one for the relating-domain (RDBDKEY)
 to store a public key for when signatures are in use and one for use in 
-related domains (RDBD).
+related-domains (RDBD).
 
 
 ## RDBDKEY Resource Record Definition
 
 The wire and presentation format of the RDBDKEY 
-resource record is identical to the DNSKEY record.  
+resource record is identical to the DNSKEY record. [@?RFC4034]
 
 [[All going well, at some point we'll be able to say...]]
 IANA has allocated RR code TBD for the RDBDKEY resource record via Expert
@@ -139,23 +148,25 @@ The RDBD RR is class independent.
 
 The RDBD RR has no special Time to Live (TTL) requirements.
 
-The wire format for an RDBD RDATA consists of a two octet tag, a two-octet
-key-tag, a one-octet signature algorithm,k the relating domain name length (one-octet) 
-and value and an optional digital signature.
+The wire format for an RDBD RDATA consists of a two octet rdbd-tag, the
+relating-domain name, and the optional signature fields which are: a two-octet
+key-tag, a one-octet signature algorithm, and the digital signature bits.
 
 ~~~ ascii-art
                         1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |           rdbd-tag            |             key-tag           |
+   |           rdbd-tag            |                               /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               /
+   /                         relating-domain name                  /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+|
-   |    sig-alg    |     name-len  |    relating-domain-name       |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+|
+   |    key-tag                    | sig-alg     |                 /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                 /
    /                            signature                          /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-The rbddtag field MUST contain the value zero. Later specifications
+The rdbd-tag field MUST contain the value zero. Later specifications
 can define new rdbd-tag values. 
 
 If the optional signature is omitted, the key-tag and sig-alg fields 
@@ -165,20 +176,27 @@ the signature algorithm used, with the same values used as would be
 used in an RRSIG. The key-tag MUST match the RDBDKEY RR value for
 the corresponding public key.
 
-The name-len field contains the length of the relating domain name.
-
 The input to signing is the catenation of the following LF-separated lines:
 
-            relating=<relating domain>
-            related=<related domain>
-            rdbd-tag=<rdnd-tag value>
+~~~ ascii-art
+            relating=<relating-domain>
+            related=<related-domain>
+            rdbd-tag=<rdbd-tag value>
             key-tag=<key-tag>
             sig-alg=<sig-alg>
 
-See the example in the Appendix for details.
+~~~
 
-[[Presentation syntax and to-be-signed details are liable to change
+The trailing "." representing the DNS root is not included in
+the signature input, so a relating-domain value above might be
+"example.com" but "example.com." MUST NOT be used here.
+A carriage-return MUST be included after the "sig-alg" value in the
+last line.
+
+[[Presentation syntax and to-be-signed details are very liable to change
 so aren't yet fully documented.]]
+
+See the examples in the Appendix for details.
 
 # Directionality and Cardinality
 
@@ -190,13 +208,20 @@ RDBD RRs (and RDBDKEY RRs) can be published to represent those.
 
 # Required Signature Algorithms
 
+Consumers of RDND RRs MAY support optional signing and/or verification.
+
+Implementations producing RDBD RRs SHOULD support optional signing of those
+and production of RDNDKEY RRs.
+
 Implementations of this specification that support signing or verifying
 signatures MUST support use of RSA with
 SHA256 (sig-alg==8) with at least 2048 bit RSA keys. [@?RFC5702]
 
+RSA keys SHOULD use a 2028 bit or longer modulus.
+
 Implementations of this specification that support signing or verifying
 signatures SHOULD support use of Ed25519 
-(sig-alg==15). [@?RFC8080]
+(sig-alg==15). [@?RFC8080][@?RFC8032]
 
 # Validation 
 
@@ -205,6 +230,18 @@ are related.  The existence of this relationship is not meant to
 state that the data from either domain should be considered as more trustworthy.  
 
 # Security Considerations
+
+## Efficiacy of signatures
+
+The optional signature mechanism defined here offers no
+protectio against an active attack if both the RDBD and
+RDBDKEY values are accessed via an untrusted path.
+
+If the RDBDKEY value has been cached, or is otherwise
+known via some sufficiently secure mechanism, then the
+RDBD signature does confirm that the holder of the
+private key (presumably the relating-domain) consents
+that the relationship with the related-domain is real. 
 
 ## DNSSEC
 
@@ -218,16 +255,16 @@ believe there is no link between the two domains.
 Deploying signed records with DNSSEC should allow for detection
 of either attack.
 
-If the relating domain has DNSSEC deployed, but the related domain
+If the relating-domain has DNSSEC deployed, but the related-domain
 does not, then the optional signature can (in a sense) extend the
-DNSSEC chain to cover the RDBD RR in the related domain's zone.
+DNSSEC chain to cover the RDBD RR in the related-domain's zone.
 
 ## Lookup Loops
 
 It's conceivable that an attacker could create a loop of lookups, such as
 a.com->b.com->c.com->a.com or similar.  This could cause a resource issue for
 any automated system.  A system SHOULD only perform three lookups from the
-first domain (a.com->b.com->c.com->d.com).  The related and relating domains
+first domain (a.com->b.com->c.com->d.com).  The related and relating-domains
 SHOULD attempt to keep links direct and so that only the fewest number of
 lookups is needed, but it is understood this may not always be possible.
 
@@ -242,18 +279,43 @@ use; 2048-65535: FCFS.]]
 
 # Acknowledgements
 
-[[TBD - add folks who've chimed in since the -00 published.]]
+Thanks to all who commented on this on the dbound and other lists,
+in particular to the following who provided comments that caused us
+to change the draft: 
+Bob Harold, 
+John Levine, 
+Andrew Sullivan,
+Suzanne Woolf,
+and
+Paul Wouters.
+(We're not implying any of these fine folks actually like this
+draft btw, but we did change it because of their comments:-)
+Apologies to anyone we missed, just let us know and we'll add
+your name here.
 
 {backmatter}
 
-# Creating a Signature for the Related Domain
+# Examples 
 
-Appendix C of [@!RFC6376] has some reference material on 
+
+## Sample Unsigned RDBD RR
+
+When example.com is the relating-domain and dept-example.com
+is the related-domain, an unsigned RDBD RR would look like this in a zone file:
+
+~~~ ascii-art
+
+dept-example.com. IN 3600 RDBD 0 example.com.
+
+~~~
+
+
+## Sample RSA Signature
+
+Appendix C of [@?RFC6376] has some reference material on 
 how to create a set of keys for use in this type of use case. The RSA key
 length is recommended to be at least 2048 bits instead of the 1024 
 recommended in that appendix.
-
-## Sample RSA Signature
 
 Creation of keys:
 
@@ -309,25 +371,34 @@ wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
 -----END PUBLIC KEY-----
 ~~~
 
+To calculate the key-tag as specified in Appendix B of [@?RFC4034]
+we used python code from: https://www.v13.gr/blog/?p=239
+
 File containing to-be-signed data:
 
 ~~~ ascii-art
-$ cat to-be-signed.txt
+$ cat to-be-signed-8.txt
 relating=example.com
 related=foo-example.com
 rdbd-tag=0
-key-tag=12345
+key-tag=65498
 sig-alg=8
 $
-$ od -x to-be-signed.txt
+$ od -x to-be-signed-8.txt
 0000000 6572 616c 6974 676e 653d 6178 706d 656c
 0000020 632e 6d6f 720a 6c65 7461 6465 643d 7065
 0000040 2d74 7865 6d61 6c70 2e65 6f63 0a6d 6472
 0000060 6462 742d 6761 303d 6b0a 7965 742d 6761
-0000100 313d 3332 3534 730a 6769 612d 676c 383d
+0000100 363d 3435 3839 730a 6769 612d 676c 383d
 0000120 000a
 0000121
-$ openssl dgst -sha256 -sign rsa.private -out rsa.sig to-be-signed.txt
+
+~~~
+
+To sign that file:
+
+~~~ ascii-art
+$ openssl dgst -sha256 -sign rsa.private -out rsa.sig to-be-signed-8.txt
 $ od -x rsa.sig 
 0000000 087c d5c9 375f dcba 9edf ce25 e353 9fb9
 0000020 6ef4 ca9f a167 6d91 71bb 7487 5edd fe30
@@ -346,30 +417,36 @@ $ od -x rsa.sig
 0000340 90da 9423 9d8d e683 7110 4368 f70e 80a2
 0000360 3a8c 25f1 3655 44a2 a585 d87d ca99 aac9
 0000400
+
 ~~~
 
-The presentation for of the signed RDBD record (with a 3600 TTL) would be:
+The presentation fom of a signed RDBD record (with a 3600 TTL) would be:
 
 ~~~ ascii-art
-dept-example.com. 3600 RDBD ( 0 8 12345 example.com 
-fAjJ1V83utzfniXOU+O5n/Run8pnoZFtu3GHdN1eMP4uRQTRT3KT9ZsAP74G
-YHe69cHG7QfisHqhab955hij7mI1pGxz3MMiNR5c0b5EY19orB72NOotQxKe
-JSOM1NkvDTOvHGFXFGfS7uLHcU8aLFvDXuQ7g0Pj4qi/PXMaqAKGxkByaapo
-34agPo4CKlet3zJiDnlGTj/7ihYH1hoAQ8YDn0Jue02/rux00FiRvpkOq0k9
-QrtKqBoHWbknLeo+3smBB1vcBeIIdwvlheTbDL4v7q0h9XU7Z5yoZhfSbk/a
-kCOUjZ2D5hBxaEMO96KAjDrxJVU2okSFpX3YmcrJqg==)
+dept-example.com. 3600 RDBD 0 example.com. 8 65498 ( 
+    hfnhVSlTZMFltG2qU+4vyCPbfSMutxuV8zEyBv7GshOcKMOW
+    VLFBK116wRUb7wVgG9TSunXyIuCjDqtidEjWftwVZ8SsXBzo
+    tJPMq9HbvZaAnfmx4HxxAMHCpX9QJ2cOK/5VobdZm2eZnXl4
+    jd9JsLGuez2wVeiCkwk0x6z/tA61SHmDIFJb5zeKbuvbN14y
+    ABaNE88pxoj7EMVQD/nVoag2MqtsiaMS3kbvkYXC3gv25hgM
+     mzH+kRXGieaPeYly/ai8OSn3X2bksrffqPuiQsVC03UEm9Vn
+    YJgzSjnsvNXvwWJpJ9zyWmVbgdR3/vvUsz2pPvKyJsLT9Knl
+    fPNpvg== )
+
 ~~~
 
 The base64 encoded value for the signature can be produced using:
 
 ~~~ ascii-art
-$ base64 -w60 rsa.sig 
-fAjJ1V83utzfniXOU+O5n/Run8pnoZFtu3GHdN1eMP4uRQTRT3KT9ZsAP74G
-YHe69cHG7QfisHqhab955hij7mI1pGxz3MMiNR5c0b5EY19orB72NOotQxKe
-JSOM1NkvDTOvHGFXFGfS7uLHcU8aLFvDXuQ7g0Pj4qi/PXMaqAKGxkByaapo
-34agPo4CKlet3zJiDnlGTj/7ihYH1hoAQ8YDn0Jue02/rux00FiRvpkOq0k9
-QrtKqBoHWbknLeo+3smBB1vcBeIIdwvlheTbDL4v7q0h9XU7Z5yoZhfSbk/a
-kCOUjZ2D5hBxaEMO96KAjDrxJVU2okSFpX3YmcrJqg==
+$ base64 -w48 rsa.sig 
+hfnhVSlTZMFltG2qU+4vyCPbfSMutxuV8zEyBv7GshOcKMOW
+VLFBK116wRUb7wVgG9TSunXyIuCjDqtidEjWftwVZ8SsXBzo
+tJPMq9HbvZaAnfmx4HxxAMHCpX9QJ2cOK/5VobdZm2eZnXl4
+jd9JsLGuez2wVeiCkwk0x6z/tA61SHmDIFJb5zeKbuvbN14y
+ABaNE88pxoj7EMVQD/nVoag2MqtsiaMS3kbvkYXC3gv25hgM
+mzH+kRXGieaPeYly/ai8OSn3X2bksrffqPuiQsVC03UEm9Vn
+YJgzSjnsvNXvwWJpJ9zyWmVbgdR3/vvUsz2pPvKyJsLT9Knl
+fPNpvg==
 ~~~
 
 To verify, with "rsa.sig" containing the above signature:
@@ -380,9 +457,115 @@ $ openssl dgst -sha256 -verify rsa.public \
 Verified OK
 ~~~
 
+The RDBDKEY RR for this example would be:
+
+~~~ ascii-art
+
+example.com. 3600 RDBDKEY 0 3 8 (
+    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5C
+    Z2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEy
+    TE5qQkFkTkF0Wk9NZGQzaGxlbQpaRjhhMG9uT2NFbzVnMUtX
+    bkt6cnlEQ2ZINExaa1hPUHpBSnZ6NHlLTUhXNXlrT3o5T3pH
+    TDAxR01sOG5zOEx5Cjl6dEJYYzRvYlk1d25RcGw0bmJ2T2Rm
+    NnZ5THk3R3FncCtkajZScnljU1lKZExpdGlZYXBId1J5dUtt
+    RVJsUUwKNk1EV0xVOVpTV2xxc2t6TFZQZ3dxdFQ4MHhjaFU2
+    NUhpcEtrcjJsdVNBeVNaeXlORWY1OHBSZWEzRDNwQmtMeQo1
+    aENEaHIyKzZHRjJxOWxKOXFNb3BkMlAvWlh4SGt2emwzVEZ0
+    WDZHalA1TFRzYjJkeTN0RUQ3dmJmL0V5UWZWCndyczQ0OTVh
+    OE9Va09CeTdWNFlrZ0tiRllTU2tHUG1oV29QYlY3aENRakVB
+    VVJXTE05SjdFVW91M1UxV0lxVGoKMVFJREFRQUIKLS0tLS1F
+    TkQgUFVCTElDIEtFWS0tLS0tCgo= )
+
+~~~
+
+
 ## Sample Ed25519 Signature
 
-[[TBD]]
+Since OpenSSL does not yet support Ed25519 singing via it's command
+line tool, we generate out example using a python script. This uses
+the python library in Appendix A of [@?RFC8032].
+
+~~~ ascii-art
+CODE_BEGINS
+
+#!/usr/bin/env python3
+import sys, binascii
+from eddsa2 import Ed25519
+
+# secret chosen to be 32 octets funnily enuugh:-)
+secret="rdbd-example0001rdbd-example0002".encode('utf-8')
+privkey,pubkey = Ed25519.keygen(secret)
+msg=open('to-be-signed-15.txt','r').read().encode('utf-8')
+signature = Ed25519.sign(privkey, pubkey, msg)
+
+print("private:"+ str(binascii.hexlify(privkey)))
+print("public:"+ str(binascii.hexlify(pubkey)))
+print("sig:"+ str(binascii.hexlify(signature)))
+print("to-be-signed:" + str(msg))
+
+with open("ed25519.sig", "wb") as sigf:
+    sigf.write(signature)
+with open("ed25519.pub","wb") as pubf:
+    pubf.write(pubkey)
+
+CODE_ENDS
+~~~
+
+The to-be-signed-15.txt file contains:
+
+~~~ ascii-art
+    $ cat to-be-signed-15.txt
+    relating=example.com
+    related=dept-example.com
+    rdbd-tag=0
+    key-tag=35988
+    sig-alg=15
+    $ 
+~~~
+
+The output when the above code is run (with some spacing added) is:
+
+~~~ ascii-art
+$ ./ed25519-signer.py 
+private:
+b'726462642d6578616d706c6530303031
+  726462642d6578616d706c6530303032'
+public:
+b'353fc31e1168c91f0af65d6c26fd441f
+  b7df9671a23a746bb3ec86be8d35b648'
+sig:
+b'466a80ce6377b1e4bec563d85b8d55bd
+  4a51a5b91c1c1e46a9c4e22a16557c38
+  e85ccc8ac05e6046d0066c2c52b3a174
+  20b59af9627840ac312f5ab55e11be07'
+to-be-signed:
+b'relating=example.com\nrelated=dept-example.com\n
+  rdbd-tag=0\nkey-tag=35988\nsig-alg=15\n'
+
+
+
+~~~
+
+The presentation form for an RDBD RR would then be:
+
+~~~ ascii-art
+
+dept-example.com. 3600 RDBD 0 example.com. 15 35988 (
+                    RmqAzmN3seS+xWPYW41VvUpRpbkcHB5G
+                    qcTiKhZVfDjoXMyKwF5gRtAGbCxSs6F0
+                    ILWa+WJ4QKwxL1q1XhG+Bw== )
+~~~
+
+The RDBDKEY for this example would be:
+
+~~~ ascii-art
+
+    example.com. 3600 RDNDKEY 0 3 15 (
+                NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRr
+                s+yGvo01tkg= )
+
+~~~
+
 
 # Changes and Open Issues
 
@@ -392,18 +575,10 @@ Verified OK
 
 Current open issues include: (TBD tidy these)
 
-* #1: use TXT or new RR? (ATB: new RR, but TXT for now) RESOLVED?
-* #2: stick with a 1:n thing or design for m:n relationshops (ATB: m:n is possible (I believe) as it stands, using selectors)
-* #3: include an indicator for the kind of relationship or not?
-* #4: "h=" is wrong for a signature, but "s=" is selector, bikeshed later
 * #5: specify input for signing more precisely - e.g. is there a CR or NULL or not
-
-These aren't yet github issues:
-
-* #N: make sure we say explicitly where child's TXT RR is below _rdbd.example.net (if we stick with TXT) 
-* #N: keep an eye on https://datatracker.ietf.org/doc/draft-ietf-dnsop-attrleaf and add entry there if using the ``_rdbd`` prefix.
-* #N: various design suggestions from JL (involving ditching signatures:-)
-* #N: don't overloaad parent/primary and secondary - invent some new terms
-* #N: stick with unidirectional or make it bidirectional? (AOS)
+* #6: what, if anything, does rdbd for example.com mean for foo.example.com?
 
 ## Changes from -00
+
+- Trying new RRTYPEs this time around with optional DNSSEC-like signatures
+- Added Ed25519 option and example
