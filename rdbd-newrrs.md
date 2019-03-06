@@ -53,7 +53,7 @@ the DNS or WHOIS/RDAP may be sufficient.  However, service providers of various
 kinds may err on the side of caution and treat one of the domains as 
 untrustworthy or abusive because it is not clear that the two domains are in 
 fact related. This specification provides a way for one domain to 
-explicitly document a relationship with another, in the DNS.
+explicitly document a relationship with another, utilizing DNS records.
 
 Possible use cases include: 
 
@@ -184,8 +184,8 @@ the signature algorithm used, with the same values used as would be
 used in an RRSIG. The key-tag MUST match the RDBDKEY RR value for
 the corresponding public key.
 
-The input to signing ("to-be-signed" data) is the catenation of the following
-linefeed-separated (where linefeed has the value '0x0a') lines:
+The input to signing ("to-be-signed" data) is the concatenation of the 
+following linefeed-separated (where linefeed has the value '0x0a') lines:
 
 ~~~ ascii-art
             relating=<relating-domain>
@@ -232,7 +232,7 @@ Implementations of this specification that support signing or verifying
 signatures MUST support use of RSA with
 SHA256 (sig-alg==8) with at least 2048 bit RSA keys. [@?RFC5702]
 
-RSA keys SHOULD use a 2028 bit or longer modulus.
+RSA keys SHOULD use a 2048 bit or longer modulus.
 
 Implementations of this specification that support signing or verifying
 signatures SHOULD support use of Ed25519 
@@ -514,7 +514,7 @@ example.com. 3600 RDBDKEY 0 3 8 (
 
 ## Sample Ed25519 Signature
 
-Since OpenSSL does not yet support Ed25519 singing via it's command
+Since OpenSSL does not yet support Ed25519 singing via its command
 line tool, we generate our example using the python script below. 
 This uses the python library from Appendix A of [@?RFC8032].
 
