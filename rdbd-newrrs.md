@@ -40,9 +40,9 @@ publicly document a relationship with a different registered domain, called
 # Introduction
 
 [[Discussion of this draft is taking place on the dbound@ietf.org mailing list.
-There's a github repo for this draft -- 
-issues and PRs are welcome there. 
-https://github.com/abrotman/related-domains-by-dns]]
+There's a github repo for this draft at 
+https://github.com/abrotman/related-domains-by-dns - 
+issues and PRs are welcome there.]]
 
 Determining relationships between registered domains can be one of the more difficult
 investigations on the Internet.  It is typical to see something such as 
@@ -175,24 +175,26 @@ key-tag, a one-octet signature algorithm, and the digital signature bits.
 The rdbd-tag field MUST contain the value zero. Later specifications
 can define new rdbd-tag values. 
 
-If the optional signature is omitted, the key-tag and sig-alg fields 
-MUST be zero and the signature field MUST be an empty string. [[Is that the
-right way to have optional fields in RRs? Not sure.]]
-
 If an optional signture is included, the sig-alg field MUST contain
 the signature algorithm used, with the same values used as would be
 used in an RRSIG. The key-tag MUST match the RDBDKEY RR value for
 the corresponding public key.
 
+If the optional signature is omitted, then the presentation form of the
+key-tag, sig-alg and signature fields MAY be omitted. If not omitted then the
+sig-alg and key-tag fields MUST be zero and the signature field MUST be a an
+empty string. [[Is that the right way to have optional fields in RRs? Not
+sure.]]
+
 The input to signing ("to-be-signed" data) is the concatenation of the 
 following linefeed-separated (where linefeed has the value '0x0a') lines:
 
 ~~~ ascii-art
-            relating=<relating-domain>
-            related=<related-domain>
-            rdbd-tag=<rdbd-tag value>
-            key-tag=<key-tag>
-            sig-alg=<sig-alg>
+relating=<relating-domain>
+related=<related-domain>
+rdbd-tag=<rdbd-tag value>
+key-tag=<key-tag>
+sig-alg=<sig-alg>
 
 ~~~
 
@@ -337,11 +339,14 @@ When example.com is the relating-domain and dept-example.com
 is the related-domain, an unsigned RDBD RR would look like this in a zone file:
 
 ~~~ ascii-art
-
-dept-example.com. IN 3600 RDBD 0 example.com. 0 0 "" 
-
+dept-example.com. IN 3600 RDBD 0 example.com.
 ~~~
 
+The following is equivalent to tbe above:
+
+~~~ ascii-art
+dept-example.com. IN 3600 RDBD 0 example.com. 0 0 ""
+~~~
 
 ## Sample RSA Signature
 
@@ -431,7 +436,8 @@ $ od -x to-be-signed-8.txt
 To sign that file:
 
 ~~~ ascii-art
-$ openssl dgst -sha256 -sign rsa.private -out rsa.sig to-be-signed-8.txt
+$ openssl dgst -sha256 -sign rsa.private \
+    -out rsa.sig to-be-signed-8.txt
 $ od -x rsa.sig 
 0000000 087c d5c9 375f dcba 9edf ce25 e353 9fb9
 0000020 6ef4 ca9f a167 6d91 71bb 7487 5edd fe30
@@ -548,13 +554,13 @@ with open("ed25519.pub","wb") as pubf:
 The to-be-signed-15.txt file contains:
 
 ~~~ ascii-art
-    $ cat to-be-signed-15.txt
-    relating=example.com
-    related=dept-example.com
-    rdbd-tag=0
-    key-tag=35988
-    sig-alg=15
-    $ 
+$ cat to-be-signed-15.txt
+relating=example.com
+related=dept-example.com
+rdbd-tag=0
+key-tag=35988
+sig-alg=15
+$ 
 ~~~
 
 The output when the above code is run (with some spacing added) is:

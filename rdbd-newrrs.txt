@@ -87,9 +87,9 @@ Table of Contents
 1.  Introduction
 
    [[Discussion of this draft is taking place on the dbound@ietf.org
-   mailing list.  There's a github repo for this draft -- issues and PRs
-   are welcome there.  <https://github.com/abrotman/related-domains-by-
-   dns]]>
+   mailing list.  There's a github repo for this draft at
+   <https://github.com/abrotman/related-domains-by-dns> - issues and PRs
+   are welcome there.]]
 
    Determining relationships between registered domains can be one of
    the more difficult investigations on the Internet.  It is typical to
@@ -101,10 +101,10 @@ Table of Contents
    the side of caution and treat one of the domains as untrustworthy or
    abusive because it is not clear that the two domains are in fact
    related.  This specification provides a way for one domain to
-   explicitly document a relationship with another, in the DNS.
+   explicitly document a relationship with another, utilizing DNS
+   records.
 
    Possible use cases include:
-
 
 
 
@@ -258,20 +258,20 @@ Internet-Draft                    RDBD                        March 2019
    The rdbd-tag field MUST contain the value zero.  Later specifications
    can define new rdbd-tag values.
 
-   If the optional signature is omitted, the key-tag and sig-alg fields
-   MUST be zero and the signature field MUST be an empty string.  [[Is
-   that the right way to have optional fields in RRs?  Not sure.]]
-
    If an optional signture is included, the sig-alg field MUST contain
    the signature algorithm used, with the same values used as would be
    used in an RRSIG.  The key-tag MUST match the RDBDKEY RR value for
    the corresponding public key.
 
-   The input to signing ("to-be-signed" data) is the catenation of the
-   following linefeed-separated (where linefeed has the value '0x0a')
-   lines:
+   If the optional signature is omitted, then the presentation form of
+   the key-tag, sig-alg and signature fields MAY be omitted.  If not
+   omitted then the sig-alg and key-tag fields MUST be zero and the
+   signature field MUST be a an empty string.  [[Is that the right way
+   to have optional fields in RRs?  Not sure.]]
 
-
+   The input to signing ("to-be-signed" data) is the concatenation of
+   the following linefeed-separated (where linefeed has the value
+   '0x0a') lines:
 
 
 
@@ -282,11 +282,11 @@ Brotman & Farrell       Expires September 7, 2019               [Page 5]
 Internet-Draft                    RDBD                        March 2019
 
 
-                              relating=<relating-domain>
-                              related=<related-domain>
-                              rdbd-tag=<rdbd-tag value>
-                              key-tag=<key-tag>
-                              sig-alg=<sig-alg>
+                        relating=<relating-domain>
+                        related=<related-domain>
+                        rdbd-tag=<rdbd-tag value>
+                        key-tag=<key-tag>
+                        sig-alg=<sig-alg>
 
 
    The relating-domain and related-domain values MUST be the 'A-label'
@@ -327,7 +327,7 @@ Internet-Draft                    RDBD                        March 2019
    verifying signatures MUST support use of RSA with SHA256 (sig-alg==8)
    with at least 2048 bit RSA keys.  [RFC5702]
 
-   RSA keys SHOULD use a 2028 bit or longer modulus.
+   RSA keys SHOULD use a 2048 bit or longer modulus.
 
 
 
@@ -490,11 +490,11 @@ A.1.  Sample Unsigned RDBD RR
    related-domain, an unsigned RDBD RR would look like this in a zone
    file:
 
+               dept-example.com. IN 3600 RDBD 0 example.com.
+
+   The following is equivalent to tbe above:
 
            dept-example.com. IN 3600 RDBD 0 example.com. 0 0 ""
-
-
-
 
 
 
@@ -618,25 +618,26 @@ Brotman & Farrell       Expires September 7, 2019              [Page 11]
 Internet-Draft                    RDBD                        March 2019
 
 
-$ openssl dgst -sha256 -sign rsa.private -out rsa.sig to-be-signed-8.txt
-$ od -x rsa.sig
-0000000 087c d5c9 375f dcba 9edf ce25 e353 9fb9
-0000020 6ef4 ca9f a167 6d91 71bb 7487 5edd fe30
-0000040 452e d104 724f f593 009b be3f 6006 ba77
-0000060 c1f5 edc6 e207 7ab0 69a1 79bf 18e6 eea3
-0000100 3562 6ca4 dc73 22c3 1e35 d15c 44be 5f63
-0000120 ac68 f61e ea34 432d 9e12 2325 d48c 2fd9
-0000140 330d 1caf 5761 6714 eed2 c7e2 4f71 2c1a
-0000160 c35b e45e 833b e343 a8e2 3dbf 1a73 02a8
-0000200 c686 7240 aa69 df68 a086 8e3e 2a02 ad57
-0000220 32df 0e62 4679 3f4e 8afb 0716 1ad6 4300
-0000240 03c6 429f 7b6e bf4d ecae d074 9158 99be
-0000260 ab0e 3d49 bb42 a84a 071a b959 2d27 3eea
-0000300 c9de 0781 dc5b e205 7708 e50b e485 0cdb
-0000320 2fbe adee f521 3b75 9c67 66a8 d217 4f6e
-0000340 90da 9423 9d8d e683 7110 4368 f70e 80a2
-0000360 3a8c 25f1 3655 44a2 a585 d87d ca99 aac9
-0000400
+              $ openssl dgst -sha256 -sign rsa.private \
+                  -out rsa.sig to-be-signed-8.txt
+              $ od -x rsa.sig
+              0000000 087c d5c9 375f dcba 9edf ce25 e353 9fb9
+              0000020 6ef4 ca9f a167 6d91 71bb 7487 5edd fe30
+              0000040 452e d104 724f f593 009b be3f 6006 ba77
+              0000060 c1f5 edc6 e207 7ab0 69a1 79bf 18e6 eea3
+              0000100 3562 6ca4 dc73 22c3 1e35 d15c 44be 5f63
+              0000120 ac68 f61e ea34 432d 9e12 2325 d48c 2fd9
+              0000140 330d 1caf 5761 6714 eed2 c7e2 4f71 2c1a
+              0000160 c35b e45e 833b e343 a8e2 3dbf 1a73 02a8
+              0000200 c686 7240 aa69 df68 a086 8e3e 2a02 ad57
+              0000220 32df 0e62 4679 3f4e 8afb 0716 1ad6 4300
+              0000240 03c6 429f 7b6e bf4d ecae d074 9158 99be
+              0000260 ab0e 3d49 bb42 a84a 071a b959 2d27 3eea
+              0000300 c9de 0781 dc5b e205 7708 e50b e485 0cdb
+              0000320 2fbe adee f521 3b75 9c67 66a8 d217 4f6e
+              0000340 90da 9423 9d8d e683 7110 4368 f70e 80a2
+              0000360 3a8c 25f1 3655 44a2 a585 d87d ca99 aac9
+              0000400
 
 
    The presentation fom of a signed RDBD record (with a 3600 TTL) would
@@ -665,7 +666,6 @@ $ od -x rsa.sig
              YJgzSjnsvNXvwWJpJ9zyWmVbgdR3/vvUsz2pPvKyJsLT9Knl
              fPNpvg==
 
-   To verify, with "rsa.sig" containing the above signature:
 
 
 
@@ -673,6 +673,8 @@ Brotman & Farrell       Expires September 7, 2019              [Page 12]
 
 Internet-Draft                    RDBD                        March 2019
 
+
+   To verify, with "rsa.sig" containing the above signature:
 
                 $ openssl dgst -sha256 -verify rsa.public \
                     -signature rsa.sig to-be-signed.txt
@@ -699,11 +701,9 @@ Internet-Draft                    RDBD                        March 2019
 
 A.3.  Sample Ed25519 Signature
 
-   Since OpenSSL does not yet support Ed25519 singing via it's command
+   Since OpenSSL does not yet support Ed25519 singing via its command
    line tool, we generate our example using the python script below.
    This uses the python library from Appendix A of [RFC8032].
-
-
 
 
 
@@ -756,13 +756,13 @@ Internet-Draft                    RDBD                        March 2019
 
    The to-be-signed-15.txt file contains:
 
-                           $ cat to-be-signed-15.txt
-                           relating=example.com
-                           related=dept-example.com
-                           rdbd-tag=0
-                           key-tag=35988
-                           sig-alg=15
-                           $
+                         $ cat to-be-signed-15.txt
+                         relating=example.com
+                         related=dept-example.com
+                         rdbd-tag=0
+                         key-tag=35988
+                         sig-alg=15
+                         $
 
    The output when the above code is run (with some spacing added) is:
 

@@ -63,9 +63,9 @@ publicly document a relationship with a different registered domain, called
 
 <section anchor="introduction" title="Introduction">
 <t>[[Discussion of this draft is taking place on the dbound@ietf.org mailing list.
-There's a github repo for this draft --
-issues and PRs are welcome there.
-<eref target="https://github.com/abrotman/related-domains-by-dns]]"/>
+There's a github repo for this draft at
+<eref target="https://github.com/abrotman/related-domains-by-dns"/> -
+issues and PRs are welcome there.]]
 </t>
 <t>Determining relationships between registered domains can be one of the more difficult
 investigations on the Internet.  It is typical to see something such as
@@ -76,7 +76,7 @@ the DNS or WHOIS/RDAP may be sufficient.  However, service providers of various
 kinds may err on the side of caution and treat one of the domains as
 untrustworthy or abusive because it is not clear that the two domains are in
 fact related. This specification provides a way for one domain to
-explicitly document a relationship with another, in the DNS.
+explicitly document a relationship with another, utilizing DNS records.
 </t>
 <t>Possible use cases include:
 </t>
@@ -205,25 +205,27 @@ key-tag, a one-octet signature algorithm, and the digital signature bits.
 <t>The rdbd-tag field MUST contain the value zero. Later specifications
 can define new rdbd-tag values.
 </t>
-<t>If the optional signature is omitted, the key-tag and sig-alg fields
-MUST be zero and the signature field MUST be an empty string. [[Is that the
-right way to have optional fields in RRs? Not sure.]]
-</t>
 <t>If an optional signture is included, the sig-alg field MUST contain
 the signature algorithm used, with the same values used as would be
 used in an RRSIG. The key-tag MUST match the RDBDKEY RR value for
 the corresponding public key.
 </t>
-<t>The input to signing (&quot;to-be-signed&quot; data) is the catenation of the following
-linefeed-separated (where linefeed has the value '0x0a') lines:
+<t>If the optional signature is omitted, then the presentation form of the
+key-tag, sig-alg and signature fields MAY be omitted. If not omitted then the
+sig-alg and key-tag fields MUST be zero and the signature field MUST be a an
+empty string. [[Is that the right way to have optional fields in RRs? Not
+sure.]]
+</t>
+<t>The input to signing (&quot;to-be-signed&quot; data) is the concatenation of the
+following linefeed-separated (where linefeed has the value '0x0a') lines:
 </t>
 
 <figure align="center"><artwork align="center" type="ascii-art">
-            relating=&lt;relating-domain&gt;
-            related=&lt;related-domain&gt;
-            rdbd-tag=&lt;rdbd-tag value&gt;
-            key-tag=&lt;key-tag&gt;
-            sig-alg=&lt;sig-alg&gt;
+relating=&lt;relating-domain&gt;
+related=&lt;related-domain&gt;
+rdbd-tag=&lt;rdbd-tag value&gt;
+key-tag=&lt;key-tag&gt;
+sig-alg=&lt;sig-alg&gt;
 
 </artwork></figure>
 <t>The relating-domain and related-domain values MUST be the 'A-label'
@@ -265,7 +267,7 @@ and production of RDBDKEY RRs.
 signatures MUST support use of RSA with
 SHA256 (sig-alg==8) with at least 2048 bit RSA keys. <xref target="RFC5702"/>
 </t>
-<t>RSA keys SHOULD use a 2028 bit or longer modulus.
+<t>RSA keys SHOULD use a 2048 bit or longer modulus.
 </t>
 <t>Implementations of this specification that support signing or verifying
 signatures SHOULD support use of Ed25519
@@ -389,9 +391,13 @@ is the related-domain, an unsigned RDBD RR would look like this in a zone file:
 </t>
 
 <figure align="center"><artwork align="center" type="ascii-art">
+dept-example.com. IN 3600 RDBD 0 example.com.
+</artwork></figure>
+<t>The following is equivalent to tbe above:
+</t>
 
-dept-example.com. IN 3600 RDBD 0 example.com. 0 0 "" 
-
+<figure align="center"><artwork align="center" type="ascii-art">
+dept-example.com. IN 3600 RDBD 0 example.com. 0 0 ""
 </artwork></figure>
 </section>
 
@@ -482,7 +488,8 @@ $ od -x to-be-signed-8.txt
 </t>
 
 <figure align="center"><artwork align="center" type="ascii-art">
-$ openssl dgst -sha256 -sign rsa.private -out rsa.sig to-be-signed-8.txt
+$ openssl dgst -sha256 -sign rsa.private \
+    -out rsa.sig to-be-signed-8.txt
 $ od -x rsa.sig 
 0000000 087c d5c9 375f dcba 9edf ce25 e353 9fb9
 0000020 6ef4 ca9f a167 6d91 71bb 7487 5edd fe30
@@ -564,7 +571,7 @@ example.com. 3600 RDBDKEY 0 3 8 (
 </section>
 
 <section anchor="sample-ed25519-signature" title="Sample Ed25519 Signature">
-<t>Since OpenSSL does not yet support Ed25519 singing via it's command
+<t>Since OpenSSL does not yet support Ed25519 singing via its command
 line tool, we generate our example using the python script below.
 This uses the python library from Appendix A of <xref target="RFC8032"/>.
 </t>
@@ -599,13 +606,13 @@ with open("ed25519.pub","wb") as pubf:
 </t>
 
 <figure align="center"><artwork align="center" type="ascii-art">
-    $ cat to-be-signed-15.txt
-    relating=example.com
-    related=dept-example.com
-    rdbd-tag=0
-    key-tag=35988
-    sig-alg=15
-    $ 
+$ cat to-be-signed-15.txt
+relating=example.com
+related=dept-example.com
+rdbd-tag=0
+key-tag=35988
+sig-alg=15
+$ 
 </artwork></figure>
 <t>The output when the above code is run (with some spacing added) is:
 </t>
