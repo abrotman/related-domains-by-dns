@@ -106,11 +106,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 
 The following terms are used throughout this document:
 
-* Relating domain: this refers to the domain that is 
+* Relating-domain: this refers to the domain that is 
 declarating a relationship exists. (This was called the
 "parent/primary" in -00). 
    
-* Related domain: This refers to the domain that is
+* Related-domain: This refers to the domain that is
 referenced by the relating-domain, such as `dept-example.com`.
 (This was called the "secondary" in -00.)
 
@@ -122,6 +122,8 @@ related-domains (RDBD).
 
 
 ## RDBDKEY Resource Record Definition
+
+The RDBDKEY record is published at the apex of the relating-domain zone.
 
 The wire and presentation format of the RDBDKEY 
 resource record is identical to the DNSKEY record. [@?RFC4034]
@@ -142,8 +144,7 @@ no idea really:-)]]
 
 ## RDBD Resource Record Definition
 
-The RDBD resource record is published at the apex of the related 
-domain zone.
+The RDBD resource record is published at the apex of the related-domain zone.
 
 [[All going well, at some point we'll be able to say...]]
 IANA has allocated RR code TBD for the RDBD resource record via Expert
@@ -200,14 +201,15 @@ representation of these names.
 
 The trailing "." representing the DNS root MUST NOT be included in
 the to-be-signed data, so a relating-domain value above might be
-"example.com" but "example.com." MUST NOT be used here.
+"example.com" but "example.com." MUST NOT be used as input to 
+signing.
 
 A linefeed MUST be included after the "sig-alg" value in the
 last line.
 
 [[Presentation syntax and to-be-signed details are very liable to change.]]
 
-See the examples in the Appendix for details.
+See the examples in the Appendix for further details.
 
 # Directionality and Cardinality
 
@@ -219,7 +221,9 @@ RDBD RRs (and RDBDKEY RRs) can be published to represent those.
 
 # Required Signature Algorithms
 
-Consumers of RDBD RRs MAY support optional signing and/or verification.
+Consumers of RDBD RRs MAY support signature verification. They
+MUST be able to parse/process unsigned or signed RDBD RRs even if they 
+cannot cryptographically verify signatures.
 
 Implementations producing RDBD RRs SHOULD support optional signing of those
 and production of RDBDKEY RRs.
@@ -236,7 +240,7 @@ signatures SHOULD support use of Ed25519
 
 # Validation 
 
-A validated signature is solely meant to be evidence that the two domains 
+A validated signature is solely meant to be additional evidence that the two domains 
 are related.  The existence of this relationship is not meant to 
 state that the data from either domain should be considered as more trustworthy.  
 
@@ -251,13 +255,13 @@ RDBDKEY values are accessed via an untrusted path.
 If the RDBDKEY value has been cached, or is otherwise
 known via some sufficiently secure mechanism, then the
 RDBD signature does confirm that the holder of the
-private key (presumably the relating-domain) consents
+private key (presumably the relating-domain) considered
 that the relationship with the related-domain was real
 at some point in time. 
 
 ## DNSSEC
 
-RDBD does not require DNSSEC. It could be possible for an
+RDBD does not require DNSSEC. Without DNSSEC it is possible for an
 attacker to falsify DNS query responses for someone investigating a
 relationship. 
 Conversely, an attacker could delete the response that would
@@ -272,6 +276,16 @@ of these kinds of attack.
 If the relating-domain has DNSSEC deployed, but the related-domain
 does not, then the optional signature can (in a sense) extend the
 DNSSEC chain to cover the RDBD RR in the related-domain's zone.
+
+If both domains have DNSSEC deployed, and if the relating-domain public key has
+been cached, then the the signature mechanism provides additional protection
+against active attacks involving a parent of one of the domains.  Such attacks
+may in any case be less likely and detectable in many scenarios as they would
+be generic attacks against DNSSEC-signing (e.g. if a regisgtry injected a bogus
+DS for a relating-domain into the registry's signed zone). If the
+public key from the relevant RDNDKEY RRs is read from the DNS at the
+same time as a related RDBD RR, then the signature mechanism provided here
+may provide litle additional value over and above DNSSEC.
 
 ## Lookup Loops
 
