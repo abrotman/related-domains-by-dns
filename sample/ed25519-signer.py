@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# CODE_BEGINS
 import sys, binascii
 from eddsa2 import Ed25519
 
@@ -17,5 +18,4 @@ with open("ed25519.sig", "wb") as sigf:
     sigf.write(signature)
 with open("ed25519.pub","wb") as pubf:
     pubf.write(pubkey)
-
-
+# CODE_ENDS

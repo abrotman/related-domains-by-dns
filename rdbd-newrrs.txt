@@ -15,8 +15,8 @@ Expires: September 7, 2019                        Trinity College Dublin
 Abstract
 
    This document outlines a mechanism by which a registered domain can
-   create a relationship to a different registered domain, called
-   "Related Domains By DNS", or "RDBD".
+   publicly document a relationship with a different registered domain,
+   called "Related Domains By DNS", or "RDBD".
 
 Status of This Memo
 
@@ -61,27 +61,27 @@ Internet-Draft                    RDBD                        March 2019
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   4
    2.  New Resource Record Types . . . . . . . . . . . . . . . . . .   4
      2.1.  RDBDKEY Resource Record Definition  . . . . . . . . . . .   4
      2.2.  RDBD Resource Record Definition . . . . . . . . . . . . .   4
-   3.  Directionality and Cardinality  . . . . . . . . . . . . . . .   5
+   3.  Directionality and Cardinality  . . . . . . . . . . . . . . .   6
    4.  Required Signature Algorithms . . . . . . . . . . . . . . . .   6
    5.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   6
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
-     6.1.  Efficiacy of signatures . . . . . . . . . . . . . . . . .   6
-     6.2.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+     6.1.  Efficiacy of signatures . . . . . . . . . . . . . . . . .   7
+     6.2.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . . . .   7
      6.3.  Lookup Loops  . . . . . . . . . . . . . . . . . . . . . .   7
    7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
-   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
-   9.  Informative References  . . . . . . . . . . . . . . . . . . .   7
-   Appendix A.  Examples . . . . . . . . . . . . . . . . . . . . . .   8
-     A.1.  Sample Unsigned RDBD RR . . . . . . . . . . . . . . . . .   8
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   8
+   9.  Informative References  . . . . . . . . . . . . . . . . . . .   8
+   Appendix A.  Examples . . . . . . . . . . . . . . . . . . . . . .   9
+     A.1.  Sample Unsigned RDBD RR . . . . . . . . . . . . . . . . .   9
      A.2.  Sample RSA Signature  . . . . . . . . . . . . . . . . . .   9
-     A.3.  Sample Ed25519 Signature  . . . . . . . . . . . . . . . .  12
+     A.3.  Sample Ed25519 Signature  . . . . . . . . . . . . . . . .  13
    Appendix B.  Changes and Open Issues  . . . . . . . . . . . . . .  14
-     B.1.  Open Issues . . . . . . . . . . . . . . . . . . . . . . .  14
-     B.2.  Changes from -00  . . . . . . . . . . . . . . . . . . . .  15
+     B.1.  Changes from -00 to -01 . . . . . . . . . . . . . . . . .  14
+     B.2.  Open Issues . . . . . . . . . . . . . . . . . . . . . . .  15
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
 
 1.  Introduction
@@ -98,14 +98,14 @@ Table of Contents
    or if one might be an attacker attempting to impersonate the other.
    In some cases, anecdotal evidence from the DNS or WHOIS/RDAP may be
    sufficient.  However, service providers of various kinds may err on
-   the side of caution and treat the related-domain as untrustworthy or
+   the side of caution and treat one of the domains as untrustworthy or
    abusive because it is not clear that the two domains are in fact
    related.  This specification provides a way for one domain to
    explicitly document a relationship with another, in the DNS.
 
-   Possible use cases include: - where a company has websites in
-   different languages, and would like to correlate their ownership more
-   easily, consider "example.de" and "example.ie" registered by regional
+   Possible use cases include:
+
+
 
 
 
@@ -114,11 +114,18 @@ Brotman & Farrell       Expires September 7, 2019               [Page 2]
 Internet-Draft                    RDBD                        March 2019
 
 
-   offices of the same company; - following an acquisition, a domain
-   holder might want to indicate that example.net is now related to
-   example.com in order to make a later migration easier; - when doing
-   Internet surveys, we should be able to provide more accurate results
-   if we have information as to which domains are related.
+   o  where a company has websites in different languages, and would
+      like to correlate their ownership more easily, consider
+      "example.de" and "example.ie" registered by regional offices of
+      the same company;
+
+   o  following an acquisition, a domain holder might want to indicate
+      that example.net is now related to example.com in order to make a
+      later migration easier;
+
+   o  when doing Internet surveys, we should be able to provide more
+      accurate results if we have information as to which domains are
+      related.
 
    It is not a goal of this specification to provide a high-level of
    assurance that two domains are definitely related, nor to provide
@@ -141,7 +148,8 @@ Internet-Draft                    RDBD                        March 2019
    RDBD is intended to demonstrate a relationship between registered
    domains, not individual hostnames.  That is to say that the
    relationship should exist between "example.com" and "dept-
-   example.com", not "foo.example.com" and "bar.dept-example.com".
+   example.com", not "foo.example.com" and "bar.dept-example.com" (where
+   those latter two are hosts).
 
    There already exists Vouch By Reference (VBR) [RFC5518], however this
    only applies to email.  RDBD could be a more general purpose solution
@@ -152,14 +160,6 @@ Internet-Draft                    RDBD                        March 2019
    and the method of validation, if the option to use digital signatures
    is chosen.
 
-1.1.  Terminology
-
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in
-   [RFC2119].
-
-   The following terms are used throughout this document:
 
 
 
@@ -169,6 +169,15 @@ Brotman & Farrell       Expires September 7, 2019               [Page 3]
 
 Internet-Draft                    RDBD                        March 2019
 
+
+1.1.  Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   [RFC2119].
+
+   The following terms are used throughout this document:
 
    o  Relating domain: this refers to the domain that is declarating a
       relationship exists.  (This was called the "parent/primary" in
@@ -200,10 +209,22 @@ Internet-Draft                    RDBD                        March 2019
    resolvers, when serving or resolving.  For all practical purposes,
    RDBDKEY is a regular RR type.
 
+   The flags field of RDBDKEY records MUST be zero.  [[Is that correct/
+   ok?  I've no idea really:-)]]
+
 2.2.  RDBD Resource Record Definition
 
    The RDBD resource record is published at the apex of the related
    domain zone.
+
+
+
+
+
+Brotman & Farrell       Expires September 7, 2019               [Page 4]
+
+Internet-Draft                    RDBD                        March 2019
+
 
    [[All going well, at some point we'll be able to say...]] IANA has
    allocated RR code TBD for the RDBD resource record via Expert Review.
@@ -216,15 +237,6 @@ Internet-Draft                    RDBD                        March 2019
    the relating-domain name, and the optional signature fields which
    are: a two-octet key-tag, a one-octet signature algorithm, and the
    digital signature bits.
-
-
-
-
-
-Brotman & Farrell       Expires September 7, 2019               [Page 4]
-
-Internet-Draft                    RDBD                        March 2019
-
 
                            1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -242,12 +254,16 @@ Internet-Draft                    RDBD                        March 2019
    can define new rdbd-tag values.
 
    If the optional signature is omitted, the key-tag and sig-alg fields
-   MUST be zero.  If an optional signture is included, the sig-alg field
-   MUST contain the signature algorithm used, with the same values used
-   as would be used in an RRSIG.  The key-tag MUST match the RDBDKEY RR
-   value for the corresponding public key.
+   MUST be zero and the signature field MUST be an empty string.  [[Is
+   that the right way to have optional fields in RRs?  Not sure.]]
 
-   The input to signing is the catenation of the following LF-separated
+   If an optional signture is included, the sig-alg field MUST contain
+   the signature algorithm used, with the same values used as would be
+   used in an RRSIG.  The key-tag MUST match the RDBDKEY RR value for
+   the corresponding public key.
+
+   The input to signing ("to-be-signed" data) is the catenation of the
+   following linefeed-separated (where linefeed has the value '0x0a')
    lines:
 
                               relating=<relating-domain>
@@ -256,22 +272,6 @@ Internet-Draft                    RDBD                        March 2019
                               key-tag=<key-tag>
                               sig-alg=<sig-alg>
 
-
-   The trailing "." representing the DNS root is not included in the
-   signature input, so a relating-domain value above might be
-   "example.com" but "example.com."  MUST NOT be used here.  A carriage-
-   return MUST be included after the "sig-alg" value in the last line.
-
-   [[Presentation syntax and to-be-signed details are very liable to
-   change so aren't yet fully documented.]]
-
-   See the examples in the Appendix for details.
-
-3.  Directionality and Cardinality
-
-   RDBD relationships are uni-directional.  If bi-directional
-   relationships exist, then both domains can publish RDBD RRs and
-   optionally sign those.
 
 
 
@@ -282,16 +282,37 @@ Brotman & Farrell       Expires September 7, 2019               [Page 5]
 Internet-Draft                    RDBD                        March 2019
 
 
+   The relating-domain and related-domain values MUST be the 'A-label'
+   representation of these names.
+
+   The trailing "." representing the DNS root MUST NOT be included in
+   the to-be-signed data, so a relating-domain value above might be
+   "example.com" but "example.com."  MUST NOT be used here.
+
+   A linefeed MUST be included after the "sig-alg" value in the last
+   line.
+
+   [[Presentation syntax and to-be-signed details are very liable to
+   change.]]
+
+   See the examples in the Appendix for details.
+
+3.  Directionality and Cardinality
+
+   RDBD relationships are uni-directional.  If bi-directional
+   relationships exist, then both domains can publish RDBD RRs and
+   optionally sign those.
+
    If one domain has relationships with many others, then the relevant
    RDBD RRs (and RDBDKEY RRs) can be published to represent those.
 
 4.  Required Signature Algorithms
 
-   Consumers of RDND RRs MAY support optional signing and/or
+   Consumers of RDBD RRs MAY support optional signing and/or
    verification.
 
    Implementations producing RDBD RRs SHOULD support optional signing of
-   those and production of RDNDKEY RRs.
+   those and production of RDBDKEY RRs.
 
    Implementations of this specification that support signing or
    verifying signatures MUST support use of RSA with SHA256 (sig-alg==8)
@@ -310,27 +331,6 @@ Internet-Draft                    RDBD                        March 2019
    to state that the data from either domain should be considered as
    more trustworthy.
 
-6.  Security Considerations
-
-6.1.  Efficiacy of signatures
-
-   The optional signature mechanism defined here offers no protectio
-   against an active attack if both the RDBD and RDBDKEY values are
-   accessed via an untrusted path.
-
-   If the RDBDKEY value has been cached, or is otherwise known via some
-   sufficiently secure mechanism, then the RDBD signature does confirm
-   that the holder of the private key (presumably the relating-domain)
-   consents that the relationship with the related-domain is real.
-
-6.2.  DNSSEC
-
-   RDBD does not require DNSSEC.  It could be possible for an attacker
-   to falsify DNS query responses for someone investigating a
-   relationship.  Conversely, an attacker could delete the response that
-   would normally demonstrate the relationship, causing the
-
-
 
 
 Brotman & Farrell       Expires September 7, 2019               [Page 6]
@@ -338,11 +338,32 @@ Brotman & Farrell       Expires September 7, 2019               [Page 6]
 Internet-Draft                    RDBD                        March 2019
 
 
+6.  Security Considerations
+
+6.1.  Efficiacy of signatures
+
+   The optional signature mechanism defined here offers no protection
+   against an active attack if both the RDBD and RDBDKEY values are
+   accessed via an untrusted path.
+
+   If the RDBDKEY value has been cached, or is otherwise known via some
+   sufficiently secure mechanism, then the RDBD signature does confirm
+   that the holder of the private key (presumably the relating-domain)
+   consents that the relationship with the related-domain was real at
+   some point in time.
+
+6.2.  DNSSEC
+
+   RDBD does not require DNSSEC.  It could be possible for an attacker
+   to falsify DNS query responses for someone investigating a
+   relationship.  Conversely, an attacker could delete the response that
+   would normally demonstrate the relationship, causing the
    investigating party to believe there is no link between the two
-   domains.
+   domains.  An attacker could also replay an old RDBD value that is
+   actually no longer published in the DNS by the related-domain.
 
    Deploying signed records with DNSSEC should allow for detection of
-   either attack.
+   these kinds of attack.
 
    If the relating-domain has DNSSEC deployed, but the related-domain
    does not, then the optional signature can (in a sense) extend the
@@ -350,23 +371,32 @@ Internet-Draft                    RDBD                        March 2019
 
 6.3.  Lookup Loops
 
-   It's conceivable that an attacker could create a loop of lookups,
-   such as a.com->b.com->c.com->a.com or similar.  This could cause a
-   resource issue for any automated system.  A system SHOULD only
-   perform three lookups from the first domain
+   It's conceivable that an attacker could create a loop of
+   relationships, such as a.com->b.com->c.com->a.com or similar.  This
+   could cause a resource issue for any automated system.  A system
+   SHOULD only perform three lookups from the first domain
    (a.com->b.com->c.com->d.com).  The related and relating-domains
    SHOULD attempt to keep links direct and so that only the fewest
-   number of lookups is needed, but it is understood this may not always
-   be possible.
+   number of lookups are needed, but it is understood this may not
+   always be possible.
 
 7.  IANA Considerations
 
    This document introduces two new DNS RR types, RDBD and RDBDKEY.
-   Codepoints for those are Not yet allocated by IANA.
+   [[Codepoints for those are not yet allocated by IANA, nor have
+   codepoints been requested so far.]]
 
-   New rdbd-tag value handling needs to be defined.  [[Maybe something
-   like: 0-255: RFC required; 256-1023: reserved; 1024-2047: Private
-   use; 2048-65535: FCFS.]]
+
+
+
+Brotman & Farrell       Expires September 7, 2019               [Page 7]
+
+Internet-Draft                    RDBD                        March 2019
+
+
+   [[New rdbd-tag value handling wll need to be defined if we keep that
+   field.  Maybe something like: 0-255: RFC required; 256-1023:
+   reserved; 1024-2047: Private use; 2048-65535: FCFS.]]
 
 8.  Acknowledgements
 
@@ -384,15 +414,6 @@ Internet-Draft                    RDBD                        March 2019
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
-
-
-
-
-
-Brotman & Farrell       Expires September 7, 2019               [Page 7]
-
-Internet-Draft                    RDBD                        March 2019
-
 
    [RFC4034]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Resource Records for the DNS Security Extensions",
@@ -418,6 +439,17 @@ Internet-Draft                    RDBD                        March 2019
               DOI 10.17487/RFC7344, September 2014,
               <https://www.rfc-editor.org/info/rfc7344>.
 
+
+
+
+
+
+
+Brotman & Farrell       Expires September 7, 2019               [Page 8]
+
+Internet-Draft                    RDBD                        March 2019
+
+
    [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
               Signature Algorithm (EdDSA)", RFC 8032,
               DOI 10.17487/RFC8032, January 2017,
@@ -430,6 +462,9 @@ Internet-Draft                    RDBD                        March 2019
 
 Appendix A.  Examples
 
+   [[TODO: script up generation of all samples - it's not unlikely we
+   mucked up somewhere below when generating 'em partly-manually;-)]]
+
 A.1.  Sample Unsigned RDBD RR
 
    When example.com is the relating-domain and dept-example.com is the
@@ -437,17 +472,7 @@ A.1.  Sample Unsigned RDBD RR
    file:
 
 
-               dept-example.com. IN 3600 RDBD 0 example.com.
-
-
-
-
-
-
-
-Brotman & Farrell       Expires September 7, 2019               [Page 8]
-
-Internet-Draft                    RDBD                        March 2019
+           dept-example.com. IN 3600 RDBD 0 example.com. 0 0 ""
 
 
 A.2.  Sample RSA Signature
@@ -463,6 +488,23 @@ A.2.  Sample RSA Signature
     $ openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM
 
    Sample Key:
+
+
+
+
+
+
+
+
+
+
+
+
+
+Brotman & Farrell       Expires September 7, 2019               [Page 9]
+
+Internet-Draft                    RDBD                        March 2019
+
 
      rsa.private:
      -----BEGIN RSA PRIVATE KEY-----
@@ -493,19 +535,6 @@ A.2.  Sample RSA Signature
      m7RBP9R9gM9mnl9/azK7Y5uj11/O3cNJLEIWcraKqydPfvxNyEtP
      -----END RSA PRIVATE KEY-----
 
-
-
-
-
-
-
-
-
-Brotman & Farrell       Expires September 7, 2019               [Page 9]
-
-Internet-Draft                    RDBD                        March 2019
-
-
      rsa.public:
      -----BEGIN PUBLIC KEY-----
      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
@@ -521,6 +550,17 @@ Internet-Draft                    RDBD                        March 2019
    used python code from: <https://www.v13.gr/blog/?p=239>
 
    File containing to-be-signed data:
+
+
+
+
+
+
+
+Brotman & Farrell       Expires September 7, 2019              [Page 10]
+
+Internet-Draft                    RDBD                        March 2019
+
 
               $ cat to-be-signed-8.txt
               relating=example.com
@@ -540,27 +580,6 @@ Internet-Draft                    RDBD                        March 2019
 
 
    To sign that file:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Brotman & Farrell       Expires September 7, 2019              [Page 10]
-
-Internet-Draft                    RDBD                        March 2019
-
 
 $ openssl dgst -sha256 -sign rsa.private -out rsa.sig to-be-signed-8.txt
 $ od -x rsa.sig
@@ -586,7 +605,20 @@ $ od -x rsa.sig
    The presentation fom of a signed RDBD record (with a 3600 TTL) would
    be:
 
-           dept-example.com. 3600 RDBD 0 example.com. 8 65498 (
+
+
+
+
+
+
+
+
+Brotman & Farrell       Expires September 7, 2019              [Page 11]
+
+Internet-Draft                    RDBD                        March 2019
+
+
+           dept-example.com. 3600 RDBD 0 example.com. 65498 8 (
                hfnhVSlTZMFltG2qU+4vyCPbfSMutxuV8zEyBv7GshOcKMOW
                VLFBK116wRUb7wVgG9TSunXyIuCjDqtidEjWftwVZ8SsXBzo
                tJPMq9HbvZaAnfmx4HxxAMHCpX9QJ2cOK/5VobdZm2eZnXl4
@@ -611,13 +643,6 @@ $ od -x rsa.sig
 
    To verify, with "rsa.sig" containing the above signature:
 
-
-
-Brotman & Farrell       Expires September 7, 2019              [Page 11]
-
-Internet-Draft                    RDBD                        March 2019
-
-
                 $ openssl dgst -sha256 -verify rsa.public \
                     -signature rsa.sig to-be-signed.txt
                 Verified OK
@@ -641,31 +666,6 @@ Internet-Draft                    RDBD                        March 2019
                TkQgUFVCTElDIEtFWS0tLS0tCgo= )
 
 
-A.3.  Sample Ed25519 Signature
-
-   Since OpenSSL does not yet support Ed25519 singing via it's command
-   line tool, we generate out example using a python script.  This uses
-   the python library in Appendix A of [RFC8032].
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -674,9 +674,15 @@ Brotman & Farrell       Expires September 7, 2019              [Page 12]
 Internet-Draft                    RDBD                        March 2019
 
 
-        CODE_BEGINS
+A.3.  Sample Ed25519 Signature
+
+   Since OpenSSL does not yet support Ed25519 singing via it's command
+   line tool, we generate our example using the python script below.
+   This uses the python library from Appendix A of [RFC8032].
+
 
         #!/usr/bin/env python3
+        # CODE_BEGINS
         import sys, binascii
         from eddsa2 import Ed25519
 
@@ -696,7 +702,8 @@ Internet-Draft                    RDBD                        March 2019
         with open("ed25519.pub","wb") as pubf:
             pubf.write(pubkey)
 
-        CODE_ENDS
+        # CODE_ENDS
+
 
    The to-be-signed-15.txt file contains:
 
@@ -709,13 +716,6 @@ Internet-Draft                    RDBD                        March 2019
                            $
 
    The output when the above code is run (with some spacing added) is:
-
-
-
-
-
-
-
 
 
 
@@ -747,12 +747,10 @@ Internet-Draft                    RDBD                        March 2019
               rdbd-tag=0\nkey-tag=35988\nsig-alg=15\n'
 
 
-
-
    The presentation form for an RDBD RR would then be:
 
 
-           dept-example.com. 3600 RDBD 0 example.com. 15 35988 (
+           dept-example.com. 3600 RDBD 0 example.com. 35988 15 (
                                RmqAzmN3seS+xWPYW41VvUpRpbkcHB5G
                                qcTiKhZVfDjoXMyKwF5gRtAGbCxSs6F0
                                ILWa+WJ4QKwxL1q1XhG+Bw== )
@@ -760,7 +758,7 @@ Internet-Draft                    RDBD                        March 2019
    The RDBDKEY for this example would be:
 
 
-                 example.com. 3600 RDNDKEY 0 3 15 (
+                 example.com. 3600 RDBDKEY 0 3 15 (
                              NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRr
                              s+yGvo01tkg= )
 
@@ -769,15 +767,17 @@ Appendix B.  Changes and Open Issues
 
    [[RFC editor: please delete this appendix ]]
 
-B.1.  Open Issues
+B.1.  Changes from -00 to -01
 
-   Current open issues include: (TBD tidy these)
+   o  Changed from primary/secondary to relating/related (better
+      suggestions are still welcome)
 
-   o  #5: specify input for signing more precisely - e.g. is there a CR
-      or NULL or not
+   o  Moved away from abuse of TXT RRs
 
-   o  #6: what, if anything, does rdbd for example.com mean for
-      foo.example.com?
+   o  We now specify optional DNSSEC-like signatures (we'd be fine with
+      moving back to a more DKIM-like mechanism, but wanted to see how
+      this looked)
+
 
 
 
@@ -786,12 +786,22 @@ Brotman & Farrell       Expires September 7, 2019              [Page 14]
 Internet-Draft                    RDBD                        March 2019
 
 
-B.2.  Changes from -00
+   o  Added Ed25519 option
 
-   o  Trying new RRTYPEs this time around with optional DNSSEC-like
-      signatures
+   o  Re-worked and extended examples
 
-   o  Added Ed25519 option and example
+B.2.  Open Issues
+
+   Current open github issues include:
+
+   o  #5: specify input for signing more precisely - e.g. is there a CR
+      or NULL or not
+
+   o  #6: what, if anything, does rdbd for example.com mean for
+      foo.example.com?
+
+   These can be seen at: <https://github.com/abrotman/related-domains-
+   by-dns/issues>
 
 Authors' Addresses
 
@@ -805,16 +815,6 @@ Authors' Addresses
    Trinity College Dublin
 
    Email: stephen.farrell@cs.tcd.ie
-
-
-
-
-
-
-
-
-
-
 
 
 

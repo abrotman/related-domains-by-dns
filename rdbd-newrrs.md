@@ -32,7 +32,7 @@
 .# Abstract
 
 This document outlines a mechanism by which a registered domain can 
-create a relationship to a different registered domain, called 
+publicly document a relationship with a different registered domain, called 
 "Related Domains By DNS", or "RDBD".
 
 {mainmatter}
@@ -50,12 +50,13 @@ investigations on the Internet.  It is typical to see something such as
 relationship between those two domains, or if one might be an attacker 
 attempting to impersonate the other.  In some cases, anecdotal evidence from 
 the DNS or WHOIS/RDAP may be sufficient.  However, service providers of various
-kinds may err on the side of caution and treat the related-domain as 
+kinds may err on the side of caution and treat one of the domains as 
 untrustworthy or abusive because it is not clear that the two domains are in 
 fact related. This specification provides a way for one domain to 
 explicitly document a relationship with another, in the DNS.
 
 Possible use cases include: 
+
 - where a company has websites in different languages, and would like to
   correlate their ownership more easily, consider `example.de` and `example.ie`
   registered by regional offices of the same company;
@@ -85,7 +86,8 @@ the two domain names (plus a couple of other inputs).
 RDBD is intended to demonstrate a relationship between registered
 domains, not individual hostnames.  That is to say that the
 relationship should exist between `example.com` and `dept-example.com`,
-not `foo.example.com` and `bar.dept-example.com`.
+not `foo.example.com` and `bar.dept-example.com` (where those latter
+two are hosts).
 
 There already exists Vouch By Reference (VBR) [@?RFC5518], however
 this only applies to email.  RDBD could be a more general purpose solution
@@ -135,6 +137,9 @@ No special processing is performed by authoritative servers or by
 resolvers, when serving or resolving.  For all practical purposes,
 RDBDKEY is a regular RR type.
 
+The flags field of RDBDKEY records MUST be zero. [[Is that correct/ok? I've
+no idea really:-)]]
+
 ## RDBD Resource Record Definition
 
 The RDBD resource record is published at the apex of the related 
@@ -170,13 +175,16 @@ The rdbd-tag field MUST contain the value zero. Later specifications
 can define new rdbd-tag values. 
 
 If the optional signature is omitted, the key-tag and sig-alg fields 
-MUST be zero.
+MUST be zero and the signature field MUST be an empty string. [[Is that the
+right way to have optional fields in RRs? Not sure.]]
+
 If an optional signture is included, the sig-alg field MUST contain
 the signature algorithm used, with the same values used as would be
 used in an RRSIG. The key-tag MUST match the RDBDKEY RR value for
 the corresponding public key.
 
-The input to signing is the catenation of the following LF-separated lines:
+The input to signing ("to-be-signed" data) is the catenation of the following
+linefeed-separated (where linefeed has the value '0x0a') lines:
 
 ~~~ ascii-art
             relating=<relating-domain>
@@ -187,14 +195,17 @@ The input to signing is the catenation of the following LF-separated lines:
 
 ~~~
 
-The trailing "." representing the DNS root is not included in
-the signature input, so a relating-domain value above might be
+The relating-domain and related-domain values MUST be the 'A-label'
+representation of these names.
+
+The trailing "." representing the DNS root MUST NOT be included in
+the to-be-signed data, so a relating-domain value above might be
 "example.com" but "example.com." MUST NOT be used here.
-A carriage-return MUST be included after the "sig-alg" value in the
+
+A linefeed MUST be included after the "sig-alg" value in the
 last line.
 
-[[Presentation syntax and to-be-signed details are very liable to change
-so aren't yet fully documented.]]
+[[Presentation syntax and to-be-signed details are very liable to change.]]
 
 See the examples in the Appendix for details.
 
@@ -208,10 +219,10 @@ RDBD RRs (and RDBDKEY RRs) can be published to represent those.
 
 # Required Signature Algorithms
 
-Consumers of RDND RRs MAY support optional signing and/or verification.
+Consumers of RDBD RRs MAY support optional signing and/or verification.
 
 Implementations producing RDBD RRs SHOULD support optional signing of those
-and production of RDNDKEY RRs.
+and production of RDBDKEY RRs.
 
 Implementations of this specification that support signing or verifying
 signatures MUST support use of RSA with
@@ -234,14 +245,15 @@ state that the data from either domain should be considered as more trustworthy.
 ## Efficiacy of signatures
 
 The optional signature mechanism defined here offers no
-protectio against an active attack if both the RDBD and
+protection against an active attack if both the RDBD and
 RDBDKEY values are accessed via an untrusted path.
 
 If the RDBDKEY value has been cached, or is otherwise
 known via some sufficiently secure mechanism, then the
 RDBD signature does confirm that the holder of the
 private key (presumably the relating-domain) consents
-that the relationship with the related-domain is real. 
+that the relationship with the related-domain was real
+at some point in time. 
 
 ## DNSSEC
 
@@ -251,9 +263,11 @@ relationship.
 Conversely, an attacker could delete the response that would
 normally demonstrate the relationship, causing the investigating party to
 believe there is no link between the two domains.
+An attacker could also replay an old RDBD value that is
+actually no longer published in the DNS by the related-domain.
 
 Deploying signed records with DNSSEC should allow for detection
-of either attack.
+of these kinds of attack.
 
 If the relating-domain has DNSSEC deployed, but the related-domain
 does not, then the optional signature can (in a sense) extend the
@@ -261,19 +275,21 @@ DNSSEC chain to cover the RDBD RR in the related-domain's zone.
 
 ## Lookup Loops
 
-It's conceivable that an attacker could create a loop of lookups, such as
+It's conceivable that an attacker could create a loop of relationships, such as
 a.com->b.com->c.com->a.com or similar.  This could cause a resource issue for
 any automated system.  A system SHOULD only perform three lookups from the
 first domain (a.com->b.com->c.com->d.com).  The related and relating-domains
 SHOULD attempt to keep links direct and so that only the fewest number of
-lookups is needed, but it is understood this may not always be possible.
+lookups are needed, but it is understood this may not always be possible.
 
 # IANA Considerations
 
-This document introduces two new DNS RR types, RDBD and RDBDKEY.  Codepoints
-for those are Not yet allocated by IANA.
+This document introduces two new DNS RR types, RDBD and RDBDKEY.  [[Codepoints
+for those are not yet allocated by IANA, nor have codepoints been requested
+so far.]]
 
-New rdbd-tag value handling needs to be defined. [[Maybe something
+[[New rdbd-tag value handling wll need to be defined if we keep
+that field. Maybe something
 like: 0-255: RFC required; 256-1023: reserved; 1024-2047: Private
 use; 2048-65535: FCFS.]]
 
@@ -297,6 +313,9 @@ your name here.
 
 # Examples 
 
+[[TODO: script up generation of all samples - it's not unlikely
+we mucked up somewhere below when generating 'em partly-manually;-)]]
+
 
 ## Sample Unsigned RDBD RR
 
@@ -305,7 +324,7 @@ is the related-domain, an unsigned RDBD RR would look like this in a zone file:
 
 ~~~ ascii-art
 
-dept-example.com. IN 3600 RDBD 0 example.com.
+dept-example.com. IN 3600 RDBD 0 example.com. 0 0 "" 
 
 ~~~
 
@@ -423,7 +442,7 @@ $ od -x rsa.sig
 The presentation fom of a signed RDBD record (with a 3600 TTL) would be:
 
 ~~~ ascii-art
-dept-example.com. 3600 RDBD 0 example.com. 8 65498 ( 
+dept-example.com. 3600 RDBD 0 example.com. 65498 8 ( 
     hfnhVSlTZMFltG2qU+4vyCPbfSMutxuV8zEyBv7GshOcKMOW
     VLFBK116wRUb7wVgG9TSunXyIuCjDqtidEjWftwVZ8SsXBzo
     tJPMq9HbvZaAnfmx4HxxAMHCpX9QJ2cOK/5VobdZm2eZnXl4
@@ -482,13 +501,13 @@ example.com. 3600 RDBDKEY 0 3 8 (
 ## Sample Ed25519 Signature
 
 Since OpenSSL does not yet support Ed25519 singing via it's command
-line tool, we generate out example using a python script. This uses
-the python library in Appendix A of [@?RFC8032].
+line tool, we generate our example using the python script below. 
+This uses the python library from Appendix A of [@?RFC8032].
 
 ~~~ ascii-art
-CODE_BEGINS
 
 #!/usr/bin/env python3
+# CODE_BEGINS
 import sys, binascii
 from eddsa2 import Ed25519
 
@@ -508,7 +527,8 @@ with open("ed25519.sig", "wb") as sigf:
 with open("ed25519.pub","wb") as pubf:
     pubf.write(pubkey)
 
-CODE_ENDS
+# CODE_ENDS
+
 ~~~
 
 The to-be-signed-15.txt file contains:
@@ -542,15 +562,13 @@ to-be-signed:
 b'relating=example.com\nrelated=dept-example.com\n
   rdbd-tag=0\nkey-tag=35988\nsig-alg=15\n'
 
-
-
 ~~~
 
 The presentation form for an RDBD RR would then be:
 
 ~~~ ascii-art
 
-dept-example.com. 3600 RDBD 0 example.com. 15 35988 (
+dept-example.com. 3600 RDBD 0 example.com. 35988 15 (
                     RmqAzmN3seS+xWPYW41VvUpRpbkcHB5G
                     qcTiKhZVfDjoXMyKwF5gRtAGbCxSs6F0
                     ILWa+WJ4QKwxL1q1XhG+Bw== )
@@ -560,25 +578,32 @@ The RDBDKEY for this example would be:
 
 ~~~ ascii-art
 
-    example.com. 3600 RDNDKEY 0 3 15 (
+    example.com. 3600 RDBDKEY 0 3 15 (
                 NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRr
                 s+yGvo01tkg= )
 
 ~~~
 
-
 # Changes and Open Issues
 
 [[RFC editor: please delete this appendix ]]
 
+## Changes from -00 to -01
+
+- Changed from primary/secondary to relating/related (better suggestions
+  are still welcome)
+- Moved away from abuse of TXT RRs
+- We now specify optional DNSSEC-like signatures (we'd be fine with moving
+  back to a more DKIM-like mechanism, but wanted to see how this looked)
+- Added Ed25519 option 
+- Re-worked and extended examples 
+
 ## Open Issues
 
-Current open issues include: (TBD tidy these)
+Current open github issues include: 
 
 * #5: specify input for signing more precisely - e.g. is there a CR or NULL or not
 * #6: what, if anything, does rdbd for example.com mean for foo.example.com?
 
-## Changes from -00
+These can be seen at: https://github.com/abrotman/related-domains-by-dns/issues
 
-- Trying new RRTYPEs this time around with optional DNSSEC-like signatures
-- Added Ed25519 option and example
