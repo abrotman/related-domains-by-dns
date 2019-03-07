@@ -3,12 +3,12 @@
    Title = "Related Domains By DNS"
    abbrev = "RDBD"
    category = "std"
-   docName = "draft-brotman-rdbd-01"
+   docName = "draft-brotman-rdbd-02"
    ipr = "trust200902"
    area = "Applications"
    keyword = [""]
 
-   date = 2019-03-06T00:00:00Z
+   date = 2019-04-01T00:00:00Z
    
    [[author]]
    initials="A."
@@ -175,7 +175,7 @@ key-tag, a one-octet signature algorithm, and the digital signature bits.
 The rdbd-tag field MUST contain the value zero. Later specifications
 can define new rdbd-tag values. 
 
-If an optional signture is included, the sig-alg field MUST contain
+If an optional signature is included, the sig-alg field MUST contain
 the signature algorithm used, with the same values used as would be
 used in an RRSIG. The key-tag MUST match the RDBDKEY RR value for
 the corresponding public key.
@@ -607,6 +607,10 @@ The RDBDKEY for this example would be:
 # Changes and Open Issues
 
 [[RFC editor: please delete this appendix ]]
+
+## Changes from -01 to -02
+
+- Typo fix
 
 ## Changes from -00 to -01
 
