@@ -8,7 +8,6 @@
    area = "Applications"
    keyword = [""]
 
-   date = 2019-04-01T00:00:00Z
    
    [[author]]
    initials="A."
@@ -31,8 +30,8 @@
 
 .# Abstract
 
-This document outlines a mechanism by which a registered domain can 
-publicly document a relationship with a different registered domain, called 
+This document outlines a mechanism by which a DNS domain can 
+publicly document the existence or absence of a relationship with a different domain, called 
 "Related Domains By DNS", or "RDBD".
 
 {mainmatter}
@@ -66,13 +65,22 @@ Possible use cases include:
 - when doing Internet surveys, we should be able to provide more accurate results
   if we have information as to which domains are related.
 
+Similarly, a domain may wish to declare that no relationship exists with
+some other domain, for example "good.example" may want to declare that
+it is not associated with "g00d.example" if the latter is currently being
+used in some cousin-domain style attack. In such cases, it is more
+likely that there can be a larger list of names (compared to the
+"positive" use-cases) for which there is a desire to disavow a 
+relationship.
+
 It is not a goal of this specification to provide a high-level of
-assurance that two domains are definitely related, nor to provide
+assurance as to whether or not two domains are definitely related, nor to provide
 fine-grained detail about the kind of relationship that may 
 exist between domains.
 
 Using "Related Domains By DNS", or "RDBD", it is possible to
-declare that two domains are related.
+declare that two domains are related, or to disavow such a
+relationship.
 
 We include an optional digital signature mechanism that can somewhat improve the
 level of assurance with which an RDBD declaration can be handled.
@@ -83,7 +91,7 @@ keys and signatures - a public key is hosted at the relating-domain
 the `example.com` public key) over the text representation ('A-label') of 
 the two domain names (plus a couple of other inputs).
 
-RDBD is intended to demonstrate a relationship between registered
+RDBD is intended to declare or disavow a relationship between registered
 domains, not individual hostnames.  That is to say that the
 relationship should exist between `example.com` and `dept-example.com`,
 not `foo.example.com` and `bar.dept-example.com` (where those latter
@@ -120,7 +128,6 @@ We define two new RRTYPES, an optional one for the relating-domain (RDBDKEY)
 to store a public key for when signatures are in use and one for use in 
 related-domains (RDBD).
 
-
 ## RDBDKEY Resource Record Definition
 
 The RDBDKEY record is published at the apex of the relating-domain zone.
@@ -142,9 +149,16 @@ RDBDKEY is a regular RR type.
 The flags field of RDBDKEY records MUST be zero. [[Is that correct/ok? I've
 no idea really:-)]]
 
+There can be multiple occurrences of the RDBDKEY resource record in the
+same zone
+
 ## RDBD Resource Record Definition
 
-The RDBD resource record is published at the apex of the related-domain zone.
+To declare a relationship exists an RDBD resource record is published at the
+apex of the related-domain zone.
+
+To disavow a relationship an RDBD resource record is published at the apex of
+the relating-domain zone.
 
 [[All going well, at some point we'll be able to say...]]
 IANA has allocated RR code TBD for the RDBD resource record via Expert
@@ -154,8 +168,11 @@ The RDBD RR is class independent.
 
 The RDBD RR has no special Time to Live (TTL) requirements.
 
+There can be multiple occurrences of the RDBD resource record in the
+same zone.
+
 The wire format for an RDBD RDATA consists of a two octet rdbd-tag, the
-relating-domain name, and the optional signature fields which are: a two-octet
+relating-domain name(s), and the optional signature fields which are: a two-octet
 key-tag, a one-octet signature algorithm, and the digital signature bits.
 
 ~~~ ascii-art
@@ -164,7 +181,7 @@ key-tag, a one-octet signature algorithm, and the digital signature bits.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |           rdbd-tag            |                               /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               /
-   /                         relating-domain name                  /
+   /                        relating-domain name(s)                /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+|
    |    key-tag                    | sig-alg     |                 /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                 /
@@ -172,8 +189,26 @@ key-tag, a one-octet signature algorithm, and the digital signature bits.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~
 
-The rdbd-tag field MUST contain the value zero. Later specifications
-can define new rdbd-tag values. 
+We define two possible values for the rdbd-tag in this specification,
+later specifications can define new rdbd-tag values:
+
+- 0: states that no relationship exists between the domains
+- 1: states that some relationship exists between the domains 
+
+The relating-domain name(s) field contains either a single domain
+name, or an HTTPS URL. In the latter case, successfully de-referencing that
+URL results in a JSON object that contains the list of domain
+names, such as is shown in the figure below.
+
+~~~ ascii-art
+
+    [ 
+        "example.com", 
+        "example.net",
+        "foo.example"
+    ]
+    
+~~~
 
 If an optional signature is included, the sig-alg field MUST contain
 the signature algorithm used, with the same values used as would be
@@ -190,7 +225,7 @@ The input to signing ("to-be-signed" data) is the concatenation of the
 following linefeed-separated (where linefeed has the value '0x0a') lines:
 
 ~~~ ascii-art
-relating=<relating-domain>
+relating=<relating-domain name or URL>
 related=<related-domain>
 rdbd-tag=<rdbd-tag value>
 key-tag=<key-tag>
@@ -219,7 +254,9 @@ RDBD relationships are uni-directional. If bi-directional relationships
 exist, then both domains can publish RDBD RRs and optionally sign those.
 
 If one domain has relationships with many others, then the relevant
-RDBD RRs (and RDBDKEY RRs) can be published to represent those.
+RDBD RRs (and RDBDKEY RRs) can be published to represent those or
+one RDBD RR can contain an HTTPS URL at which one can provide a list of
+names.
 
 # Required Signature Algorithms
 
@@ -242,35 +279,33 @@ signatures SHOULD support use of Ed25519
 
 # Validation 
 
-A validated signature is solely meant to be additional evidence that the two domains 
-are related.  The existence of this relationship is not meant to 
-state that the data from either domain should be considered as more trustworthy.  
+A validated signature is solely meant to be additional evidence that the
+relevant domains are related, or that one disavows such relationship.  The
+existence or disavowal of a relationship does not by itself mean that data or
+services from any domain should be considered as more or less trustworthy.  
 
 # Security Considerations
 
 ## Efficiacy of signatures
 
-The optional signature mechanism defined here offers no
-protection against an active attack if both the RDBD and
-RDBDKEY values are accessed via an untrusted path.
+The optional signature mechanism defined here offers no protection against an
+active attack if both the RDBD and RDBDKEY values are accessed via an untrusted
+path.
 
-If the RDBDKEY value has been cached, or is otherwise
-known via some sufficiently secure mechanism, then the
-RDBD signature does confirm that the holder of the
-private key (presumably the relating-domain) considered
-that the relationship with the related-domain was real
-at some point in time. 
+If the RDBDKEY value has been cached, or is otherwise known via some
+sufficiently secure mechanism, then the RDBD signature does confirm that the
+holder of the private key (presumably the relating-domain) considered that the
+relationship, or lack thereof, with the related-domain was real at some point
+in time. 
 
 ## DNSSEC
 
-RDBD does not require DNSSEC. Without DNSSEC it is possible for an
-attacker to falsify DNS query responses for someone investigating a
-relationship. 
-Conversely, an attacker could delete the response that would
-normally demonstrate the relationship, causing the investigating party to
-believe there is no link between the two domains.
-An attacker could also replay an old RDBD value that is
-actually no longer published in the DNS by the related-domain.
+RDBD does not require DNSSEC. Without DNSSEC it is possible for an attacker to
+falsify DNS query responses for someone investigating a relationship.
+Conversely, an attacker could delete the response that would normally
+demonstrate the relationship, causing the investigating party to believe there
+is no link between the two domains.  An attacker could also replay an old RDBD
+value that is actually no longer published in the DNS by the related-domain.
 
 Deploying signed records with DNSSEC should allow for detection
 of these kinds of attack.
@@ -330,7 +365,10 @@ your name here.
 # Examples 
 
 [[TODO: script up generation of all samples - it's not unlikely
-we mucked up somewhere below when generating 'em partly-manually;-)]]
+we mucked up somewhere below when generating 'em partly-manually;-)
+This is unchanged since draft-01 so the rdbd-tag values don't
+match the above. We'll fix that when we script up the sample
+generation properly.]]
 
 
 ## Sample Unsigned RDBD RR
@@ -610,7 +648,9 @@ The RDBDKEY for this example would be:
 
 ## Changes from -01 to -02
 
-- Typo fix
+- Added negative assertions 
+- Added URL option
+- Typo fixes
 
 ## Changes from -00 to -01
 

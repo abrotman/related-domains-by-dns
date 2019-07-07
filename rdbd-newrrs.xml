@@ -42,7 +42,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2019" month="April" day="1"/>
+<date year="2019" month="July" day="7"/>
 
 <area>Applications</area>
 <workgroup></workgroup>
@@ -50,8 +50,8 @@
 
 
 <abstract>
-<t>This document outlines a mechanism by which a registered domain can
-publicly document a relationship with a different registered domain, called
+<t>This document outlines a mechanism by which a DNS domain can
+publicly document the existence or absence of a relationship with a different domain, called
 &quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;.
 </t>
 </abstract>
@@ -92,13 +92,22 @@ easier;</t>
 if we have information as to which domains are related.</t>
 </list>
 </t>
+<t>Similarly, a domain may wish to declare that no relationship exists with
+some other domain, for example &quot;good.example&quot; may want to declare that
+it is not associated with &quot;g00d.example&quot; if the latter is currently being
+used in some cousin-domain style attack. In such cases, it is more
+likely that there can be a larger list of names (compared to the
+&quot;positive&quot; use-cases) for which there is a desire to disavow a
+relationship.
+</t>
 <t>It is not a goal of this specification to provide a high-level of
-assurance that two domains are definitely related, nor to provide
+assurance as to whether or not two domains are definitely related, nor to provide
 fine-grained detail about the kind of relationship that may
 exist between domains.
 </t>
 <t>Using &quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;, it is possible to
-declare that two domains are related.
+declare that two domains are related, or to disavow such a
+relationship.
 </t>
 <t>We include an optional digital signature mechanism that can somewhat improve the
 level of assurance with which an RDBD declaration can be handled.
@@ -109,7 +118,7 @@ keys and signatures - a public key is hosted at the relating-domain
 the <spanx style="verb">example.com</spanx> public key) over the text representation ('A-label') of
 the two domain names (plus a couple of other inputs).
 </t>
-<t>RDBD is intended to demonstrate a relationship between registered
+<t>RDBD is intended to declare or disavow a relationship between registered
 domains, not individual hostnames.  That is to say that the
 relationship should exist between <spanx style="verb">example.com</spanx> and <spanx style="verb">dept-example.com</spanx>,
 not <spanx style="verb">foo.example.com</spanx> and <spanx style="verb">bar.dept-example.com</spanx> (where those latter
@@ -171,10 +180,17 @@ RDBDKEY is a regular RR type.
 <t>The flags field of RDBDKEY records MUST be zero. [[Is that correct/ok? I've
 no idea really:-)]]
 </t>
+<t>There can be multiple occurrences of the RDBDKEY resource record in the
+same zone
+</t>
 </section>
 
 <section anchor="rdbd-resource-record-definition" title="RDBD Resource Record Definition">
-<t>The RDBD resource record is published at the apex of the related-domain zone.
+<t>To declare a relationship exists an RDBD resource record is published at the
+apex of the related-domain zone.
+</t>
+<t>To disavow a relationship an RDBD resource record is published at the apex of
+the relating-domain zone.
 </t>
 <t>[[All going well, at some point we'll be able to say...]]
 IANA has allocated RR code TBD for the RDBD resource record via Expert
@@ -184,8 +200,11 @@ Review.
 </t>
 <t>The RDBD RR has no special Time to Live (TTL) requirements.
 </t>
+<t>There can be multiple occurrences of the RDBD resource record in the
+same zone.
+</t>
 <t>The wire format for an RDBD RDATA consists of a two octet rdbd-tag, the
-relating-domain name, and the optional signature fields which are: a two-octet
+relating-domain name(s), and the optional signature fields which are: a two-octet
 key-tag, a one-octet signature algorithm, and the digital signature bits.
 </t>
 
@@ -195,16 +214,37 @@ key-tag, a one-octet signature algorithm, and the digital signature bits.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |           rdbd-tag            |                               /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               /
-   /                         relating-domain name                  /
+   /                        relating-domain name(s)                /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+|
    |    key-tag                    | sig-alg     |                 /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                 /
    /                            signature                          /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 </artwork></figure>
-<t>The rdbd-tag field MUST contain the value zero. Later specifications
-can define new rdbd-tag values.
+<t>We define two possible values for the rdbd-tag in this specification,
+later specifications can define new rdbd-tag values:
 </t>
+<t>
+<list style="symbols">
+<t>0: states that no relationship exists between the domains</t>
+<t>1: states that some relationship exists between the domains</t>
+</list>
+</t>
+<t>The relating-domain name(s) field contains either a single domain
+name, or an HTTPS URL. In the latter case, successfully de-referencing that
+URL results in a JSON object that contains the list of domain
+names, such as is shown in the figure below.
+</t>
+
+<figure align="center"><artwork align="center" type="ascii-art">
+
+    [ 
+        "example.com", 
+        "example.net",
+        "foo.example"
+    ]
+    
+</artwork></figure>
 <t>If an optional signature is included, the sig-alg field MUST contain
 the signature algorithm used, with the same values used as would be
 used in an RRSIG. The key-tag MUST match the RDBDKEY RR value for
@@ -221,7 +261,7 @@ following linefeed-separated (where linefeed has the value '0x0a') lines:
 </t>
 
 <figure align="center"><artwork align="center" type="ascii-art">
-relating=&lt;relating-domain&gt;
+relating=&lt;relating-domain name or URL&gt;
 related=&lt;related-domain&gt;
 rdbd-tag=&lt;rdbd-tag value&gt;
 key-tag=&lt;key-tag&gt;
@@ -251,7 +291,9 @@ last line.
 exist, then both domains can publish RDBD RRs and optionally sign those.
 </t>
 <t>If one domain has relationships with many others, then the relevant
-RDBD RRs (and RDBDKEY RRs) can be published to represent those.
+RDBD RRs (and RDBDKEY RRs) can be published to represent those or
+one RDBD RR can contain an HTTPS URL at which one can provide a list of
+names.
 </t>
 </section>
 
@@ -276,37 +318,35 @@ signatures SHOULD support use of Ed25519
 </section>
 
 <section anchor="validation" title="Validation">
-<t>A validated signature is solely meant to be additional evidence that the two domains
-are related.  The existence of this relationship is not meant to
-state that the data from either domain should be considered as more trustworthy.
+<t>A validated signature is solely meant to be additional evidence that the
+relevant domains are related, or that one disavows such relationship.  The
+existence or disavowal of a relationship does not by itself mean that data or
+services from any domain should be considered as more or less trustworthy.
 </t>
 </section>
 
 <section anchor="security-considerations" title="Security Considerations">
 
 <section anchor="efficiacy-of-signatures" title="Efficiacy of signatures">
-<t>The optional signature mechanism defined here offers no
-protection against an active attack if both the RDBD and
-RDBDKEY values are accessed via an untrusted path.
+<t>The optional signature mechanism defined here offers no protection against an
+active attack if both the RDBD and RDBDKEY values are accessed via an untrusted
+path.
 </t>
-<t>If the RDBDKEY value has been cached, or is otherwise
-known via some sufficiently secure mechanism, then the
-RDBD signature does confirm that the holder of the
-private key (presumably the relating-domain) considered
-that the relationship with the related-domain was real
-at some point in time.
+<t>If the RDBDKEY value has been cached, or is otherwise known via some
+sufficiently secure mechanism, then the RDBD signature does confirm that the
+holder of the private key (presumably the relating-domain) considered that the
+relationship, or lack thereof, with the related-domain was real at some point
+in time.
 </t>
 </section>
 
 <section anchor="dnssec" title="DNSSEC">
-<t>RDBD does not require DNSSEC. Without DNSSEC it is possible for an
-attacker to falsify DNS query responses for someone investigating a
-relationship.
-Conversely, an attacker could delete the response that would
-normally demonstrate the relationship, causing the investigating party to
-believe there is no link between the two domains.
-An attacker could also replay an old RDBD value that is
-actually no longer published in the DNS by the related-domain.
+<t>RDBD does not require DNSSEC. Without DNSSEC it is possible for an attacker to
+falsify DNS query responses for someone investigating a relationship.
+Conversely, an attacker could delete the response that would normally
+demonstrate the relationship, causing the investigating party to believe there
+is no link between the two domains.  An attacker could also replay an old RDBD
+value that is actually no longer published in the DNS by the related-domain.
 </t>
 <t>Deploying signed records with DNSSEC should allow for detection
 of these kinds of attack.
@@ -382,7 +422,10 @@ your name here.
 
 <section anchor="examples" title="Examples">
 <t>[[TODO: script up generation of all samples - it's not unlikely
-we mucked up somewhere below when generating 'em partly-manually;-)]]
+we mucked up somewhere below when generating 'em partly-manually;-)
+This is unchanged since draft-01 so the rdbd-tag values don't
+match the above. We'll fix that when we script up the sample
+generation properly.]]
 </t>
 
 <section anchor="sample-unsigned-rdbd-rr" title="Sample Unsigned RDBD RR">
@@ -665,7 +708,9 @@ dept-example.com. 3600 RDBD 0 example.com. 35988 15 (
 <section anchor="changes-from-01-to-02" title="Changes from -01 to -02">
 <t>
 <list style="symbols">
-<t>Typo fix</t>
+<t>Added negative assertions</t>
+<t>Added URL option</t>
+<t>Typo fixes</t>
 </list>
 </t>
 </section>
