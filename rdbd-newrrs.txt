@@ -597,19 +597,19 @@ A.2.  RSA-signed Example
           -outform PEM
      $ cat rsa.private
      -----BEGIN RSA PRIVATE KEY-----
-     MIIEowIBAAKCAQEA3qg68hd/EOys5T4WrhsjXpTPjYoIUzIggTC9N5Q5aBb86/lH
-     RwHCjrKg6ws31SR9LEqeHMq0Wv/oUZOISs54yLWZWa5B0ZtaJw/3b8wwMFsu2IAO
-     c5vnYqryR61Ln10CsDRsrzLXxqfGYbnUzZ5WkDjwBYflGw1XfLLSugvAaYIq+gz8
-     J/SxwLkZqfsR0Jkvcn+kHh51YLNMFNBn8CUElA3tSkWDR9wIK4WK9LRT3e9xc6rH
-     lHRi/Ubst+E21r7loxfU08OHVeUL0G1F9dEswT8BYaCtUnf3wpWoFknrZD4HWU+E
-     mG54MDjSQPBNu0iKLS3sBGn6obrmGTMdWSqyxwIDAQABAoIBAFbhBb8Y8/fCoeQB
-     ShA9fpuVLTdpOL5dvNksD2j0aUH4VlAtQGawhR3xDWEpS2vbhQwXQYKyhZVMbXYH
-     PxMRZYfLdD7OA9ip6Y98Z2w0HEmCCtFnhjwOBUc2tLrLH8rbHAVtL0tdZ1yYcowH
-     WsWwls5HqUA/OmJH3m9Fx3vYwgdojL0BfTD9BzMdrRnYGn3D4W+5nyhK3Cfkm3fZ
-     EYrG7ZfPyGf1eVQ7fMw9U95iANnz52N4fUN8C+EhwgZHCCmlSpK64aPG8dXkNOXW
-     G99MHL3rw4e+z3XbpNQvzL0xfsqh4vCEImTJ0I7MMRUVuRHK/SV+YHMrstcAKysU
-     BiO4ogECgYEA9iTg6OHQGSW8hgYxgXx8IgZhkTJI/QrddgZB83g4nypu0KggtQza
-     qoAomUnw8uT372ACgu2+KFBjiv0BlRPfCJDxNqN3jPfG8H74YpPSjNuw5xe9Jye4
+     MIIEowIBAAKCAQEA8qpGa2i6O76MdGiFVYGgd6UDYfUNl4qHpXfzmrqawUqb8JHM
+     5m8hjLTbKDGRpZJA5m9sQlaM41hQxpAPuW3mJXYvVOiqxtRCBlVTvUCR+Gkah7LU
+     FT54U8PT+ciF2or2ArL7O1LIT1PnEL0AZsbM6FwYLsRE8RX89PqeL9N/U4xJ7jQq
+     SRK88bnRRFs+W7F+iQuA5erHfIZHftq+yzRG8rtgTN7HvTOewkDa2XS2Tn/z0tRV
+     wNUX4Mi4e/DaEZU0u3kn7HqL0hyBXz/EEHUq9+57BURUT/ZQ41ORGgJ/4+tv2Gp8
+     mp1ydOJaAhzgqky2zGBL1RS+mBFCio9dXBIJywIDAQABAoIBAQDwE7ITtcr6LKy8
+     xmOTkul1NVZBZbYKxU0qUaA65n8Q2IWq3jR/jlb85DkmbNQRoL6AvJ+4ifRdQBS6
+     PfCwnZ/iVCjDsmSyzXB835I3XFiOET3kHvJgCiv1g3qGVvLGolB9nyGbMW1nvjSO
+     hM6O4AP9po9uRVOHyR84J3K1EmOX/PgmITPel61CEe+IdYwX3K3w1Mmm9C3ZSitx
+     rx8gpWHknpAG9Z+DA+f406TFTFtuTQe6xCDjKl0/uUGsT62UQqEiw00wekm8e+2b
+     rDdtqu61Lqq1aakhtGlozXIT7ED+oobp6cAnM1QbV09z7zZevXl95yrXt9xZ3odS
+     HNcHnMCRAoGBAP6N00vMmplk76OOJ738Twf6fsaL+zkwNmL74Rv85LJn96p6xQUm
+     wJdMsa7HoD7LwuxhJkhDbdTiq+oV+Mc4J+FAe5xRK5vD7wVmPNWtUcvwdTZXnpNr
 
 
 
@@ -618,54 +618,54 @@ Brotman & Farrell        Expires January 9, 2020               [Page 11]
 Internet-Draft                    RDBD                         July 2019
 
 
-     1VJfncqJssEeblHTot43x/MuIewfP4FkbyW2DYGf8NE3rAlNl+Vb3MECgYEA55KY
-     2i/Q+5edOvKU3N+kctEyjCeZXB3tMCaeDuD+X0IqJEjJiGrE+DN9nmD72ST3p6Tl
-     umFXxbIT19vb7GVlztCqKHkrr8H3ZX+3lYYIwVpbl8pyKwVGS6UkiCTEEMrXEA4u
-     NStgFIrCXvMU6IJ9Z2NLHu0GH7tCX8p3/UQWiYcCgYBRp6hI+Whcf01MNM/FgfN4
-     Ih/J2CGoeCtBlQ/Z4f7+pkf+xlebWDlOKJfPSl05ZsXtTi9nGdFkdE6hdA9LUj1C
-     DTtIAfCN/kCr1aM2qI1HlzXXY+OnEqFZeysnIGKPv0sGE/UeaZOdrEmYjUlMevND
-     gAIl9uOFMxLB6pAoHLldwQKBgQCBL95H8l8CzH0xkn0Lj1Q9nYk2eSzsH+Hfd9u7
-     bzdZSx8ZaOXNTcsesBMHVRGK/T2P78UdKgr+Ri8dwBC7m4GlU/FpbNe7UFlE7XAs
-     YT7nJxJr5su0RlgGAVYVAXXD7HT4BwEuNkl+jD6NG8zxPULad6FD2nUNJLmNmPVB
-     fEeaZwKBgDdfhcNhnLNP0CQjPlte5ZStdM0mTT7sxW9kdZdKgjvuNomxEOsPB20j
-     9GKFXD5WeH+U70l0eQsuX5JPzBDiYczv6KJk9WZlJE+kMzgSehiH2LyBQzGfQqZa
-     pHeX0ceNO7dbe85QxUUQ9W65ydMvF2D83dj7EIvpUwdgDmA3F5Q/
+     6fU28PqL76feU22G/V2mthgKOXPvYehcteAJAEGbLwQoo1Q7qZa7Q9i/AoGBAPQL
+     KSqcOzGHJ57iYN+HbN0cqXpBburA7dZstl6WiwQO0U4+KsJ3eyyuUE0Mz6epXeQD
+     Ry1W8yoH9ypfLDEP3YwP3wp7dqISyGAzsRospGyGJ0tHkQ3orW+/6PgSl9W2aJV2
+     LqyfOPutrjfIRUkgALMq8cTRxR1xpx0HpVfOMCX1AoGAJi9SPfGgU1hf1lIRxh8e
+     H91EvTXsZqTD089i8lbaW6Ta8xjdiytIAqo/kS9i62iXgewE2Rw8Uo36KfBH1GKp
+     INISeN14RDJ9HXs7rvYD6irU+mTkZcrvWph2R69MMQtZynlQcob6k9qcybZkIn4d
+     zlCrWCwWPnJ2JcGZbAIFaHMCgYBXIdD95LABu/a6dKsPxANrYrtj6g7XBDEmuMPY
+     O7nApiW24N1Vd2FkD4yeJe/SNddO/JiiKIRDQnrOBxL5JWf9hQEmdfRiY4BlUK9v
+     3/aIxNEswI2awLODzao5QDIz3J+0lXCOs36d5WHpiriqJiH51mBh3F+bZqO66qrv
+     EbABLQKBgDUhcsEyIMI6oygKO/L+iVOZM+ao+64TtKxqUmgHU+gBgvdkY8h9GvxY
+     kL7L1hBOB9bAyP8ObU18R5CMbQgO7PITACRoU+uYIiQ67UREDKjBRtoDcgK0JrRX
+     kqy4v6LuuFCpS5OJKQL6rKfk2XNSjDD1ZwLuBZjHQDdc/gnn7XRx
      -----END RSA PRIVATE KEY-----
      $ cat rsa.public
      -----BEGIN PUBLIC KEY-----
-     MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3qg68hd/EOys5T4Wrhsj
-     XpTPjYoIUzIggTC9N5Q5aBb86/lHRwHCjrKg6ws31SR9LEqeHMq0Wv/oUZOISs54
-     yLWZWa5B0ZtaJw/3b8wwMFsu2IAOc5vnYqryR61Ln10CsDRsrzLXxqfGYbnUzZ5W
-     kDjwBYflGw1XfLLSugvAaYIq+gz8J/SxwLkZqfsR0Jkvcn+kHh51YLNMFNBn8CUE
-     lA3tSkWDR9wIK4WK9LRT3e9xc6rHlHRi/Ubst+E21r7loxfU08OHVeUL0G1F9dEs
-     wT8BYaCtUnf3wpWoFknrZD4HWU+EmG54MDjSQPBNu0iKLS3sBGn6obrmGTMdWSqy
-     xwIDAQAB
+     MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8qpGa2i6O76MdGiFVYGg
+     d6UDYfUNl4qHpXfzmrqawUqb8JHM5m8hjLTbKDGRpZJA5m9sQlaM41hQxpAPuW3m
+     JXYvVOiqxtRCBlVTvUCR+Gkah7LUFT54U8PT+ciF2or2ArL7O1LIT1PnEL0AZsbM
+     6FwYLsRE8RX89PqeL9N/U4xJ7jQqSRK88bnRRFs+W7F+iQuA5erHfIZHftq+yzRG
+     8rtgTN7HvTOewkDa2XS2Tn/z0tRVwNUX4Mi4e/DaEZU0u3kn7HqL0hyBXz/EEHUq
+     9+57BURUT/ZQ41ORGgJ/4+tv2Gp8mp1ydOJaAhzgqky2zGBL1RS+mBFCio9dXBIJ
+     ywIDAQAB
      -----END PUBLIC KEY-----
      # To-be-signed data for RSA
      $ cat  to-be-signed-8.txt
      relating=my.example
      related=my-way.example
      rdbd-tag=1
-     key-tag=33971
+     key-tag=38501
      sig-alg=8
      # Sign that
      $ openssl dgst -sha256 -sign rsa.private -out rsa.sig \
              to-be-signed-8.txt
      # Hexdump of signature
      $ hexdump rsa.sig
-     0000000 a9d7 6ad5 f74b ab42 8dec 6cc3 b992 69ce
-     0000010 0ef6 19d2 7e8a 26a0 7e31 cea5 8d79 73f6
-     0000020 1d9a 3222 dc2e d5b6 45b6 5275 9ce9 5a87
-     0000030 c29e fb91 85b8 33d6 9666 09bc 8d2c d0bd
-     0000040 a3fd 39da 8b94 7795 6120 8659 f5ec 8358
-     0000050 dd66 69d6 8f92 3d8b 3176 ae62 98ad a799
-     0000060 97bc 3db9 2f22 958b a4a3 3c26 7ead c016
-     0000070 ad8d 701c b3ad 416b b432 e7e5 e360 d2fe
-     0000080 35ba 4db1 143d d2bb 5cf2 fb21 5bbe 5bce
-     0000090 a5fb a7ab 528f a74b fe6e 3ef3 8547 5d8a
-     00000a0 9b1c 3393 459c 335c cc59 2479 5a5b 3de5
-     00000b0 ab6c 4333 8dac 233e e4ea 98ec ac00 f8d7
-     00000c0 f0c4 0e15 c737 5479 3247 c648 0127 cfc5
+     0000000 8664 bd57 8cbf a8e1 9182 1b5f a4fc 5eb9
+     0000010 49b4 fe21 f1c7 8097 ed90 44a5 bcb1 543c
+     0000020 f784 c190 e1d9 2f2b 18ca d3c2 640f 3823
+     0000030 7f8a e446 d0eb bd14 6077 0597 6015 a82b
+     0000040 42d7 8677 b1a3 37fa a1e8 8109 07ec ff62
+     0000050 16b8 3895 66de d992 dc4d ed99 9ec3 0a62
+     0000060 6a07 3baa 45f2 d528 1e83 a147 60ce 9b25
+     0000070 a967 4ba0 3fb5 98db 5ff3 b070 058b 4d8f
+     0000080 f198 6c1f e6b6 7a6c 1e8c ad42 237f 5440
+     0000090 7856 caac f96c f87d e79c 4dc5 b833 bc03
+     00000a0 c52e 5603 46a7 59b5 9fe3 fccd 04ee e908
+     00000b0 71e7 21f8 47ad fea8 40bf 14a5 9e6b b3d4
+     00000c0 c61a 5b96 c559 3491 4dfa 91a0 4c0b f3ff
 
 
 
@@ -674,9 +674,9 @@ Brotman & Farrell        Expires January 9, 2020               [Page 12]
 Internet-Draft                    RDBD                         July 2019
 
 
-     00000d0 c3ef bb05 dc95 4f12 f2ee 723b 9c17 3f24
-     00000e0 14c3 b225 c581 0134 8531 1800 b816 d775
-     00000f0 3597 3c68 6225 32e4 7238 c188 5309 ac2c
+     00000d0 e460 484c 7e49 5368 85e3 16be fe6b 809a
+     00000e0 117d c2cb be19 c5ba 7594 2f60 16ad 1132
+     00000f0 f978 6ca1 5448 180f 8ca7 e73d 1137 7064
      0000100
      # BASH SNIPPET ENDS
 
@@ -684,28 +684,28 @@ Internet-Draft                    RDBD                         July 2019
      ; The RDBDKEY RR for my.example is...
      my.example. 3600 IN RDBDKEY 0 3 8 (
                  LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5C
-                 Z2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEz
-                 cWc2OGhkL0VPeXM1VDRXcmhzagpYcFRQallvSVV6SWdnVEM5
-                 TjVRNWFCYjg2L2xIUndIQ2pyS2c2d3MzMVNSOUxFcWVITXEw
-                 V3Yvb1VaT0lTczU0CnlMV1pXYTVCMFp0YUp3LzNiOHd3TUZz
-                 dTJJQU9jNXZuWXFyeVI2MUxuMTBDc0RSc3J6TFh4cWZHWWJu
-                 VXpaNVcKa0Rqd0JZZmxHdzFYZkxMU3VndkFhWUlxK2d6OEov
-                 U3h3TGtacWZzUjBKa3ZjbitrSGg1MVlMTk1GTkJuOENVRQps
-                 QTN0U2tXRFI5d0lLNFdLOUxSVDNlOXhjNnJIbEhSaS9VYnN0
-                 K0UyMXI3bG94ZlUwOE9IVmVVTDBHMUY5ZEVzCndUOEJZYUN0
-                 VW5mM3dwV29Ga25yWkQ0SFdVK0VtRzU0TURqU1FQQk51MGlL
-                 TFMzc0JHbjZvYnJtR1RNZFdTcXkKeHdJREFRQUIKLS0tLS1F
+                 Z2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUE4
+                 cXBHYTJpNk83Nk1kR2lGVllHZwpkNlVEWWZVTmw0cUhwWGZ6
+                 bXJxYXdVcWI4SkhNNW04aGpMVGJLREdScFpKQTVtOXNRbGFN
+                 NDFoUXhwQVB1VzNtCkpYWXZWT2lxeHRSQ0JsVlR2VUNSK0dr
+                 YWg3TFVGVDU0VThQVCtjaUYyb3IyQXJMN08xTElUMVBuRUww
+                 QVpzYk0KNkZ3WUxzUkU4Ulg4OVBxZUw5Ti9VNHhKN2pRcVNS
+                 Szg4Ym5SUkZzK1c3RitpUXVBNWVySGZJWkhmdHEreXpSRwo4
+                 cnRnVE43SHZUT2V3a0RhMlhTMlRuL3owdFJWd05VWDRNaTRl
+                 L0RhRVpVMHUza243SHFMMGh5Qlh6L0VFSFVxCjkrNTdCVVJV
+                 VC9aUTQxT1JHZ0ovNCt0djJHcDhtcDF5ZE9KYUFoemdxa3ky
+                 ekdCTDFSUyttQkZDaW85ZFhCSUoKeXdJREFRQUIKLS0tLS1F
                  TkQgUFVCTElDIEtFWS0tLS0tCg== )
      ; The RDBD RR to be published by my-way.example is...
-     my-way.example. 3600 IN RDBD 1 my.example 33971 8 (
-                 16nVakv3QqvsjcNskrnOafYO0hmKfqAmMX6lznmN9nOaHSIy
-                 Lty21bZFdVLpnIdansKR+7iF1jNmlrwJLI290P2j2jmUi5V3
-                 IGFZhuz1WINm3dZpko+LPXYxYq6tmJmnvJe5PSIvi5WjpCY8
-                 rX4WwI2tHHCts2tBMrTl52Dj/tK6NbFNPRS70vJcIfu+W85b
-                 +6Wrp49SS6du/vM+R4WKXRybkzOcRVwzWcx5JFta5T1sqzND
-                 rI0+I+rk7JgArNf4xPAVDjfHeVRHMkjGJwHFz+/DBbuV3BJP
-                 7vI7checJD/DFCWygcU0ATGFABgWuHXXlzVoPCVi5DI4cojB
-                 CVMsrA== )
+     my-way.example. 3600 IN RDBD 1 my.example 38501 8 (
+                 ZIZXvb+M4aiCkV8b/KS5XrRJIf7H8ZeAkO2lRLG8PFSE95DB
+                 2eErL8oYwtMPZCM4in9G5OvQFL13YJcFFWArqNdCd4ajsfo3
+                 6KEJgewHYv+4FpU43maS2U3cme3DnmIKB2qqO/JFKNWDHkeh
+                 zmAlm2epoEu1P9uY819wsIsFj02Y8R9stuZseoweQq1/I0BU
+                 Vnisymz5ffic58VNM7gDvC7FA1anRrVZ45/N/O4ECOnncfgh
+                 rUeo/r9ApRRrntSzGsaWW1nFkTT6TaCRC0z/82DkTEhJfmhT
+                 44W+Fmv+moB9EcvCGb66xZR1YC+tFjIRePmhbEhUDxinjD3n
+                 NxFkcA== )
      ; ZONE FILE FRAGMENT ENDS
 
 
@@ -773,7 +773,7 @@ Internet-Draft                    RDBD                         July 2019
        my.example. 3600 IN RDBDKEY 0 3 15 (
                    NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRrs+yGvo01tkg= )
        ; The RDBD RR to be published by my-way.example is...
-       my-way.example. 3600 IN RDBD 0 my.example 35988 15 (
+       my-way.example. 3600 IN RDBD 1 my.example 35988 15 (
                    ZLxETOdZ+5Q1/pwYdeskHE7G0Jlc2BOKNyeCMvyOefU8uPiA
                    WfYEAFTGG+jP1z/URSH3OZRij8fDATX6kpqwDw== )
        ; ZONE FILE FRAGMENT ENDS
