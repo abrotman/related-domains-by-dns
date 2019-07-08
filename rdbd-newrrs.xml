@@ -635,7 +635,8 @@ my-way.example. 3600 IN RDBD 0 my.example 35988 15 (
 
 <section anchor="ed25519-signing-code" title="Ed25519 Signing Code">
 <t>Since OpenSSL does not yet support Ed25519 signing via its command
-line tool, we generate our example using the python script below.
+line tool, we generate our example using the python script below,
+which is called as &quot;ed25519-signer.py&quot; above.
 This uses the python library from Appendix A of <xref target="RFC8032"/>.
 </t>
 

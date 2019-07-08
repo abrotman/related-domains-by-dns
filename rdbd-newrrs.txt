@@ -789,8 +789,9 @@ Internet-Draft                    RDBD                         July 2019
 Appendix B.  Ed25519 Signing Code
 
    Since OpenSSL does not yet support Ed25519 signing via its command
-   line tool, we generate our example using the python script below.
-   This uses the python library from Appendix A of [RFC8032].
+   line tool, we generate our example using the python script below,
+   which is called as "ed25519-signer.py" above.  This uses the python
+   library from Appendix A of [RFC8032].
 
 
    #!/usr/bin/env python3
@@ -833,7 +834,6 @@ Appendix B.  Ed25519 Signing Code
            sys.exit(1)
        if args.relating is None:
            print("You do need a relating domain... - exiting")
-           sys.exit(1)
 
 
 
@@ -842,6 +842,7 @@ Brotman & Farrell        Expires January 9, 2020               [Page 15]
 Internet-Draft                    RDBD                         July 2019
 
 
+           sys.exit(1)
        if args.related is None:
            print("You do need a related domain... - exiting")
            sys.exit(1)
@@ -887,7 +888,6 @@ Internet-Draft                    RDBD                         July 2019
 Appendix C.  Changes and Open Issues
 
    [[RFC editor: please delete this appendix ]]
-
 
 
 

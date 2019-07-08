@@ -367,7 +367,8 @@ your name here.
 # Ed25519 Signing Code
 
 Since OpenSSL does not yet support Ed25519 signing via its command
-line tool, we generate our example using the python script below. 
+line tool, we generate our example using the python script below,
+which is called as "ed25519-signer.py" above. 
 This uses the python library from Appendix A of [@?RFC8032].
 
 ~~~ ascii-art
