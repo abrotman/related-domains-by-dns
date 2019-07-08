@@ -42,7 +42,7 @@
 <uri></uri>
 </address>
 </author>
-<date year="2019" month="July" day="7"/>
+<date year="2019" month="July" day="8"/>
 
 <area>Applications</area>
 <workgroup></workgroup>
@@ -421,200 +421,220 @@ your name here.
 </references>
 
 <section anchor="examples" title="Examples">
-<t>[[TODO: script up generation of all samples - it's not unlikely
-we mucked up somewhere below when generating 'em partly-manually;-)
-This is unchanged since draft-01 so the rdbd-tag values don't
-match the above. We'll fix that when we script up the sample
-generation properly.]]
+<t>This appendix provides examples of RDBD-related values.
+The following names and other values are used in these examples.
+</t>
+<t>
+<list style="symbols">
+<t>Relating domain: my.example</t>
+<t>Related domain: my-way.example</t>
+<t>Unrelated domain: my-bad.example</t>
+<t>URL for other related domains: <eref target="https://example.com/related-names"/></t>
+<t>URL for other unrelaed domains: <eref target="https://example.com/unrelateds"/></t>
+</list>
+</t>
+<t>The github repo
+<eref target="https://github.com/abrotman/related-domains-by-dns"/>
+has a script in sample/mk_samples.sh that generated this appendix.
 </t>
 
-<section anchor="sample-unsigned-rdbd-rr" title="Sample Unsigned RDBD RR">
-<t>When example.com is the relating-domain and dept-example.com
-is the related-domain, an unsigned RDBD RR would look like this in a zone file:
-</t>
+<section anchor="unsigned-examples" title="Unsigned Examples">
 
 <figure align="center"><artwork align="center" type="ascii-art">
-dept-example.com. IN 3600 RDBD 0 example.com.
-</artwork></figure>
-<t>The following is equivalent to tbe above:
-</t>
 
-<figure align="center"><artwork align="center" type="ascii-art">
-dept-example.com. IN 3600 RDBD 0 example.com. 0 0 ""
+;ZONE FILE FRAGMENT STARTS
+; assertion that my-way.example claims to be related 
+; to my.example
+my-way.example. IN 3600 RDBD 1 my.example.
+
+; assertion that my-way.example claims not to be 
+; related to my-bad.example
+my-way.example. IN 3600 RDBD 0 my-bad.example.
+
+; assertion that my-way.example claims to be related 
+; to whatever is at https://example.com/related-names
+my-way.example. IN 3600 RDBD 1 https://example.com/related-names
+
+; assertion that my-way.example claims not to be 
+; related to whatever is at https://example.com/related-names
+my-way.example. IN 3600 RDBD 0 https://example.com/unrelateds
+
+;ZONE FILE FRAGMENT ENDS
+
 </artwork></figure>
 </section>
 
-<section anchor="sample-rsa-signature" title="Sample RSA Signature">
-<t>Appendix C of <xref target="RFC6376"/> has some reference material on
-how to create a set of keys for use in this type of use case. The RSA key
-length is recommended to be at least 2048 bits instead of the 1024
-recommended in that appendix.
-</t>
-<t>Creation of keys:
-</t>
+<section anchor="rsasigned-example" title="RSA-signed Example">
 
 <figure align="center"><artwork align="center" type="ascii-art">
+
+# BASH SNIPPET STARTS
+# HOWTO generate RSA key pair
 $ openssl genrsa -out rsa.private 2048
-$ openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM
-</artwork></figure>
-<t>Sample Key:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-rsa.private:
+Generating RSA private key, 2048 bit long modulus (2 primes)
+.....................+++++
+.....................+++++
+e is 65537 (0x010001)
+writing RSA key
+$ openssl rsa -in rsa.private -out rsa.public -pubout \
+     -outform PEM 
+$ cat rsa.private
 -----BEGIN RSA PRIVATE KEY-----
-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
+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
 -----END RSA PRIVATE KEY-----
-</artwork></figure>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-rsa.public:
+$ cat rsa.public
 -----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlem
-ZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly
-9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL
-6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy
-5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfV
-wrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj
-1QIDAQAB
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5OvJEEMA9NJ3YvzgN+XB
+72wUujnSY3jXhTO70xKtC+NzwdnjqFQ0SV36vAfuOW8q9DzJf4mWXL1Hi3uvY52L
+l+ySXSAWXP2gJEKZnNq05vCWg7SJjc5KM9cMc3UUoV9bQXw59gz6IztomXNJWPlE
+7UqKsAMLEGjnitlmDDDmX+zOzbhRL3VymB88ka3ALewFsbOGCiBRA2n6yo3usBUK
+Yz6hYzb4HomQIQmRxUbM1uHJ+o/V844fLU7mlGzhAauOh+ZXN/OSjaQhA+RM+v+5
+4nzPWlMPM5KHOp7DRml5H2ipogalo7yhysdnWZn5t4SoNpp7AJXkqq4m46kg5Vbr
+iQIDAQAB
 -----END PUBLIC KEY-----
-</artwork></figure>
-<t>To calculate the key-tag as specified in Appendix B of <xref target="RFC4034"/>
-we used python code from: <eref target="https://www.v13.gr/blog/?p=239"/>
-</t>
-<t>File containing to-be-signed data:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-$ cat to-be-signed-8.txt
-relating=example.com
-related=foo-example.com
-rdbd-tag=0
-key-tag=65498
+# To-be-signed data for RSA
+$ cat  to-be-signed-8.txt
+relating=my.example
+related=my-way.example
+rdbd-tag=1
+key-tag=7460
 sig-alg=8
-$
-$ od -x to-be-signed-8.txt
-0000000 6572 616c 6974 676e 653d 6178 706d 656c
-0000020 632e 6d6f 720a 6c65 7461 6465 643d 7065
-0000040 2d74 7865 6d61 6c70 2e65 6f63 0a6d 6472
-0000060 6462 742d 6761 303d 6b0a 7965 742d 6761
-0000100 363d 3435 3839 730a 6769 612d 676c 383d
-0000120 000a
-0000121
+# Sign that
+$ openssl dgst -sha256 -sign rsa.private -out rsa.sig \
+        to-be-signed-8.txt
+# Hexdump of signature
+$ hexdump rsa.sig
+0000000 8f5e a53a adbe 2943 28f1 c912 0316 0037
+0000010 530f a8a6 87ce 1676 112a b87b ebb2 f595
+0000020 8a68 8020 8dc5 8fe6 c1d2 d210 dd61 9425
+0000030 ac26 a348 7499 b4cd 48e9 b449 19eb 928f
+0000040 b12f 766f 7aba fe30 caea c3a4 8a1f 9eaa
+0000050 3496 879d 124e 39a0 427e f293 819d c6a4
+0000060 19f3 c697 6e83 b773 7ab9 5372 b29e 4c8d
+0000070 cfdb 7b74 8ec4 f8f4 c7e0 8939 1ada f32e
+0000080 e8b6 461c 2ac4 a578 4b85 e622 0048 5e5c
+0000090 8465 5fb5 e90f 9276 bc22 081a 593c 71fa
+00000a0 8777 4fb6 2f52 82c9 453d 9cc2 e071 cae5
+00000b0 1c67 a82d 6a1c 9fa9 97d6 2f06 70e8 cf83
+00000c0 3fe1 a316 b693 bc3c 95e6 18c9 c29a 8aac
+00000d0 5506 c133 fc3e 4cc7 7b42 5728 b12a 5d9d
+00000e0 f744 97c9 5910 3135 526c 7406 8e08 3d44
+00000f0 37de ae25 c97f a1e7 7e9e b571 f6c8 4fad
+0000100
+# BASH SNIPPET ENDS
 
-</artwork></figure>
-<t>To sign that file:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-$ openssl dgst -sha256 -sign rsa.private \
-    -out rsa.sig to-be-signed-8.txt
-$ od -x rsa.sig 
-0000000 087c d5c9 375f dcba 9edf ce25 e353 9fb9
-0000020 6ef4 ca9f a167 6d91 71bb 7487 5edd fe30
-0000040 452e d104 724f f593 009b be3f 6006 ba77
-0000060 c1f5 edc6 e207 7ab0 69a1 79bf 18e6 eea3
-0000100 3562 6ca4 dc73 22c3 1e35 d15c 44be 5f63
-0000120 ac68 f61e ea34 432d 9e12 2325 d48c 2fd9
-0000140 330d 1caf 5761 6714 eed2 c7e2 4f71 2c1a
-0000160 c35b e45e 833b e343 a8e2 3dbf 1a73 02a8
-0000200 c686 7240 aa69 df68 a086 8e3e 2a02 ad57
-0000220 32df 0e62 4679 3f4e 8afb 0716 1ad6 4300
-0000240 03c6 429f 7b6e bf4d ecae d074 9158 99be
-0000260 ab0e 3d49 bb42 a84a 071a b959 2d27 3eea
-0000300 c9de 0781 dc5b e205 7708 e50b e485 0cdb
-0000320 2fbe adee f521 3b75 9c67 66a8 d217 4f6e
-0000340 90da 9423 9d8d e683 7110 4368 f70e 80a2
-0000360 3a8c 25f1 3655 44a2 a585 d87d ca99 aac9
-0000400
-
-</artwork></figure>
-<t>The presentation fom of a signed RDBD record (with a 3600 TTL) would be:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-dept-example.com. 3600 RDBD 0 example.com. 65498 8 ( 
-    hfnhVSlTZMFltG2qU+4vyCPbfSMutxuV8zEyBv7GshOcKMOW
-    VLFBK116wRUb7wVgG9TSunXyIuCjDqtidEjWftwVZ8SsXBzo
-    tJPMq9HbvZaAnfmx4HxxAMHCpX9QJ2cOK/5VobdZm2eZnXl4
-    jd9JsLGuez2wVeiCkwk0x6z/tA61SHmDIFJb5zeKbuvbN14y
-    ABaNE88pxoj7EMVQD/nVoag2MqtsiaMS3kbvkYXC3gv25hgM
-     mzH+kRXGieaPeYly/ai8OSn3X2bksrffqPuiQsVC03UEm9Vn
-    YJgzSjnsvNXvwWJpJ9zyWmVbgdR3/vvUsz2pPvKyJsLT9Knl
-    fPNpvg== )
-
-</artwork></figure>
-<t>The base64 encoded value for the signature can be produced using:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-$ base64 -w48 rsa.sig 
-hfnhVSlTZMFltG2qU+4vyCPbfSMutxuV8zEyBv7GshOcKMOW
-VLFBK116wRUb7wVgG9TSunXyIuCjDqtidEjWftwVZ8SsXBzo
-tJPMq9HbvZaAnfmx4HxxAMHCpX9QJ2cOK/5VobdZm2eZnXl4
-jd9JsLGuez2wVeiCkwk0x6z/tA61SHmDIFJb5zeKbuvbN14y
-ABaNE88pxoj7EMVQD/nVoag2MqtsiaMS3kbvkYXC3gv25hgM
-mzH+kRXGieaPeYly/ai8OSn3X2bksrffqPuiQsVC03UEm9Vn
-YJgzSjnsvNXvwWJpJ9zyWmVbgdR3/vvUsz2pPvKyJsLT9Knl
-fPNpvg==
-</artwork></figure>
-<t>To verify, with &quot;rsa.sig&quot; containing the above signature:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-$ openssl dgst -sha256 -verify rsa.public \ 
-    -signature rsa.sig to-be-signed.txt
-Verified OK
-</artwork></figure>
-<t>The RDBDKEY RR for this example would be:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-
-example.com. 3600 RDBDKEY 0 3 8 (
-    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5C
-    Z2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEy
-    TE5qQkFkTkF0Wk9NZGQzaGxlbQpaRjhhMG9uT2NFbzVnMUtX
-    bkt6cnlEQ2ZINExaa1hPUHpBSnZ6NHlLTUhXNXlrT3o5T3pH
-    TDAxR01sOG5zOEx5Cjl6dEJYYzRvYlk1d25RcGw0bmJ2T2Rm
-    NnZ5THk3R3FncCtkajZScnljU1lKZExpdGlZYXBId1J5dUtt
-    RVJsUUwKNk1EV0xVOVpTV2xxc2t6TFZQZ3dxdFQ4MHhjaFU2
-    NUhpcEtrcjJsdVNBeVNaeXlORWY1OHBSZWEzRDNwQmtMeQo1
-    aENEaHIyKzZHRjJxOWxKOXFNb3BkMlAvWlh4SGt2emwzVEZ0
-    WDZHalA1TFRzYjJkeTN0RUQ3dmJmL0V5UWZWCndyczQ0OTVh
-    OE9Va09CeTdWNFlrZ0tiRllTU2tHUG1oV29QYlY3aENRakVB
-    VVJXTE05SjdFVW91M1UxV0lxVGoKMVFJREFRQUIKLS0tLS1F
-    TkQgUFVCTElDIEtFWS0tLS0tCgo= )
+; ZONE FILE FRAGMENT STARTS
+; The RDBDKEY RR for my.example is...
+my.example. IN 3600 RDBDKEY 0 3 8 (
+            LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5C
+            Z2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUE1
+            T3ZKRUVNQTlOSjNZdnpnTitYQgo3MndVdWpuU1kzalhoVE83
+            MHhLdEMrTnp3ZG5qcUZRMFNWMzZ2QWZ1T1c4cTlEekpmNG1X
+            WEwxSGkzdXZZNTJMCmwreVNYU0FXWFAyZ0pFS1puTnEwNXZD
+            V2c3U0pqYzVLTTljTWMzVVVvVjliUVh3NTlnejZJenRvbVhO
+            SldQbEUKN1VxS3NBTUxFR2puaXRsbURERG1YK3pPemJoUkwz
+            VnltQjg4a2EzQUxld0ZzYk9HQ2lCUkEybjZ5bzN1c0JVSwpZ
+            ejZoWXpiNEhvbVFJUW1SeFViTTF1SEorby9WODQ0ZkxVN21s
+            R3poQWF1T2grWlhOL09TamFRaEErUk0rdis1CjRuelBXbE1Q
+            TTVLSE9wN0RSbWw1SDJpcG9nYWxvN3loeXNkbldabjV0NFNv
+            TnBwN0FKWGtxcTRtNDZrZzVWYnIKaVFJREFRQUIKLS0tLS1F
+            TkQgUFVCTElDIEtFWS0tLS0tCg== )
+; The RDBD RR to be published by my-way.example is...
+my-way.example. IN 3600 RDBD 1 my.example 7460 8 (
+            Xo86pb6tQynxKBLJFgM3AA9TpqjOh3YWKhF7uLLrlfVoiiCA
+            xY3mj9LBENJh3SWUJqxIo5l0zbTpSEm06xmPki+xb3a6ejD+
+            6sqkwx+Kqp6WNJ2HThKgOX5Ck/KdgaTG8xmXxoNuc7e5enJT
+            nrKNTNvPdHvEjvT44Mc5idoaLvO26BxGxCp4pYVLIuZIAFxe
+            ZYS1Xw/pdpIivBoIPFn6cXeHtk9SL8mCPUXCnHHg5cpnHC2o
+            HGqpn9aXBi/ocIPP4T8Wo5O2PLzmlckYmsKsigZVM8E+/MdM
+            QnsoVyqxnV1E98mXEFk1MWxSBnQIjkQ93jclrn/J56GefnG1
+            yPatTw== )
+; ZONE FILE FRAGMENT ENDS
 
 </artwork></figure>
 </section>
 
-<section anchor="sample-ed25519-signature" title="Sample Ed25519 Signature">
-<t>Since OpenSSL does not yet support Ed25519 singing via its command
+<section anchor="ed25519signed-example" title="Ed25519-signed Example">
+
+<figure align="center"><artwork align="center" type="ascii-art">
+# BASH SNIPPET STARTS
+# HOWTO generate an Ed25519 key pair...
+$ ./ed25519-signer.py -s rdbd-example0001rdbd-example0002 \
+   -r my.example -d my-way.example
+private:b'726462642d6578616d706c6530303031726462642d6578616d
+706c6530303032'
+public:b'353fc31e1168c91f0af65d6c26fd441fb7df9671a23a746bb3e
+c86be8d35b648'
+b64pubkey: NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRrs+yGvo01tkg=
+keyid: 35988
+to-be-signed:|relating=my.example
+related=my-way.example
+rdbd-tag=1
+key-tag=35988
+sig-alg=15
+|
+sig:b'64bc444ce759fb9435fe9c1875eb241c4ec6d0995cd8138a372782
+32fc8e79f53cb8f88059f6040054c61be8cfd73fd44521f73994628fc7c3
+0135fa929ab00f'
+# hex dump of Ed25519 private
+$ hexdump ed25519.priv
+0000000 6472 6462 652d 6178 706d 656c 3030 3130
+0000010 6472 6462 652d 6178 706d 656c 3030 3230
+0000020
+# hex dump of Ed25519 public
+$ hexdump ed25519.pub
+0000000 3f35 1ec3 6811 1fc9 f60a 6c5d fd26 1f44
+0000010 dfb7 7196 3aa2 6b74 ecb3 be86 358d 48b6
+0000020
+# hex dump of Ed25519 signature
+$ hexdump ed25519.sig
+0000000 bc64 4c44 59e7 94fb fe35 189c eb75 1c24
+0000010 c64e 99d0 d85c 8a13 2737 3282 8efc f579
+0000020 b83c 80f8 f659 0004 c654 e81b d7cf d43f
+0000030 2145 39f7 6294 c78f 01c3 fa35 9a92 0fb0
+0000040
+# BASH SNIPPET ENDS
+
+; ZONE FILE FRAGMENT STARTS
+; The RDBDKEY RR for my.example is...
+my.example. IN 3600 RDBDKEY 0 3 15 (
+            NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRrs+yGvo01tkg= ) 
+; The RDBD RR to be published by my-way.example is...
+my-way.example. 3600 RDBD 0 my.example 35988 15 (
+            ZLxETOdZ+5Q1/pwYdeskHE7G0Jlc2BOKNyeCMvyOefU8uPiA
+            WfYEAFTGG+jP1z/URSH3OZRij8fDATX6kpqwDw== ) 
+; ZONE FILE FRAGMENT ENDS
+
+</artwork></figure>
+</section>
+</section>
+
+<section anchor="ed25519-signing-code" title="Ed25519 Signing Code">
+<t>Since OpenSSL does not yet support Ed25519 signing via its command
 line tool, we generate our example using the python script below.
 This uses the python library from Appendix A of <xref target="RFC8032"/>.
 </t>
@@ -623,82 +643,87 @@ This uses the python library from Appendix A of <xref target="RFC8032"/>.
 
 #!/usr/bin/env python3
 # CODE_BEGINS
-import sys, binascii
+import argparse, sys, binascii
 from eddsa2 import Ed25519
 
-# secret chosen to be 32 octets funnily enuugh:-)
-secret="rdbd-example0001rdbd-example0002".encode('utf-8')
-privkey,pubkey = Ed25519.keygen(secret)
-msg=open('to-be-signed-15.txt','r').read().encode('utf-8')
-signature = Ed25519.sign(privkey, pubkey, msg)
+# from https://gist.github.com/wido/4c6288b2f5ba6d16fce37dca3fc2cb4a
+def calc_keyid(flags, protocol, algorithm, dnskey):
+    st=struct.pack('!HBB', int(flags), int(protocol), int(algorithm))
+    st+=base64.b64decode(dnskey)
+    cnt = 0
+    for idx in range(len(st)):
+        s = struct.unpack('B', st[idx:idx+1])[0]
+        if (idx % 2) == 0:
+            cnt += s &lt;&lt; 8
+        else:
+            cnt += s
+    return ((cnt &amp; 0xFFFF) + (cnt &gt;&gt; 16)) &amp; 0xFFFF
 
-print("private:"+ str(binascii.hexlify(privkey)))
-print("public:"+ str(binascii.hexlify(pubkey)))
-print("sig:"+ str(binascii.hexlify(signature)))
-print("to-be-signed:" + str(msg))
+def main():
+    parser=argparse.ArgumentParser(description='Ed25519 signing')
+    parser.add_argument('-s','--secret',
+                        dest='secret', help='secret key')
+    parser.add_argument('-r','--relating',
+                        dest='relating', help='relating domain')
+    parser.add_argument('-d','--related',
+                        dest='related', help='related domain')
+    parser.add_argument('-n','--negative',
+                        dest='negative', help='negative assertion')
+    args=parser.parse_args()
 
-with open("ed25519.sig", "wb") as sigf:
-    sigf.write(signature)
-with open("ed25519.pub","wb") as pubf:
-    pubf.write(pubkey)
+    if args.secret is None:
+        print("You do need a secret... - exiting")
+        sys.exit(1)
+    # secret has to be 32 octets funnily enuugh:-)
+    # e.g. secret="rdbd-example0001rdbd-example0002".encode('utf-8')
+    if len(args.secret)!=32:
+        print("Secret has to be 32 octets... - exiting")
+        sys.exit(1)
+    if args.relating is None:
+        print("You do need a relating domain... - exiting")
+        sys.exit(1)
+    if args.related is None:
+        print("You do need a related domain... - exiting")
+        sys.exit(1)
+    secret=args.secret.encode('utf-8')
+    privkey,pubkey = Ed25519.keygen(secret)
+    print("private:"+ str(binascii.hexlify(privkey)))
+    print("public:"+ str(binascii.hexlify(pubkey)))
+
+    b64pubkey=binascii.b2a_base64(pubkey).rstrip().decode("utf-8")
+    print("b64pubkey: " + b64pubkey)
+
+    keyid=calc_keyid("0","3","15",b64pubkey)
+    print("keyid: " + str(keyid))
+
+    rdbdtag="1"
+    if args.negative:
+        rdbdtag="0"
+
+    tbs="relating="+args.relating+"\nrelated="+\
+          args.related+"\nrdbd-tag="+rdbdtag+\
+          "\nkey-tag="+str(keyid)+"\nsig-alg=15\n"
+    print("to-be-signed:|" + str(tbs)+"|")
+
+    with open("ed25519.priv", "wb") as privf:
+        privf.write(privkey)
+    with open("ed25519.pub","wb") as pubf:
+        pubf.write(pubkey)
+    with open("to-be-signed-15.txt","wb") as tbsf:
+        tbsf.write(tbs.encode('utf-8'))
+
+    msg=tbs.encode('utf-8')
+    signature = Ed25519.sign(privkey, pubkey, msg)
+    print("sig:"+ str(binascii.hexlify(signature)))
+    with open("ed25519.sig", "wb") as sigf:
+        sigf.write(signature)
+    return
+
+if __name__ == "__main__":
+    main()
 
 # CODE_ENDS
-
 </artwork></figure>
-<t>The to-be-signed-15.txt file contains:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-$ cat to-be-signed-15.txt
-relating=example.com
-related=dept-example.com
-rdbd-tag=0
-key-tag=35988
-sig-alg=15
-$ 
-</artwork></figure>
-<t>The output when the above code is run (with some spacing added) is:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-$ ./ed25519-signer.py 
-private:
-b'726462642d6578616d706c6530303031
-  726462642d6578616d706c6530303032'
-public:
-b'353fc31e1168c91f0af65d6c26fd441f
-  b7df9671a23a746bb3ec86be8d35b648'
-sig:
-b'466a80ce6377b1e4bec563d85b8d55bd
-  4a51a5b91c1c1e46a9c4e22a16557c38
-  e85ccc8ac05e6046d0066c2c52b3a174
-  20b59af9627840ac312f5ab55e11be07'
-to-be-signed:
-b'relating=example.com\nrelated=dept-example.com\n
-  rdbd-tag=0\nkey-tag=35988\nsig-alg=15\n'
-
-</artwork></figure>
-<t>The presentation form for an RDBD RR would then be:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-
-dept-example.com. 3600 RDBD 0 example.com. 35988 15 (
-                    RmqAzmN3seS+xWPYW41VvUpRpbkcHB5G
-                    qcTiKhZVfDjoXMyKwF5gRtAGbCxSs6F0
-                    ILWa+WJ4QKwxL1q1XhG+Bw== )
-</artwork></figure>
-<t>The RDBDKEY for this example would be:
-</t>
-
-<figure align="center"><artwork align="center" type="ascii-art">
-
-    example.com. 3600 RDBDKEY 0 3 15 (
-                NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRr
-                s+yGvo01tkg= )
-
-</artwork></figure>
-</section>
 </section>
 
 <section anchor="changes-and-open-issues" title="Changes and Open Issues">
@@ -710,6 +735,7 @@ dept-example.com. 3600 RDBD 0 example.com. 35988 15 (
 <list style="symbols">
 <t>Added negative assertions</t>
 <t>Added URL option</t>
+<t>Made sample generation script</t>
 <t>Typo fixes</t>
 </list>
 </t>

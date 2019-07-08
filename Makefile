@@ -12,6 +12,9 @@ all: $(XML) $(TXT)
 %.txt : %.xml
 	$(XML2RFC) $< --text $@
 
+rdbd-newrrs.md: appendix.md
+	touch rdbd-newrrs.md
+
 upload:
 	scp rdbd-newrrs.md  down.dsg.cs.tcd.ie:/var/www/misc/
 	scp rdbd-newrrs.xml  down.dsg.cs.tcd.ie:/var/www/misc/

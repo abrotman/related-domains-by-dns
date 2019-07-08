@@ -1,5 +1,5 @@
-relating=example.com
-related=dept-example.com
+relating=foo.ie
+related=bar.ie
 rdbd-tag=1
 key-tag=35988
 sig-alg=15
