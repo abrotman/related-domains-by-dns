@@ -445,19 +445,19 @@ has a script in sample/mk_samples.sh that generated this appendix.
 ;ZONE FILE FRAGMENT STARTS
 ; assertion that my-way.example claims to be related 
 ; to my.example
-my-way.example. IN 3600 RDBD 1 my.example.
+my-way.example. 3600 IN RDBD 1 my.example.
 
 ; assertion that my-way.example claims not to be 
 ; related to my-bad.example
-my-way.example. IN 3600 RDBD 0 my-bad.example.
+my-way.example. 3600 IN RDBD 0 my-bad.example.
 
 ; assertion that my-way.example claims to be related 
 ; to whatever is at https://example.com/related-names
-my-way.example. IN 3600 RDBD 1 https://example.com/related-names
+my-way.example. 3600 IN RDBD 1 https://example.com/related-names
 
 ; assertion that my-way.example claims not to be 
 ; related to whatever is at https://example.com/related-names
-my-way.example. IN 3600 RDBD 0 https://example.com/unrelateds
+my-way.example. 3600 IN RDBD 0 https://example.com/unrelateds
 
 ;ZONE FILE FRAGMENT ENDS
 
@@ -480,99 +480,99 @@ $ openssl rsa -in rsa.private -out rsa.public -pubout \
      -outform PEM 
 $ cat rsa.private
 -----BEGIN RSA PRIVATE KEY-----
-MIIEpQIBAAKCAQEA5OvJEEMA9NJ3YvzgN+XB72wUujnSY3jXhTO70xKtC+Nzwdnj
-qFQ0SV36vAfuOW8q9DzJf4mWXL1Hi3uvY52Ll+ySXSAWXP2gJEKZnNq05vCWg7SJ
-jc5KM9cMc3UUoV9bQXw59gz6IztomXNJWPlE7UqKsAMLEGjnitlmDDDmX+zOzbhR
-L3VymB88ka3ALewFsbOGCiBRA2n6yo3usBUKYz6hYzb4HomQIQmRxUbM1uHJ+o/V
-844fLU7mlGzhAauOh+ZXN/OSjaQhA+RM+v+54nzPWlMPM5KHOp7DRml5H2ipogal
-o7yhysdnWZn5t4SoNpp7AJXkqq4m46kg5VbriQIDAQABAoIBAQC4Ptmt3+/GHBsA
-rbyc4KwNUjUAiYc+jkUQLUovoOlsFx3U2NS1Z0hKAHzMl6lxynqM5tvabVd6vtD1
-f4/zIhr3JO3MTAYTxAH/DSdrqk9NTDgoOsc3PeBVBvE7f/EhzIi7FQvlcB5m+uq+
-Dp7rIH0MayFidqCSDYzGISFUEItqib0YBHlYxTqMS2wWV+sYGqKPkbGXKifPVNmC
-KYSemli0898HdCx/VG0F57WM0eizkbjK0QvcVsCsVcVikR0p8tf7AojPJPN3WKZP
-vH+j9kqvk0eMqV4mwR9iVVfryO6ca4SYlRbpIbxRQLtbeP2aA2IEJcbo58P7xFz4
-Bf/cbnctAoGBAPtSpOjfgH7sTblTNKqRIaJXqIx98YPVxubCPrkoOHRP7I225qow
-aezF6o+CIfkCodj7R5HS+S4G+ORLRvFZyH9E6sEe0ol68EfJb4t6UudsccDeXSkw
-82Dsd3187P/sZCLg2MG7FIUHSj5AZqlrJgp2GRiwRDwsCRIHHG2GVN0DAoGBAOku
-ag66VvHFXdr2+SrP0y8atwy+SQY3p+/u4e6WrxlctxIH9Wk2mp7V+vS1ikPSpWdm
-5HzOyQN6/uqznmNYT7ASz4nDMllowv4gZPxIxQSO34V4KmXsuhNMHcc4eTcEZ8mD
-FQOxP2TnawaDLnb9QBBvKMfn3xhho7bQ74j0nvGDAoGBAKL81+IGgIjPqyBTK8aq
-VIu6GZ7zVpvPGi0xMAhYYzRbWOgXA8S/nRJm0FW9aVbaNChJ3gJeNid5chRsFVgU
-iAixoyUXXia2yflkU6i67eUT2Tnhe71o942WDXAegnz+y3orI6eQMiCLt8Rjc7DP
-wl3qdSAjwDzdugws/GyzP3oNAoGBANZzsmSjKW0neB72PsgJ5I6QwkK9Cknmi9PV
-XgJgoN7xbwjtOt2ts1xbLXc7MtMXerlzXrYOM764spNF6Ggzgu5LDoYDeF3URGkV
-f+qqPk/n2lhU4KFmqucufMCJBqn7qjwhCwWfUM9LKhoOMYCLfwzePqJDdOFmgvuS
-gonxd/BjAoGAG5TN5BepmSmL7vGUmPssavjnkP3T1uGSRrKy8JYBoYHtY3VAMTg/
-BLuDtM4inZ3W3Zr7ECP5epqaL0IK9X5452Zn21JDyRRTGMfwR2EnktMVwpWNiiNm
-35nUNhBTdNLpZoMvLDBQS7UM76saFDm6XQgtU/J/jrHvtPWgAzlJq4E=
+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
 -----END RSA PRIVATE KEY-----
 $ cat rsa.public
 -----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5OvJEEMA9NJ3YvzgN+XB
-72wUujnSY3jXhTO70xKtC+NzwdnjqFQ0SV36vAfuOW8q9DzJf4mWXL1Hi3uvY52L
-l+ySXSAWXP2gJEKZnNq05vCWg7SJjc5KM9cMc3UUoV9bQXw59gz6IztomXNJWPlE
-7UqKsAMLEGjnitlmDDDmX+zOzbhRL3VymB88ka3ALewFsbOGCiBRA2n6yo3usBUK
-Yz6hYzb4HomQIQmRxUbM1uHJ+o/V844fLU7mlGzhAauOh+ZXN/OSjaQhA+RM+v+5
-4nzPWlMPM5KHOp7DRml5H2ipogalo7yhysdnWZn5t4SoNpp7AJXkqq4m46kg5Vbr
-iQIDAQAB
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3qg68hd/EOys5T4Wrhsj
+XpTPjYoIUzIggTC9N5Q5aBb86/lHRwHCjrKg6ws31SR9LEqeHMq0Wv/oUZOISs54
+yLWZWa5B0ZtaJw/3b8wwMFsu2IAOc5vnYqryR61Ln10CsDRsrzLXxqfGYbnUzZ5W
+kDjwBYflGw1XfLLSugvAaYIq+gz8J/SxwLkZqfsR0Jkvcn+kHh51YLNMFNBn8CUE
+lA3tSkWDR9wIK4WK9LRT3e9xc6rHlHRi/Ubst+E21r7loxfU08OHVeUL0G1F9dEs
+wT8BYaCtUnf3wpWoFknrZD4HWU+EmG54MDjSQPBNu0iKLS3sBGn6obrmGTMdWSqy
+xwIDAQAB
 -----END PUBLIC KEY-----
 # To-be-signed data for RSA
 $ cat  to-be-signed-8.txt
 relating=my.example
 related=my-way.example
 rdbd-tag=1
-key-tag=7460
+key-tag=33971
 sig-alg=8
 # Sign that
 $ openssl dgst -sha256 -sign rsa.private -out rsa.sig \
         to-be-signed-8.txt
 # Hexdump of signature
 $ hexdump rsa.sig
-0000000 8f5e a53a adbe 2943 28f1 c912 0316 0037
-0000010 530f a8a6 87ce 1676 112a b87b ebb2 f595
-0000020 8a68 8020 8dc5 8fe6 c1d2 d210 dd61 9425
-0000030 ac26 a348 7499 b4cd 48e9 b449 19eb 928f
-0000040 b12f 766f 7aba fe30 caea c3a4 8a1f 9eaa
-0000050 3496 879d 124e 39a0 427e f293 819d c6a4
-0000060 19f3 c697 6e83 b773 7ab9 5372 b29e 4c8d
-0000070 cfdb 7b74 8ec4 f8f4 c7e0 8939 1ada f32e
-0000080 e8b6 461c 2ac4 a578 4b85 e622 0048 5e5c
-0000090 8465 5fb5 e90f 9276 bc22 081a 593c 71fa
-00000a0 8777 4fb6 2f52 82c9 453d 9cc2 e071 cae5
-00000b0 1c67 a82d 6a1c 9fa9 97d6 2f06 70e8 cf83
-00000c0 3fe1 a316 b693 bc3c 95e6 18c9 c29a 8aac
-00000d0 5506 c133 fc3e 4cc7 7b42 5728 b12a 5d9d
-00000e0 f744 97c9 5910 3135 526c 7406 8e08 3d44
-00000f0 37de ae25 c97f a1e7 7e9e b571 f6c8 4fad
+0000000 a9d7 6ad5 f74b ab42 8dec 6cc3 b992 69ce
+0000010 0ef6 19d2 7e8a 26a0 7e31 cea5 8d79 73f6
+0000020 1d9a 3222 dc2e d5b6 45b6 5275 9ce9 5a87
+0000030 c29e fb91 85b8 33d6 9666 09bc 8d2c d0bd
+0000040 a3fd 39da 8b94 7795 6120 8659 f5ec 8358
+0000050 dd66 69d6 8f92 3d8b 3176 ae62 98ad a799
+0000060 97bc 3db9 2f22 958b a4a3 3c26 7ead c016
+0000070 ad8d 701c b3ad 416b b432 e7e5 e360 d2fe
+0000080 35ba 4db1 143d d2bb 5cf2 fb21 5bbe 5bce
+0000090 a5fb a7ab 528f a74b fe6e 3ef3 8547 5d8a
+00000a0 9b1c 3393 459c 335c cc59 2479 5a5b 3de5
+00000b0 ab6c 4333 8dac 233e e4ea 98ec ac00 f8d7
+00000c0 f0c4 0e15 c737 5479 3247 c648 0127 cfc5
+00000d0 c3ef bb05 dc95 4f12 f2ee 723b 9c17 3f24
+00000e0 14c3 b225 c581 0134 8531 1800 b816 d775
+00000f0 3597 3c68 6225 32e4 7238 c188 5309 ac2c
 0000100
 # BASH SNIPPET ENDS
 
 ; ZONE FILE FRAGMENT STARTS
 ; The RDBDKEY RR for my.example is...
-my.example. IN 3600 RDBDKEY 0 3 8 (
+my.example. 3600 IN RDBDKEY 0 3 8 (
             LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5C
-            Z2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUE1
-            T3ZKRUVNQTlOSjNZdnpnTitYQgo3MndVdWpuU1kzalhoVE83
-            MHhLdEMrTnp3ZG5qcUZRMFNWMzZ2QWZ1T1c4cTlEekpmNG1X
-            WEwxSGkzdXZZNTJMCmwreVNYU0FXWFAyZ0pFS1puTnEwNXZD
-            V2c3U0pqYzVLTTljTWMzVVVvVjliUVh3NTlnejZJenRvbVhO
-            SldQbEUKN1VxS3NBTUxFR2puaXRsbURERG1YK3pPemJoUkwz
-            VnltQjg4a2EzQUxld0ZzYk9HQ2lCUkEybjZ5bzN1c0JVSwpZ
-            ejZoWXpiNEhvbVFJUW1SeFViTTF1SEorby9WODQ0ZkxVN21s
-            R3poQWF1T2grWlhOL09TamFRaEErUk0rdis1CjRuelBXbE1Q
-            TTVLSE9wN0RSbWw1SDJpcG9nYWxvN3loeXNkbldabjV0NFNv
-            TnBwN0FKWGtxcTRtNDZrZzVWYnIKaVFJREFRQUIKLS0tLS1F
+            Z2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUEz
+            cWc2OGhkL0VPeXM1VDRXcmhzagpYcFRQallvSVV6SWdnVEM5
+            TjVRNWFCYjg2L2xIUndIQ2pyS2c2d3MzMVNSOUxFcWVITXEw
+            V3Yvb1VaT0lTczU0CnlMV1pXYTVCMFp0YUp3LzNiOHd3TUZz
+            dTJJQU9jNXZuWXFyeVI2MUxuMTBDc0RSc3J6TFh4cWZHWWJu
+            VXpaNVcKa0Rqd0JZZmxHdzFYZkxMU3VndkFhWUlxK2d6OEov
+            U3h3TGtacWZzUjBKa3ZjbitrSGg1MVlMTk1GTkJuOENVRQps
+            QTN0U2tXRFI5d0lLNFdLOUxSVDNlOXhjNnJIbEhSaS9VYnN0
+            K0UyMXI3bG94ZlUwOE9IVmVVTDBHMUY5ZEVzCndUOEJZYUN0
+            VW5mM3dwV29Ga25yWkQ0SFdVK0VtRzU0TURqU1FQQk51MGlL
+            TFMzc0JHbjZvYnJtR1RNZFdTcXkKeHdJREFRQUIKLS0tLS1F
             TkQgUFVCTElDIEtFWS0tLS0tCg== )
 ; The RDBD RR to be published by my-way.example is...
-my-way.example. IN 3600 RDBD 1 my.example 7460 8 (
-            Xo86pb6tQynxKBLJFgM3AA9TpqjOh3YWKhF7uLLrlfVoiiCA
-            xY3mj9LBENJh3SWUJqxIo5l0zbTpSEm06xmPki+xb3a6ejD+
-            6sqkwx+Kqp6WNJ2HThKgOX5Ck/KdgaTG8xmXxoNuc7e5enJT
-            nrKNTNvPdHvEjvT44Mc5idoaLvO26BxGxCp4pYVLIuZIAFxe
-            ZYS1Xw/pdpIivBoIPFn6cXeHtk9SL8mCPUXCnHHg5cpnHC2o
-            HGqpn9aXBi/ocIPP4T8Wo5O2PLzmlckYmsKsigZVM8E+/MdM
-            QnsoVyqxnV1E98mXEFk1MWxSBnQIjkQ93jclrn/J56GefnG1
-            yPatTw== )
+my-way.example. 3600 IN RDBD 1 my.example 33971 8 (
+            16nVakv3QqvsjcNskrnOafYO0hmKfqAmMX6lznmN9nOaHSIy
+            Lty21bZFdVLpnIdansKR+7iF1jNmlrwJLI290P2j2jmUi5V3
+            IGFZhuz1WINm3dZpko+LPXYxYq6tmJmnvJe5PSIvi5WjpCY8
+            rX4WwI2tHHCts2tBMrTl52Dj/tK6NbFNPRS70vJcIfu+W85b
+            +6Wrp49SS6du/vM+R4WKXRybkzOcRVwzWcx5JFta5T1sqzND
+            rI0+I+rk7JgArNf4xPAVDjfHeVRHMkjGJwHFz+/DBbuV3BJP
+            7vI7checJD/DFCWygcU0ATGFABgWuHXXlzVoPCVi5DI4cojB
+            CVMsrA== )
 ; ZONE FILE FRAGMENT ENDS
 
 </artwork></figure>
@@ -621,10 +621,10 @@ $ hexdump ed25519.sig
 
 ; ZONE FILE FRAGMENT STARTS
 ; The RDBDKEY RR for my.example is...
-my.example. IN 3600 RDBDKEY 0 3 15 (
+my.example. 3600 IN RDBDKEY 0 3 15 (
             NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRrs+yGvo01tkg= ) 
 ; The RDBD RR to be published by my-way.example is...
-my-way.example. 3600 RDBD 0 my.example 35988 15 (
+my-way.example. 3600 IN RDBD 0 my.example 35988 15 (
             ZLxETOdZ+5Q1/pwYdeskHE7G0Jlc2BOKNyeCMvyOefU8uPiA
             WfYEAFTGG+jP1z/URSH3OZRij8fDATX6kpqwDw== ) 
 ; ZONE FILE FRAGMENT ENDS
