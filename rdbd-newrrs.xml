@@ -261,8 +261,8 @@ following linefeed-separated (where linefeed has the value '0x0a') lines:
 </t>
 
 <figure align="center"><artwork align="center" type="ascii-art">
-relating=&lt;relating-domain name or URL&gt;
-related=&lt;related-domain&gt;
+relating=&lt;relating-domain name&gt;
+related=&lt;related-domain name or URL&gt;
 rdbd-tag=&lt;rdbd-tag value&gt;
 key-tag=&lt;key-tag&gt;
 sig-alg=&lt;sig-alg&gt;
@@ -319,7 +319,7 @@ signatures SHOULD support use of Ed25519
 
 <section anchor="validation" title="Validation">
 <t>A validated signature is solely meant to be additional evidence that the
-relevant domains are related, or that one disavows such relationship.  The
+relevant domains are related, or that one disavows such a relationship.  The
 existence or disavowal of a relationship does not by itself mean that data or
 services from any domain should be considered as more or less trustworthy.
 </t>
@@ -335,7 +335,7 @@ path.
 <t>If the RDBDKEY value has been cached, or is otherwise known via some
 sufficiently secure mechanism, then the RDBD signature does confirm that the
 holder of the private key (presumably the relating-domain) considered that the
-relationship, or lack thereof, with the related-domain was real at some point
+relationship, or lack thereof, with a related-domain was real at some point
 in time.
 </t>
 </section>
@@ -734,10 +734,10 @@ if __name__ == "__main__":
 <section anchor="changes-from-01-to-02" title="Changes from -01 to -02">
 <t>
 <list style="symbols">
-<t>Added negative assertions</t>
-<t>Added URL option</t>
+<t>Added negative assertions based on IETF104 feedback</t>
+<t>Added URL option based on IETF104 feedback</t>
 <t>Made sample generation script</t>
-<t>Typo fixes</t>
+<t>Typo fixes etc.</t>
 </list>
 </t>
 </section>

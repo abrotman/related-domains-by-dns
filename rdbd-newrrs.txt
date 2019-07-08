@@ -314,11 +314,11 @@ Internet-Draft                    RDBD                         July 2019
    the following linefeed-separated (where linefeed has the value
    '0x0a') lines:
 
-                  relating=<relating-domain name or URL>
-                  related=<related-domain>
-                  rdbd-tag=<rdbd-tag value>
-                  key-tag=<key-tag>
-                  sig-alg=<sig-alg>
+                   relating=<relating-domain name>
+                   related=<related-domain name or URL>
+                   rdbd-tag=<rdbd-tag value>
+                   key-tag=<key-tag>
+                   sig-alg=<sig-alg>
 
 
    The relating-domain and related-domain values MUST be the 'A-label'
@@ -379,7 +379,7 @@ Internet-Draft                    RDBD                         July 2019
 5.  Validation
 
    A validated signature is solely meant to be additional evidence that
-   the relevant domains are related, or that one disavows such
+   the relevant domains are related, or that one disavows such a
    relationship.  The existence or disavowal of a relationship does not
    by itself mean that data or services from any domain should be
    considered as more or less trustworthy.
@@ -405,7 +405,7 @@ Internet-Draft                    RDBD                         July 2019
    If the RDBDKEY value has been cached, or is otherwise known via some
    sufficiently secure mechanism, then the RDBD signature does confirm
    that the holder of the private key (presumably the relating-domain)
-   considered that the relationship, or lack thereof, with the related-
+   considered that the relationship, or lack thereof, with a related-
    domain was real at some point in time.
 
 6.2.  DNSSEC
@@ -900,13 +900,13 @@ Internet-Draft                    RDBD                         July 2019
 
 C.1.  Changes from -01 to -02
 
-   o  Added negative assertions
+   o  Added negative assertions based on IETF104 feedback
 
-   o  Added URL option
+   o  Added URL option based on IETF104 feedback
 
    o  Made sample generation script
 
-   o  Typo fixes
+   o  Typo fixes etc.
 
 C.2.  Changes from -00 to -01
 

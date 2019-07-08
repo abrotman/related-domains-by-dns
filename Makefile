@@ -1,6 +1,6 @@
 MMARK=mmark
 XML2RFC=xml2rfc
-SOURCES= rdbd.md rdbd-newrrs.md
+SOURCES=rdbd-newrrs.md
 XML=$(SOURCES:.md=.xml)
 TXT=$(SOURCES:.md=.txt)
 

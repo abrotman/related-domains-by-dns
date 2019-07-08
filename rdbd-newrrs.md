@@ -225,8 +225,8 @@ The input to signing ("to-be-signed" data) is the concatenation of the
 following linefeed-separated (where linefeed has the value '0x0a') lines:
 
 ~~~ ascii-art
-relating=<relating-domain name or URL>
-related=<related-domain>
+relating=<relating-domain name>
+related=<related-domain name or URL>
 rdbd-tag=<rdbd-tag value>
 key-tag=<key-tag>
 sig-alg=<sig-alg>
@@ -280,7 +280,7 @@ signatures SHOULD support use of Ed25519
 # Validation 
 
 A validated signature is solely meant to be additional evidence that the
-relevant domains are related, or that one disavows such relationship.  The
+relevant domains are related, or that one disavows such a relationship.  The
 existence or disavowal of a relationship does not by itself mean that data or
 services from any domain should be considered as more or less trustworthy.  
 
@@ -295,7 +295,7 @@ path.
 If the RDBDKEY value has been cached, or is otherwise known via some
 sufficiently secure mechanism, then the RDBD signature does confirm that the
 holder of the private key (presumably the relating-domain) considered that the
-relationship, or lack thereof, with the related-domain was real at some point
+relationship, or lack thereof, with a related-domain was real at some point
 in time. 
 
 ## DNSSEC
@@ -464,10 +464,10 @@ if __name__ == "__main__":
 
 ## Changes from -01 to -02
 
-- Added negative assertions 
-- Added URL option
+- Added negative assertions based on IETF104 feedback
+- Added URL option based on IETF104 feedback
 - Made sample generation script
-- Typo fixes
+- Typo fixes etc.
 
 ## Changes from -00 to -01
 
