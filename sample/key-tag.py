@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-import struct
-import hashlib
-import base64
+import struct, hashlib, base64, os, sys, argparse, gc, json
 
 def calc_keyid(flags, protocol, algorithm, st):
   """
@@ -31,46 +29,31 @@ def calc_keyid(flags, protocol, algorithm, st):
 
   return(ret)
 
-def calc_ds(owner, flags, protocol, algorithm, st):
-  """
-  @param flags        Usually it is 257 or something that indicates a KSK.
-                      It can be 256 though.
-  @param protocol     Should always be 3
-  @param algorithm    Should always be 5
-  @param st           The public key as listed in the DNSKEY record.
-                      Spaces are removed.
-  @return A dictionary of hashes where the key is the hashing algorithm.
-  """
-
-  # Remove spaces and create the wire format
-  st0=st.replace(' ', '')
-  st2=struct.pack('!HBB', int(flags), int(protocol), int(algorithm))
-  st2+=base64.b64decode(st0)
-
-  # Ensure a trailing dot
-  if owner[-1]=='.':
-    owner2=owner
-  else:
-    owner2=owner+'.'
-
-  # Create the name wire format
-  owner3=''
-  for i in owner2.split('.'):
-    owner3+=struct.pack('B', len(i))+i
-
-  # Calculate the hashes
-  st3=owner3+st2
-  ret={
-    'sha1':    hashlib.sha1(st3).hexdigest().upper(),
-    'sha256':  hashlib.sha256(st3).hexdigest().upper(),
-  }
-
-  return(ret)
-
 # generate our samples
-rsapub="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlemZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj1QIDAQAB"
-print("RSA: " + str(calc_keyid("0","3","8",rsapub)))
+#rsapub="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2LNjBAdNAtZOMdd3hlemZF8a0onOcEo5g1KWnKzryDCfH4LZkXOPzAJvz4yKMHW5ykOz9OzGL01GMl8ns8Ly9ztBXc4obY5wnQpl4nbvOdf6vyLy7Gqgp+dj6RrycSYJdLitiYapHwRyuKmERlQL6MDWLU9ZSWlqskzLVPgwqtT80xchU65HipKkr2luSAySZyyNEf58pRea3D3pBkLy5hCDhr2+6GF2q9lJ9qMopd2P/ZXxHkvzl3TFtX6GjP5LTsb2dy3tED7vbf/EyQfVwrs4495a8OUkOBy7V4YkgKbFYSSkGPmhWoPbV7hCQjEAURWLM9J7EUou3U1WIqTj1QIDAQAB"
+#print("RSA: " + str(calc_keyid("0","3","8",rsapub)))
 
-ed25519pub="NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRrs+yGvo01tkg="
-print("Ed25519: " + str(calc_keyid("0","3","15",ed25519pub)))
+#ed25519pub="NT/DHhFoyR8K9l1sJv1EH7fflnGiOnRrs+yGvo01tkg="
+#print("Ed25519: " + str(calc_keyid("0","3","15",ed25519pub)))
 
+def main():
+    alg=8 # default to RSA, Ed25519 is 15
+    pubkey=""
+    parser=argparse.ArgumentParser(description='figure out DNSSEC key ids')
+    parser.add_argument('-a','--algorithm',type=int,dest='alg', help='algorithm to use')
+    parser.add_argument('-p','--public',dest='pubkey', help='base64 encoded public key')
+    args=parser.parse_args()
+    if args.pubkey is None or args.pubkey=="":
+        print("Can't do empty public key - exiting")
+        sys.exit(1)
+    pubkey=args.pubkey
+    if args.alg is not None:
+        alg=args.alg
+        if alg != 8 and alg != 15:
+            print("Bad alg: " + str(alg) + " - must be 8 or 15")
+            sys.exit(2)
+    print(str(calc_keyid("0","3",str(alg),pubkey)))
+    return
+
+if __name__ == "__main__":
+    main()

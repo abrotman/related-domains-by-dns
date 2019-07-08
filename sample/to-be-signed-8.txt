@@ -1,5 +1,5 @@
 relating=example.com
 related=dept-example.com
-rdbd-tag=0
+rdbd-tag=1
 key-tag=65498
 sig-alg=8

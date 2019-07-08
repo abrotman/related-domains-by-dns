@@ -650,6 +650,7 @@ The RDBDKEY for this example would be:
 
 - Added negative assertions 
 - Added URL option
+- Make sample generation script
 - Typo fixes
 
 ## Changes from -00 to -01
