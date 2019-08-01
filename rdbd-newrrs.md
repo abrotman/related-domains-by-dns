@@ -40,7 +40,7 @@ publicly document the existence or absence of a relationship with a different do
 
 [[Discussion of this draft is taking place on the dbound@ietf.org mailing list.
 There's a github repo for this draft at 
-https://github.com/abrotman/related-domains-by-dns - 
+https://github.com/abrotman/related-domains-by-dns -
 issues and PRs are welcome there.]]
 
 Determining relationships between registered domains can be one of the more difficult
@@ -85,8 +85,8 @@ relationship.
 We include an optional digital signature mechanism that can somewhat improve the
 level of assurance with which an RDBD declaration can be handled.
 This mechanism is partly modelled on how DKIM [@?RFC6376] handles public
-keys and signatures - a public key is hosted at the relating-domain
-(e.g., `example.com`) and a reference from the related-domain 
+keys and signatures - a public key is hosted at the Relating-domain
+(e.g., `example.com`) and a reference from the Related-domain
 (e.g., `dept-example.com`) contains a signature (verifiable with
 the `example.com` public key) over the text representation ('A-label') of 
 the two domain names (plus a couple of other inputs).
@@ -119,18 +119,18 @@ declarating a relationship exists. (This was called the
 "parent/primary" in -00). 
    
 * Related-domain: This refers to the domain that is
-referenced by the relating-domain, such as `dept-example.com`.
+referenced by the Relating-domain, such as `dept-example.com`.
 (This was called the "secondary" in -00.)
 
 # New Resource Record Types
 
-We define two new RRTYPES, an optional one for the relating-domain (RDBDKEY)
+We define two new RRTYPES, an optional one for the Relating-domain (RDBDKEY)
 to store a public key for when signatures are in use and one for use in 
-related-domains (RDBD).
+Related-domains (RDBD).
 
 ## RDBDKEY Resource Record Definition
 
-The RDBDKEY record is published at the apex of the relating-domain zone.
+The RDBDKEY record is published at the apex of the Relating-domain zone.
 
 The wire and presentation format of the RDBDKEY 
 resource record is identical to the DNSKEY record. [@?RFC4034]
@@ -155,10 +155,10 @@ same zone
 ## RDBD Resource Record Definition
 
 To declare a relationship exists an RDBD resource record is published at the
-apex of the related-domain zone.
+apex of the Related-domain zone.
 
 To disavow a relationship an RDBD resource record is published at the apex of
-the relating-domain zone.
+the Relating-domain zone.
 
 [[All going well, at some point we'll be able to say...]]
 IANA has allocated RR code TBD for the RDBD resource record via Expert
@@ -172,7 +172,7 @@ There can be multiple occurrences of the RDBD resource record in the
 same zone.
 
 The wire format for an RDBD RDATA consists of a two octet rdbd-tag, the
-relating-domain name(s), and the optional signature fields which are: a two-octet
+Relating-domain name(s), and the optional signature fields which are: a two-octet
 key-tag, a one-octet signature algorithm, and the digital signature bits.
 
 ~~~ ascii-art
@@ -181,7 +181,7 @@ key-tag, a one-octet signature algorithm, and the digital signature bits.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |           rdbd-tag            |                               /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               /
-   /                        relating-domain name(s)                /
+   /                        Relating-domain name(s)                /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+|
    |    key-tag                    | sig-alg     |                 /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                 /
@@ -195,7 +195,7 @@ later specifications can define new rdbd-tag values:
 - 0: states that no relationship exists between the domains
 - 1: states that some relationship exists between the domains 
 
-The relating-domain name(s) field contains either a single domain
+The Relating-domain name(s) field contains either a single domain
 name, or an HTTPS URL. In the latter case, successfully de-referencing that
 URL results in a JSON object that contains the list of domain
 names, such as is shown in the figure below.
@@ -225,19 +225,19 @@ The input to signing ("to-be-signed" data) is the concatenation of the
 following linefeed-separated (where linefeed has the value '0x0a') lines:
 
 ~~~ ascii-art
-relating=<relating-domain name>
-related=<related-domain name or URL>
+relating=<Relating-domain name>
+related=<Related-domain name or URL>
 rdbd-tag=<rdbd-tag value>
 key-tag=<key-tag>
 sig-alg=<sig-alg>
 
 ~~~
 
-The relating-domain and related-domain values MUST be the 'A-label'
+The Relating-domain and Related-domain values MUST be the 'A-label'
 representation of these names.
 
 The trailing "." representing the DNS root MUST NOT be included in
-the to-be-signed data, so a relating-domain value above might be
+the to-be-signed data, so a Relating-domain value above might be
 "example.com" but "example.com." MUST NOT be used as input to 
 signing.
 
@@ -294,8 +294,8 @@ path.
 
 If the RDBDKEY value has been cached, or is otherwise known via some
 sufficiently secure mechanism, then the RDBD signature does confirm that the
-holder of the private key (presumably the relating-domain) considered that the
-relationship, or lack thereof, with a related-domain was real at some point
+holder of the private key (presumably the Relating-domain) considered that the
+relationship, or lack thereof, with a Related-domain was real at some point
 in time. 
 
 ## DNSSEC
@@ -305,21 +305,21 @@ falsify DNS query responses for someone investigating a relationship.
 Conversely, an attacker could delete the response that would normally
 demonstrate the relationship, causing the investigating party to believe there
 is no link between the two domains.  An attacker could also replay an old RDBD
-value that is actually no longer published in the DNS by the related-domain.
+value that is actually no longer published in the DNS by the Related-domain.
 
 Deploying signed records with DNSSEC should allow for detection
 of these kinds of attack.
 
-If the relating-domain has DNSSEC deployed, but the related-domain
+If the Relating-domain has DNSSEC deployed, but the Related-domain
 does not, then the optional signature can (in a sense) extend the
-DNSSEC chain to cover the RDBD RR in the related-domain's zone.
+DNSSEC chain to cover the RDBD RR in the Related-domain's zone.
 
-If both domains have DNSSEC deployed, and if the relating-domain public key has
+If both domains have DNSSEC deployed, and if the Relating-domain public key has
 been cached, then the the signature mechanism provides additional protection
 against active attacks involving a parent of one of the domains.  Such attacks
 may in any case be less likely and detectable in many scenarios as they would
 be generic attacks against DNSSEC-signing (e.g. if a regisgtry injected a bogus
-DS for a relating-domain into the registry's signed zone). If the
+DS for a Relating-domain into the registry's signed zone). If the
 public key from the relevant RDNDKEY RRs is read from the DNS at the
 same time as a related RDBD RR, then the signature mechanism provided here
 may provide litle additional value over and above DNSSEC.
@@ -329,7 +329,7 @@ may provide litle additional value over and above DNSSEC.
 It's conceivable that an attacker could create a loop of relationships, such as
 a.com->b.com->c.com->a.com or similar.  This could cause a resource issue for
 any automated system.  A system SHOULD only perform three lookups from the
-first domain (a.com->b.com->c.com->d.com).  The related and relating-domains
+first domain (a.com->b.com->c.com->d.com).  The Related-domain and Relating-domains
 SHOULD attempt to keep links direct and so that only the fewest number of
 lookups are needed, but it is understood this may not always be possible.
 
