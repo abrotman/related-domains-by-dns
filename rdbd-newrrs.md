@@ -3,7 +3,7 @@
    Title = "Related Domains By DNS"
    abbrev = "RDBD"
    category = "std"
-   docName = "draft-brotman-rdbd-02"
+   docName = "draft-brotman-rdbd-03"
    ipr = "trust200902"
    area = "Applications"
    keyword = [""]
@@ -257,6 +257,18 @@ If one domain has relationships with many others, then the relevant
 RDBD RRs (and RDBDKEY RRs) can be published to represent those or
 one RDBD RR can contain an HTTPS URL at which one can provide a list of
 names.
+
+# Conflicting Tag Values
+
+It is possible to define a relationship more than once.  If it an
+investigating entity finds that a domain is related to more than once,
+and the `rdbd-tag` has a conflicting value, the investigator SHOULD treat
+the relationship as unstated.
+
+# Undocumented Tags
+
+If a relationship is found to have an invalid or undocumented `rdbd-tag`, 
+the investigating party SHOULD treat the relationship as unstated.
 
 # Required Signature Algorithms
 
