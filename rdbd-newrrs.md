@@ -302,7 +302,10 @@ entity SHOULD ignore the contents of the file located at that resource.
 A site may employ an HTTP redirection if they choose, and the retreiving
 entity should honor that redirect.
 
+# Time-To-Live
 
+The relationship is deemed to be enforced for the duration of time matching
+the TTL value of the RDBD record.
 
 # Required Signature Algorithms
 
