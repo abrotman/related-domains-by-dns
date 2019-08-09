@@ -270,6 +270,40 @@ the relationship as unstated.
 If a relationship is found to have an invalid or undocumented `rdbd-tag`, 
 the investigating party SHOULD treat the relationship as unstated.
 
+# HTTPS Resources
+
+If the RDBD record references an HTTPS URI for inclusion, the URI MUST
+be located at the domain stating the relationship using a 
+".well-known" [?RFC8615] location.  The base location for the domain
+`example.com` asserting relationships might be located within:
+
+https://example.com/.well-known/rdbd/
+
+The domain may wish to use a sub-domain such as `reference.example.com`.
+Furthermore, the URI will specify a file within the `.well-known` directory
+stated above, but the filename is left to the diescretion of the domain owner.
+An example of a full URI might be:
+
+https://www.example.com/.well-known/rdbd/affirmative.json
+
+The document being reference MUST be a well-formed JSON [?RFC8259] document.
+If the document does not validate as a JSON document, the contents of the 
+document SHOULD be ignored.
+
+There should is no defined maximum size for these documents, but a referring 
+site should be considerate of the retrieving entity's resources.
+
+## Document Retrieval
+
+When retrieving the document via HTTPS, the certificate presented MUST 
+properly validate.  If the certificate fails to validate, the retreiving 
+entity SHOULD ignore the contents of the file located at that resource.
+
+A site may employ an HTTP redirection if they choose, and the retreiving
+entity should honor that redirect.
+
+
+
 # Required Signature Algorithms
 
 Consumers of RDBD RRs MAY support signature verification. They
