@@ -317,7 +317,7 @@ Implementations of this specification that support signing or verifying
 signatures MUST support use of RSA with
 SHA256 (sig-alg==8) with at least 2048 bit RSA keys. [@?RFC5702]
 
-RSA keys SHOULD use a 2048 bit or longer modulus.
+RSA keys MUST use a 2048 bit or longer modulus.
 
 Implementations of this specification that support signing or verifying
 signatures SHOULD support use of Ed25519 
