@@ -5,8 +5,8 @@
 Network Working Group                                         A. Brotman
 Internet-Draft                                              Comcast, Inc
 Intended status: Standards Track                              S. Farrell
-Expires: February 13, 2020                        Trinity College Dublin
-                                                         August 12, 2019
+Expires: February 21, 2020                        Trinity College Dublin
+                                                         August 20, 2019
 
 
                          Related Domains By DNS
@@ -33,7 +33,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on February 13, 2020.
+   This Internet-Draft will expire on February 21, 2020.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Brotman & Farrell       Expires February 13, 2020               [Page 1]
+Brotman & Farrell       Expires February 21, 2020               [Page 1]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -68,28 +68,33 @@ Table of Contents
    3.  Directionality and Cardinality  . . . . . . . . . . . . . . .   7
    4.  Conflicting Tag Values  . . . . . . . . . . . . . . . . . . .   7
    5.  Undocumented Tags . . . . . . . . . . . . . . . . . . . . . .   7
-   6.  HTTPS Resources . . . . . . . . . . . . . . . . . . . . . . .   7
+   6.  HTTPS Resources . . . . . . . . . . . . . . . . . . . . . . .   8
      6.1.  Document Retrieval  . . . . . . . . . . . . . . . . . . .   8
    7.  Time-To-Live  . . . . . . . . . . . . . . . . . . . . . . . .   8
-   8.  Required Signature Algorithms . . . . . . . . . . . . . . . .   8
-   9.  Validation  . . . . . . . . . . . . . . . . . . . . . . . . .   9
-   10. Security Considerations . . . . . . . . . . . . . . . . . . .   9
-     10.1.  Efficiacy of signatures  . . . . . . . . . . . . . . . .   9
-     10.2.  DNSSEC . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     10.3.  Lookup Loops . . . . . . . . . . . . . . . . . . . . . .  10
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
-   12. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
-   13. Informative References  . . . . . . . . . . . . . . . . . . .  10
-   Appendix A.  Examples . . . . . . . . . . . . . . . . . . . . . .  11
-     A.1.  Unsigned Examples . . . . . . . . . . . . . . . . . . . .  12
-     A.2.  RSA-signed Example  . . . . . . . . . . . . . . . . . . .  12
-     A.3.  Ed25519-signed Example  . . . . . . . . . . . . . . . . .  14
-   Appendix B.  Ed25519 Signing Code . . . . . . . . . . . . . . . .  16
-   Appendix C.  Changes and Open Issues  . . . . . . . . . . . . . .  17
-     C.1.  Changes from -01 to -02 . . . . . . . . . . . . . . . . .  18
-     C.2.  Changes from -00 to -01 . . . . . . . . . . . . . . . . .  18
-     C.3.  Open Issues . . . . . . . . . . . . . . . . . . . . . . .  18
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  18
+   8.  Use-cases for Signatures  . . . . . . . . . . . . . . . . . .   8
+     8.1.  Extending DNSSEC  . . . . . . . . . . . . . . . . . . . .   9
+     8.2.  Many-to-one Use-Case  . . . . . . . . . . . . . . . . . .   9
+   9.  Required Signature Algorithms . . . . . . . . . . . . . . . .  10
+   10. Validation  . . . . . . . . . . . . . . . . . . . . . . . . .  10
+   11. Security Considerations . . . . . . . . . . . . . . . . . . .  10
+     11.1.  Efficiacy of signatures  . . . . . . . . . . . . . . . .  10
+     11.2.  DNSSEC . . . . . . . . . . . . . . . . . . . . . . . . .  11
+     11.3.  Lookup Loops . . . . . . . . . . . . . . . . . . . . . .  11
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
+   13. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  12
+   14. Informative References  . . . . . . . . . . . . . . . . . . .  12
+   Appendix A.  Implementation (and Deployment:-) Status . . . . . .  13
+   Appendix B.  Examples . . . . . . . . . . . . . . . . . . . . . .  13
+     B.1.  Unsigned Examples . . . . . . . . . . . . . . . . . . . .  14
+     B.2.  RSA-signed Example  . . . . . . . . . . . . . . . . . . .  14
+     B.3.  Ed25519-signed Example  . . . . . . . . . . . . . . . . .  17
+   Appendix C.  Ed25519 Signing Code . . . . . . . . . . . . . . . .  19
+   Appendix D.  Changes and Open Issues  . . . . . . . . . . . . . .  20
+     D.1.  Changes from -02 to -03 . . . . . . . . . . . . . . . . .  21
+     D.2.  Changes from -01 to -02 . . . . . . . . . . . . . . . . .  21
+     D.3.  Changes from -00 to -01 . . . . . . . . . . . . . . . . .  21
+     D.4.  Open Issues . . . . . . . . . . . . . . . . . . . . . . .  21
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  22
 
 1.  Introduction
 
@@ -101,19 +106,19 @@ Table of Contents
    Determining relationships between registered domains can be one of
    the more difficult investigations on the Internet.  It is typical to
    see something such as "example.com" and "dept-example.com" and be
+
+
+
+Brotman & Farrell       Expires February 21, 2020               [Page 2]
+
+Internet-Draft                    RDBD                       August 2019
+
+
    unsure if there is an actual relationship between those two domains,
    or if one might be an attacker attempting to impersonate the other.
    In some cases, anecdotal evidence from the DNS or WHOIS/RDAP may be
    sufficient.  However, service providers of various kinds may err on
    the side of caution and treat one of the domains as untrustworthy or
-
-
-
-Brotman & Farrell       Expires February 13, 2020               [Page 2]
-
-Internet-Draft                    RDBD                       August 2019
-
-
    abusive because it is not clear that the two domains are in fact
    related.  This specification provides a way for one domain to
    explicitly document a relationship with another, utilizing DNS
@@ -157,19 +162,19 @@ Internet-Draft                    RDBD                       August 2019
    Relating-domain (e.g., "example.com") and a reference from the
    Related-domain (e.g., "dept-example.com") contains a signature
    (verifiable with the "example.com" public key) over the text
+
+
+
+Brotman & Farrell       Expires February 21, 2020               [Page 3]
+
+Internet-Draft                    RDBD                       August 2019
+
+
    representation ('A-label') of the two domain names (plus a couple of
    other inputs).
 
    RDBD is intended to declare or disavow a relationship between
    registered domains, not individual hostnames.  That is to say that
-
-
-
-Brotman & Farrell       Expires February 13, 2020               [Page 3]
-
-Internet-Draft                    RDBD                       August 2019
-
-
    the relationship should exist between "example.com" and "dept-
    example.com", not "foo.example.com" and "bar.dept-example.com" (where
    those latter two are hosts).
@@ -214,17 +219,19 @@ Internet-Draft                    RDBD                       August 2019
    The wire and presentation format of the RDBDKEY resource record is
    identical to the DNSKEY record.  [RFC4034]
 
-   [[All going well, at some point we'll be able to say...]] IANA has
-   allocated RR code TBD for the RDBDKEY resource record via Expert
-   Review.
 
 
-
-
-Brotman & Farrell       Expires February 13, 2020               [Page 4]
+Brotman & Farrell       Expires February 21, 2020               [Page 4]
 
 Internet-Draft                    RDBD                       August 2019
 
+
+   [[All going well, at some point we'll be able to say...]] IANA has
+   allocated RR code TBD for the RDBDKEY resource record via Expert
+   Review.
+   [[In the meantime we're experimenting using 0xffa8, which is decimal
+   65448, from the experimental RR code range, for the RDBD resource
+   record.]]
 
    The RDBDKEY RR uses the same registries as DNSKEY for its fields.
    (This follows the precedent set for CDNSKEY in [RFC7344].)
@@ -249,6 +256,9 @@ Internet-Draft                    RDBD                       August 2019
 
    [[All going well, at some point we'll be able to say...]] IANA has
    allocated RR code TBD for the RDBD resource record via Expert Review.
+   [[In the meantime we're experimenting using 0xffa3, which is decimal
+   65443, from the experimental RR code range, for the RDBD resource
+   record.]]
 
    The RDBD RR is class independent.
 
@@ -262,6 +272,16 @@ Internet-Draft                    RDBD                       August 2019
    are: a two-octet key-tag, a one-octet signature algorithm, and the
    digital signature bits.
 
+
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020               [Page 5]
+
+Internet-Draft                    RDBD                       August 2019
+
+
                            1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -273,14 +293,6 @@ Internet-Draft                    RDBD                       August 2019
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                 /
       /                            signature                          /
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020               [Page 5]
-
-Internet-Draft                    RDBD                       August 2019
-
 
    We define two possible values for the rdbd-tag in this specification,
    later specifications can define new rdbd-tag values:
@@ -317,6 +329,15 @@ Internet-Draft                    RDBD                       August 2019
    the following linefeed-separated (where linefeed has the value
    '0x0a') lines:
 
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020               [Page 6]
+
+Internet-Draft                    RDBD                       August 2019
+
+
                    relating=<Relating-domain name>
                    related=<Related-domain name or URL>
                    rdbd-tag=<rdbd-tag value>
@@ -329,15 +350,6 @@ Internet-Draft                    RDBD                       August 2019
 
    The trailing "." representing the DNS root MUST NOT be included in
    the to-be-signed data, so a Relating-domain value above might be
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020               [Page 6]
-
-Internet-Draft                    RDBD                       August 2019
-
-
    "example.com" but "example.com."  MUST NOT be used as input to
    signing.
 
@@ -373,6 +385,15 @@ Internet-Draft                    RDBD                       August 2019
    tag", the investigating party SHOULD treat the relationship as
    unstated.
 
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020               [Page 7]
+
+Internet-Draft                    RDBD                       August 2019
+
+
 6.  HTTPS Resources
 
    If the RDBD record references an HTTPS URI for inclusion, the URI
@@ -385,15 +406,6 @@ Internet-Draft                    RDBD                       August 2019
    The domain may wish to use a sub-domain such as
    "reference.example.com".  Furthermore, the URI will specify a file
    within the ".well-known" directory stated above, but the filename is
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020               [Page 7]
-
-Internet-Draft                    RDBD                       August 2019
-
-
    left to the diescretion of the domain owner.  An example of a full
    URI might be:
 
@@ -422,7 +434,93 @@ Internet-Draft                    RDBD                       August 2019
    The relationship is deemed to be enforced for the duration of time
    matching the TTL value of the RDBD record.
 
-8.  Required Signature Algorithms
+8.  Use-cases for Signatures
+
+   [[The signature mechanism is pretty complex, relative to anything
+   else here, so it might be considered as an at-risk feature.]]
+
+   We see two possibly interesting use-cases for the signature mechanism
+   defined here.  They are not mutually exclusive.
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020               [Page 8]
+
+Internet-Draft                    RDBD                       August 2019
+
+
+8.1.  Extending DNSSEC
+
+   If the Relating-domain and Related-domain zones are both DNSSEC-
+   signed, then the signature mechanism defined here adds almost no
+   value and so is unlikely to be worth deploying.  If neither zone is
+   DNSSEC-signed, then again, there may be less value in deploying RDBD
+   signatures.  The minimal value that remains in either such case, is
+   that if a client has acquired and cached the RDBDKEY values in some
+   secure manner, then the RDBD signatures do offer some benefit.
+   However, at this point it is fairly unklikely that RDBDKEY values
+   will be acquired and cached via some secure out-of-band mechanisms,
+   so we do not expect much deployment of RDBD signatures in either the
+   full-DNSSEC or no-DNSSEC cases.
+
+   However, where the Relating-domain's zone is DNSSEC-signed, but the
+   Related-domain's zone is not DNSSEC signed, then the RDBD signatures
+   do provide value, in essence by extending DNSSEC "sideways" to the
+   Related-domain.  Figure 17 below illustrates this situation.
+
+
+         +-----------------+
+         | Relating-domain |
+         | (DNSSEC-signed) |         +---------------------+
+         | RDBDKEY-1       |<----+   + Related-domain      |
+         +-----------------+     |   | (NOT DNSSEC-signed) |
+                                 +---+ RDBD RR with SIG    |
+                                     +---------------------+
+
+         Figure 17: Extending DNSSEC use-case for RDBD signatures
+
+
+   The overall benefit is that the Relating-domain in this case need not
+   publish new RR values for each Related-domain.  Without the
+   signatures, every new related domain would require an update to the
+   zone file for the Relating-domain.  With signatures, the relevant
+   private key holder can publish a new RR value in each Related-domain
+   without there being any need to update the Relating-domain.
+
+8.2.  Many-to-one Use-Case
+
+   Providing reasonable confidence that a relationship exists without
+   use of the signature mechanism likely requires both the Relating-
+   domain zone and the Related-domain zone to be updated.
+
+   If a relationship exists between one Relating-domain and many
+   Related-domains and the signature scheme is not used, then making the
+   many required changes to the Relating-domain zone could be onerous.
+   Instead, the signature mechanism allows one to publish a stable value
+
+
+
+Brotman & Farrell       Expires February 21, 2020               [Page 9]
+
+Internet-Draft                    RDBD                       August 2019
+
+
+   (the RDBDKEY) once in the Relating-domain.  Each Related-domain can
+   then also publish a stable value (the RDBD RR with a signature) where
+   the signature provides confirmation that both domains are involved in
+   the relationship.
+
+   This scenario makes sense if the relationship (represented by the
+   rdbd-tag) between the domains is inherently directional, for example,
+   if the relationship between the Related-domains and Relating-domain
+   is akin to a membership relationship.
+
+   If the relationship in question is more "balanced" then by definition
+   we are in a many-to-one situation, but rather a many-to-many
+   situation where the signature mechanism again is no real help.
+
+9.  Required Signature Algorithms
 
    Consumers of RDBD RRs MAY support signature verification.  They MUST
    be able to parse/process unsigned or signed RDBD RRs even if they
@@ -441,16 +539,7 @@ Internet-Draft                    RDBD                       August 2019
    verifying signatures SHOULD support use of Ed25519 (sig-alg==15).
    [RFC8080][RFC8032]
 
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020               [Page 8]
-
-Internet-Draft                    RDBD                       August 2019
-
-
-9.  Validation
+10.  Validation
 
    A validated signature is solely meant to be additional evidence that
    the relevant domains are related, or that one disavows such a
@@ -458,13 +547,20 @@ Internet-Draft                    RDBD                       August 2019
    by itself mean that data or services from any domain should be
    considered as more or less trustworthy.
 
-10.  Security Considerations
+11.  Security Considerations
 
-10.1.  Efficiacy of signatures
+11.1.  Efficiacy of signatures
 
    The optional signature mechanism defined here offers no protection
    against an active attack if both the RDBD and RDBDKEY values are
    accessed via an untrusted path.
+
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 10]
+
+Internet-Draft                    RDBD                       August 2019
+
 
    If the RDBDKEY value has been cached, or is otherwise known via some
    sufficiently secure mechanism, then the RDBD signature does confirm
@@ -472,7 +568,7 @@ Internet-Draft                    RDBD                       August 2019
    considered that the relationship, or lack thereof, with a Related-
    domain was real at some point in time.
 
-10.2.  DNSSEC
+11.2.  DNSSEC
 
    RDBD does not require DNSSEC.  Without DNSSEC it is possible for an
    attacker to falsify DNS query responses for someone investigating a
@@ -497,19 +593,10 @@ Internet-Draft                    RDBD                       August 2019
    DNSSEC-signing (e.g. if a regisgtry injected a bogus DS for a
    Relating-domain into the registry's signed zone).  If the public key
    from the relevant RDNDKEY RRs is read from the DNS at the same time
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020               [Page 9]
-
-Internet-Draft                    RDBD                       August 2019
-
-
    as a related RDBD RR, then the signature mechanism provided here may
    provide litle additional value over and above DNSSEC.
 
-10.3.  Lookup Loops
+11.3.  Lookup Loops
 
    It's conceivable that an attacker could create a loop of
    relationships, such as a.com->b.com->c.com->a.com or similar.  This
@@ -520,7 +607,18 @@ Internet-Draft                    RDBD                       August 2019
    fewest number of lookups are needed, but it is understood this may
    not always be possible.
 
-11.  IANA Considerations
+
+
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 11]
+
+Internet-Draft                    RDBD                       August 2019
+
+
+12.  IANA Considerations
 
    This document introduces two new DNS RR types, RDBD and RDBDKEY.
    [[Codepoints for those are not yet allocated by IANA, nor have
@@ -530,17 +628,17 @@ Internet-Draft                    RDBD                       August 2019
    field.  Maybe something like: 0-255: RFC required; 256-1023:
    reserved; 1024-2047: Private use; 2048-65535: FCFS.]]
 
-12.  Acknowledgements
+13.  Acknowledgements
 
    Thanks to all who commented on this on the dbound and other lists, in
    particular to the following who provided comments that caused us to
-   change the draft: Bob Harold, John Levine, Andrew Sullivan, Suzanne
-   Woolf, and Paul Wouters.  (We're not implying any of these fine folks
-   actually like this draft btw, but we did change it because of their
-   comments:-) Apologies to anyone we missed, just let us know and we'll
-   add your name here.
+   change the draft: Bob Harold, John Levine, Pete Resnick, Andrew
+   Sullivan, Tim Wisinski, Suzanne Woolf, and Paul Wouters.  (We're not
+   implying any of these fine folks actually like this draft btw, but we
+   did change it because of their comments:-) Apologies to anyone we
+   missed, just let us know and we'll add your name here.
 
-13.  Informative References
+14.  Informative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -551,16 +649,6 @@ Internet-Draft                    RDBD                       August 2019
               Rose, "Resource Records for the DNS Security Extensions",
               RFC 4034, DOI 10.17487/RFC4034, March 2005,
               <https://www.rfc-editor.org/info/rfc4034>.
-
-
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020              [Page 10]
-
-Internet-Draft                    RDBD                       August 2019
-
 
    [RFC5518]  Hoffman, P., Levine, J., and A. Hathcock, "Vouch By
               Reference", RFC 5518, DOI 10.17487/RFC5518, April 2009,
@@ -575,6 +663,16 @@ Internet-Draft                    RDBD                       August 2019
               "DomainKeys Identified Mail (DKIM) Signatures", STD 76,
               RFC 6376, DOI 10.17487/RFC6376, September 2011,
               <https://www.rfc-editor.org/info/rfc6376>.
+
+
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 12]
+
+Internet-Draft                    RDBD                       August 2019
+
 
    [RFC7344]  Kumari, W., Gudmundsson, O., and G. Barwood, "Automating
               DNSSEC Delegation Trust Maintenance", RFC 7344,
@@ -591,7 +689,30 @@ Internet-Draft                    RDBD                       August 2019
               DOI 10.17487/RFC8080, February 2017,
               <https://www.rfc-editor.org/info/rfc8080>.
 
-Appendix A.  Examples
+Appendix A.  Implementation (and Deployment:-) Status
+
+   [[Note to RFC-editor: according to RFC 7942, sections such as this
+   one ought not be part of the final RFC.  I still dislike that idea,
+   but whatever;-)]]
+
+   We are not aware of any independent implementations so far.  The
+   authors have two implementation fragments worth mentioning so far:
+
+   o  The examples in the next Appendix are produced by scripts from
+      <https://github.com/abrotman/related-domains-by-dns/tree/master/
+      sampleo>
+
+   o  There are scripts at [[URL TBD]] that allow one to produce zone
+      file fragments and signatures for a set of domains.  See the
+      README there for details.
+
+   In terms of deployments, there is a "toy" deployment that in the
+   tolerantnetworks.ie domain and other related domains that one cen
+   determine by following the relevant trail:-) [[The para above will be
+   true once I've written the scripts mentioned in the para before
+   that:-)]]
+
+Appendix B.  Examples
 
    This appendix provides examples of RDBD-related values.  The
    following names and other values are used in these examples.
@@ -602,6 +723,13 @@ Appendix A.  Examples
 
    o  Unrelated domain: my-bad.example
 
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 13]
+
+Internet-Draft                    RDBD                       August 2019
+
+
    o  URL for other related domains: <https://example.com/related-names>
 
    o  URL for other unrelaed domains: <https://example.com/unrelateds>
@@ -609,16 +737,7 @@ Appendix A.  Examples
    The github repo <https://github.com/abrotman/related-domains-by-dns>
    has a script in sample/mk_samples.sh that generated this appendix.
 
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020              [Page 11]
-
-Internet-Draft                    RDBD                       August 2019
-
-
-A.1.  Unsigned Examples
+B.1.  Unsigned Examples
 
 
      ;ZONE FILE FRAGMENT STARTS
@@ -641,7 +760,7 @@ A.1.  Unsigned Examples
      ;ZONE FILE FRAGMENT ENDS
 
 
-A.2.  RSA-signed Example
+B.2.  RSA-signed Example
 
 
      # BASH SNIPPET STARTS
@@ -659,6 +778,14 @@ A.2.  RSA-signed Example
      MIIEowIBAAKCAQEA8qpGa2i6O76MdGiFVYGgd6UDYfUNl4qHpXfzmrqawUqb8JHM
      5m8hjLTbKDGRpZJA5m9sQlaM41hQxpAPuW3mJXYvVOiqxtRCBlVTvUCR+Gkah7LU
      FT54U8PT+ciF2or2ArL7O1LIT1PnEL0AZsbM6FwYLsRE8RX89PqeL9N/U4xJ7jQq
+
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 14]
+
+Internet-Draft                    RDBD                       August 2019
+
+
      SRK88bnRRFs+W7F+iQuA5erHfIZHftq+yzRG8rtgTN7HvTOewkDa2XS2Tn/z0tRV
      wNUX4Mi4e/DaEZU0u3kn7HqL0hyBXz/EEHUq9+57BURUT/ZQ41ORGgJ/4+tv2Gp8
      mp1ydOJaAhzgqky2zGBL1RS+mBFCio9dXBIJywIDAQABAoIBAQDwE7ITtcr6LKy8
@@ -666,14 +793,6 @@ A.2.  RSA-signed Example
      PfCwnZ/iVCjDsmSyzXB835I3XFiOET3kHvJgCiv1g3qGVvLGolB9nyGbMW1nvjSO
      hM6O4AP9po9uRVOHyR84J3K1EmOX/PgmITPel61CEe+IdYwX3K3w1Mmm9C3ZSitx
      rx8gpWHknpAG9Z+DA+f406TFTFtuTQe6xCDjKl0/uUGsT62UQqEiw00wekm8e+2b
-
-
-
-Brotman & Farrell       Expires February 13, 2020              [Page 12]
-
-Internet-Draft                    RDBD                       August 2019
-
-
      rDdtqu61Lqq1aakhtGlozXIT7ED+oobp6cAnM1QbV09z7zZevXl95yrXt9xZ3odS
      HNcHnMCRAoGBAP6N00vMmplk76OOJ738Twf6fsaL+zkwNmL74Rv85LJn96p6xQUm
      wJdMsa7HoD7LwuxhJkhDbdTiq+oV+Mc4J+FAe5xRK5vD7wVmPNWtUcvwdTZXnpNr
@@ -715,6 +834,14 @@ Internet-Draft                    RDBD                       August 2019
      0000000 8664 bd57 8cbf a8e1 9182 1b5f a4fc 5eb9
      0000010 49b4 fe21 f1c7 8097 ed90 44a5 bcb1 543c
      0000020 f784 c190 e1d9 2f2b 18ca d3c2 640f 3823
+
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 15]
+
+Internet-Draft                    RDBD                       August 2019
+
+
      0000030 7f8a e446 d0eb bd14 6077 0597 6015 a82b
      0000040 42d7 8677 b1a3 37fa a1e8 8109 07ec ff62
      0000050 16b8 3895 66de d992 dc4d ed99 9ec3 0a62
@@ -722,14 +849,6 @@ Internet-Draft                    RDBD                       August 2019
      0000070 a967 4ba0 3fb5 98db 5ff3 b070 058b 4d8f
      0000080 f198 6c1f e6b6 7a6c 1e8c ad42 237f 5440
      0000090 7856 caac f96c f87d e79c 4dc5 b833 bc03
-
-
-
-Brotman & Farrell       Expires February 13, 2020              [Page 13]
-
-Internet-Draft                    RDBD                       August 2019
-
-
      00000a0 c52e 5603 46a7 59b5 9fe3 fccd 04ee e908
      00000b0 71e7 21f8 47ad fea8 40bf 14a5 9e6b b3d4
      00000c0 c61a 5b96 c559 3491 4dfa 91a0 4c0b f3ff
@@ -768,7 +887,18 @@ Internet-Draft                    RDBD                       August 2019
      ; ZONE FILE FRAGMENT ENDS
 
 
-A.3.  Ed25519-signed Example
+
+
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 16]
+
+Internet-Draft                    RDBD                       August 2019
+
+
+B.3.  Ed25519-signed Example
 
 
 
@@ -781,7 +911,45 @@ A.3.  Ed25519-signed Example
 
 
 
-Brotman & Farrell       Expires February 13, 2020              [Page 14]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 17]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -837,12 +1005,12 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 13, 2020              [Page 15]
+Brotman & Farrell       Expires February 21, 2020              [Page 18]
 
 Internet-Draft                    RDBD                       August 2019
 
 
-Appendix B.  Ed25519 Signing Code
+Appendix C.  Ed25519 Signing Code
 
    Since OpenSSL does not yet support Ed25519 signing via its command
    line tool, we generate our example using the python script below,
@@ -893,7 +1061,7 @@ Appendix B.  Ed25519 Signing Code
 
 
 
-Brotman & Farrell       Expires February 13, 2020              [Page 16]
+Brotman & Farrell       Expires February 21, 2020              [Page 19]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -941,7 +1109,7 @@ Internet-Draft                    RDBD                       August 2019
 
    # CODE_ENDS
 
-Appendix C.  Changes and Open Issues
+Appendix D.  Changes and Open Issues
 
    [[RFC editor: please delete this appendix ]]
 
@@ -949,12 +1117,18 @@ Appendix C.  Changes and Open Issues
 
 
 
-Brotman & Farrell       Expires February 13, 2020              [Page 17]
+Brotman & Farrell       Expires February 21, 2020              [Page 20]
 
 Internet-Draft                    RDBD                       August 2019
 
 
-C.1.  Changes from -01 to -02
+D.1.  Changes from -02 to -03
+
+   o  Incorporated feedback/comments from IETF-105
+
+   o  Adopted some experimental RRCODE value
+
+D.2.  Changes from -01 to -02
 
    o  Added negative assertions based on IETF104 feedback
 
@@ -964,7 +1138,7 @@ C.1.  Changes from -01 to -02
 
    o  Typo fixes etc.
 
-C.2.  Changes from -00 to -01
+D.3.  Changes from -00 to -01
 
    o  Changed from primary/secondary to relating/related (better
       suggestions are still welcome)
@@ -979,7 +1153,7 @@ C.2.  Changes from -00 to -01
 
    o  Re-worked and extended examples
 
-C.3.  Open Issues
+D.4.  Open Issues
 
    Current open github issues include:
 
@@ -992,22 +1166,24 @@ C.3.  Open Issues
    These can be seen at: <https://github.com/abrotman/related-domains-
    by-dns/issues>
 
+
+
+
+
+
+
+
+Brotman & Farrell       Expires February 21, 2020              [Page 21]
+
+Internet-Draft                    RDBD                       August 2019
+
+
 Authors' Addresses
 
    Alex Brotman
    Comcast, Inc
 
    Email: alex_brotman@comcast.com
-
-
-
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020              [Page 18]
-
-Internet-Draft                    RDBD                       August 2019
 
 
    Stephen Farrell
@@ -1053,12 +1229,4 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-
-
-
-
-
-
-
-
-Brotman & Farrell       Expires February 13, 2020              [Page 19]
+Brotman & Farrell       Expires February 21, 2020              [Page 22]

@@ -138,6 +138,8 @@ resource record is identical to the DNSKEY record. [@?RFC4034]
 [[All going well, at some point we'll be able to say...]]
 IANA has allocated RR code TBD for the RDBDKEY resource record via Expert
 Review.  
+[[In the meantime we're experimenting using 0xffa8, which is decimal 65448,
+from the experimental RR code range, for the RDBD resource record.]]  
 
 The RDBDKEY RR uses the same registries as DNSKEY for its
 fields. (This follows the precedent set for CDNSKEY in [@?RFC7344].)
@@ -163,6 +165,8 @@ the Relating-domain zone.
 [[All going well, at some point we'll be able to say...]]
 IANA has allocated RR code TBD for the RDBD resource record via Expert
 Review.  
+[[In the meantime we're experimenting using 0xffa3, which is decimal 65443,
+from the experimental RR code range, for the RDBD resource record.]]  
 
 The RDBD RR is class independent.
 
@@ -307,6 +311,84 @@ entity should honor that redirect.
 The relationship is deemed to be enforced for the duration of time matching
 the TTL value of the RDBD record.
 
+# Use-cases for Signatures
+
+[[The signature mechanism is pretty complex, relative to anything
+else here, so it might be considered as an at-risk feature.]]
+
+We see two possibly interesting use-cases for the signature mechanism
+defined here. They are not mutually exclusive.
+
+## Extending DNSSEC
+
+If the Relating-domain and Related-domain zones are both DNSSEC-signed,
+then the signature mechanism defined here adds almost no value and so
+is unlikely to be worth deploying. If neither zone is DNSSEC-signed,
+then again, there may be less value in deploying RDBD signatures. The
+minimal value that remains in either such case, is that if a client
+has acquired and cached the RDBDKEY values in some secure manner, 
+then the RDBD signatures do offer some benefit. However, at this
+point it is fairly unklikely that RDBDKEY values will be acquired
+and cached via some secure out-of-band mechanisms, so we do not 
+expect much deployment of RDBD signatures in either the full-DNSSEC
+or no-DNSSEC cases.
+
+However, where the Relating-domain's zone is DNSSEC-signed, but the
+Related-domain's zone is not DNSSEC signed, then the RDBD signatures
+do provide value, in essence by extending DNSSEC "sideways" to the
+Related-domain. Figure 17 below illustrates this situation.
+
+~~~ ascii-art
+
++-----------------+
+| Relating-domain |
+| (DNSSEC-signed) |         +---------------------+
+| RDBDKEY-1       |<----+   + Related-domain      |
++-----------------+     |   | (NOT DNSSEC-signed) |
+                        +---+ RDBD RR with SIG    |
+                            +---------------------+
+
+Figure 17: Extending DNSSEC use-case for RDBD signatures
+
+~~~
+
+The overall benefit is that the Relating-domain in this case
+need not publish new RR values for each Related-domain.
+Without the signatures, every new related domain would
+require an update to the zone file for the Relating-domain.
+With signatures, the relevant private key holder can
+publish a new RR value in each Related-domain without
+there being any need to update the Relating-domain.
+
+## Many-to-one Use-Case 
+
+Providing reasonable confidence that a relationship
+exists without use of the signature mechanism likely
+requires both the Relating-domain zone and the 
+Related-domain zone to be updated.
+
+If a relationship exists between one Relating-domain 
+and many Related-domains and the signature scheme is
+not used, then making the many required changes to the 
+Relating-domain zone could be onerous. Instead, the 
+signature mechanism allows one to publish a stable
+value (the RDBDKEY) once in the Relating-domain.
+Each Related-domain can then also publish a stable
+value (the RDBD RR with a signature) where the
+signature provides confirmation that both domains
+are involved in the relationship.
+
+This scenario makes sense if the relationship (represented
+by the rdbd-tag) between
+the domains is inherently directional, for example, if
+the relationship between the Related-domains and
+Relating-domain is akin to a membership relationship.
+
+If the relationship in question is more "balanced" then
+by definition we are in a many-to-one situation, but
+rather a many-to-many situation where the signature
+mechanism again is no real help.
+
 # Required Signature Algorithms
 
 Consumers of RDBD RRs MAY support signature verification. They
@@ -400,7 +482,9 @@ in particular to the following who provided comments that caused us
 to change the draft: 
 Bob Harold, 
 John Levine, 
+Pete Resnick,
 Andrew Sullivan,
+Tim Wisinski,
 Suzanne Woolf,
 and
 Paul Wouters.
@@ -410,6 +494,29 @@ Apologies to anyone we missed, just let us know and we'll add
 your name here.
 
 {backmatter}
+
+# Implementation (and Deployment:-) Status
+
+[[Note to RFC-editor: according to RFC 7942, sections such as
+this one ought not be part of the final RFC. I still dislike
+that idea, but whatever;-)]]
+
+We are not aware of any independent implementations so far.
+The authors have two implementation fragments worth mentioning 
+so far:
+
+- The examples in the next Appendix are produced by scripts
+from https://github.com/abrotman/related-domains-by-dns/tree/master/sampleo
+
+- There are scripts at [[URL TBD]] that allow one to produce
+zone file fragments and signatures for a set of domains. See
+the README there for details.
+
+In terms of deployments, there is a "toy" deployment that
+in the tolerantnetworks.ie domain and other related domains
+that one cen determine by following the relevant trail:-)
+[[The para above will be true once I've written the
+scripts mentioned in the para before that:-)]]
 
 {{appendix.md}}
 
@@ -510,6 +617,11 @@ if __name__ == "__main__":
 # Changes and Open Issues
 
 [[RFC editor: please delete this appendix ]]
+
+## Changes from -02 to -03
+
+- Incorporated feedback/comments from IETF-105
+- Adopted some experimental RRCODE value
 
 ## Changes from -01 to -02
 
