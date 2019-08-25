@@ -139,7 +139,7 @@ resource record is identical to the DNSKEY record. [@?RFC4034]
 IANA has allocated RR code TBD for the RDBDKEY resource record via Expert
 Review.  
 [[In the meantime we're experimenting using 0xffa8, which is decimal 65448,
-from the experimental RR code range, for the RDBD resource record.]]  
+from the experimental RR code range, for the RDBDKEY resource record.]]  
 
 The RDBDKEY RR uses the same registries as DNSKEY for its
 fields. (This follows the precedent set for CDNSKEY in [@?RFC7344].)
@@ -185,7 +185,7 @@ key-tag, a one-octet signature algorithm, and the digital signature bits.
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |           rdbd-tag            |                               /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               /
-   /                        Relating-domain name(s)                /
+   /                  Related-domain name or URL                   /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+|
    |    key-tag                    | sig-alg     |                 /
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                 /
@@ -199,7 +199,7 @@ later specifications can define new rdbd-tag values:
 - 0: states that no relationship exists between the domains
 - 1: states that some relationship exists between the domains 
 
-The Relating-domain name(s) field contains either a single domain
+The Related-domain name field contains either a single domain
 name, or an HTTPS URL. In the latter case, successfully de-referencing that
 URL results in a JSON object that contains the list of domain
 names, such as is shown in the figure below.
@@ -501,22 +501,14 @@ your name here.
 this one ought not be part of the final RFC. I still dislike
 that idea, but whatever;-)]]
 
-We are not aware of any independent implementations so far.
-The authors have two implementation fragments worth mentioning 
-so far:
+We are not aware of any independent implementations so far.  One of the authors
+has a github repo at https://github.com/sftcd/rdbd-deebeedeerrr with scripts
+that allow one to produce zone file fragments and signatures for a set of
+domains. See the README there for details.
 
-- The examples in the next Appendix are produced by scripts
-from https://github.com/abrotman/related-domains-by-dns/tree/master/sampleo
-
-- There are scripts at [[URL TBD]] that allow one to produce
-zone file fragments and signatures for a set of domains. See
-the README there for details.
-
-In terms of deployments, there is a "toy" deployment that
-in the tolerantnetworks.ie domain and other related domains
-that one cen determine by following the relevant trail:-)
-[[The para above will be true once I've written the
-scripts mentioned in the para before that:-)]]
+In terms of deployments, we used the above for a "toy" deployment in the
+tolerantnetworks.ie domain and other related domains that one cen determine by
+following the relevant trail:-) 
 
 {{appendix.md}}
 

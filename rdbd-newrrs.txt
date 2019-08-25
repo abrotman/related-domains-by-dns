@@ -5,8 +5,8 @@
 Network Working Group                                         A. Brotman
 Internet-Draft                                              Comcast, Inc
 Intended status: Standards Track                              S. Farrell
-Expires: February 21, 2020                        Trinity College Dublin
-                                                         August 20, 2019
+Expires: February 26, 2020                        Trinity College Dublin
+                                                         August 25, 2019
 
 
                          Related Domains By DNS
@@ -33,7 +33,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on February 21, 2020.
+   This Internet-Draft will expire on February 26, 2020.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 1]
+Brotman & Farrell       Expires February 26, 2020               [Page 1]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -87,14 +87,14 @@ Table of Contents
    Appendix B.  Examples . . . . . . . . . . . . . . . . . . . . . .  13
      B.1.  Unsigned Examples . . . . . . . . . . . . . . . . . . . .  14
      B.2.  RSA-signed Example  . . . . . . . . . . . . . . . . . . .  14
-     B.3.  Ed25519-signed Example  . . . . . . . . . . . . . . . . .  17
-   Appendix C.  Ed25519 Signing Code . . . . . . . . . . . . . . . .  19
-   Appendix D.  Changes and Open Issues  . . . . . . . . . . . . . .  20
-     D.1.  Changes from -02 to -03 . . . . . . . . . . . . . . . . .  21
-     D.2.  Changes from -01 to -02 . . . . . . . . . . . . . . . . .  21
-     D.3.  Changes from -00 to -01 . . . . . . . . . . . . . . . . .  21
-     D.4.  Open Issues . . . . . . . . . . . . . . . . . . . . . . .  21
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  22
+     B.3.  Ed25519-signed Example  . . . . . . . . . . . . . . . . .  16
+   Appendix C.  Ed25519 Signing Code . . . . . . . . . . . . . . . .  18
+   Appendix D.  Changes and Open Issues  . . . . . . . . . . . . . .  19
+     D.1.  Changes from -02 to -03 . . . . . . . . . . . . . . . . .  20
+     D.2.  Changes from -01 to -02 . . . . . . . . . . . . . . . . .  20
+     D.3.  Changes from -00 to -01 . . . . . . . . . . . . . . . . .  20
+     D.4.  Open Issues . . . . . . . . . . . . . . . . . . . . . . .  20
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21
 
 1.  Introduction
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 2]
+Brotman & Farrell       Expires February 26, 2020               [Page 2]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -165,7 +165,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 3]
+Brotman & Farrell       Expires February 26, 2020               [Page 3]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -221,7 +221,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 4]
+Brotman & Farrell       Expires February 26, 2020               [Page 4]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -230,7 +230,7 @@ Internet-Draft                    RDBD                       August 2019
    allocated RR code TBD for the RDBDKEY resource record via Expert
    Review.
    [[In the meantime we're experimenting using 0xffa8, which is decimal
-   65448, from the experimental RR code range, for the RDBD resource
+   65448, from the experimental RR code range, for the RDBDKEY resource
    record.]]
 
    The RDBDKEY RR uses the same registries as DNSKEY for its fields.
@@ -277,7 +277,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 5]
+Brotman & Farrell       Expires February 26, 2020               [Page 5]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -287,7 +287,7 @@ Internet-Draft                    RDBD                       August 2019
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
       |           rdbd-tag            |                               /
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               /
-      /                        Relating-domain name(s)                /
+      /                  Related-domain name or URL                   /
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+|
       |    key-tag                    | sig-alg     |                 /
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                 /
@@ -301,10 +301,10 @@ Internet-Draft                    RDBD                       August 2019
 
    o  1: states that some relationship exists between the domains
 
-   The Relating-domain name(s) field contains either a single domain
-   name, or an HTTPS URL.  In the latter case, successfully de-
-   referencing that URL results in a JSON object that contains the list
-   of domain names, such as is shown in the figure below.
+   The Related-domain name field contains either a single domain name,
+   or an HTTPS URL.  In the latter case, successfully de-referencing
+   that URL results in a JSON object that contains the list of domain
+   names, such as is shown in the figure below.
 
 
                               [
@@ -333,7 +333,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 6]
+Brotman & Farrell       Expires February 26, 2020               [Page 6]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -389,7 +389,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 7]
+Brotman & Farrell       Expires February 26, 2020               [Page 7]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -445,7 +445,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 8]
+Brotman & Farrell       Expires February 26, 2020               [Page 8]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -501,7 +501,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020               [Page 9]
+Brotman & Farrell       Expires February 26, 2020               [Page 9]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -557,7 +557,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020              [Page 10]
+Brotman & Farrell       Expires February 26, 2020              [Page 10]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -613,7 +613,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020              [Page 11]
+Brotman & Farrell       Expires February 26, 2020              [Page 11]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -669,7 +669,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020              [Page 12]
+Brotman & Farrell       Expires February 26, 2020              [Page 12]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -695,22 +695,15 @@ Appendix A.  Implementation (and Deployment:-) Status
    one ought not be part of the final RFC.  I still dislike that idea,
    but whatever;-)]]
 
-   We are not aware of any independent implementations so far.  The
-   authors have two implementation fragments worth mentioning so far:
+   We are not aware of any independent implementations so far.  One of
+   the authors has a github repo at <https://github.com/sftcd/rdbd-
+   deebeedeerrr> with scripts that allow one to produce zone file
+   fragments and signatures for a set of domains.  See the README there
+   for details.
 
-   o  The examples in the next Appendix are produced by scripts from
-      <https://github.com/abrotman/related-domains-by-dns/tree/master/
-      sampleo>
-
-   o  There are scripts at [[URL TBD]] that allow one to produce zone
-      file fragments and signatures for a set of domains.  See the
-      README there for details.
-
-   In terms of deployments, there is a "toy" deployment that in the
-   tolerantnetworks.ie domain and other related domains that one cen
-   determine by following the relevant trail:-) [[The para above will be
-   true once I've written the scripts mentioned in the para before
-   that:-)]]
+   In terms of deployments, we used the above for a "toy" deployment in
+   the tolerantnetworks.ie domain and other related domains that one cen
+   determine by following the relevant trail:-)
 
 Appendix B.  Examples
 
@@ -723,19 +716,19 @@ Appendix B.  Examples
 
    o  Unrelated domain: my-bad.example
 
-
-
-Brotman & Farrell       Expires February 21, 2020              [Page 13]
-
-Internet-Draft                    RDBD                       August 2019
-
-
    o  URL for other related domains: <https://example.com/related-names>
 
    o  URL for other unrelaed domains: <https://example.com/unrelateds>
 
    The github repo <https://github.com/abrotman/related-domains-by-dns>
    has a script in sample/mk_samples.sh that generated this appendix.
+
+
+
+Brotman & Farrell       Expires February 26, 2020              [Page 13]
+
+Internet-Draft                    RDBD                       August 2019
+
 
 B.1.  Unsigned Examples
 
@@ -778,14 +771,6 @@ B.2.  RSA-signed Example
      MIIEowIBAAKCAQEA8qpGa2i6O76MdGiFVYGgd6UDYfUNl4qHpXfzmrqawUqb8JHM
      5m8hjLTbKDGRpZJA5m9sQlaM41hQxpAPuW3mJXYvVOiqxtRCBlVTvUCR+Gkah7LU
      FT54U8PT+ciF2or2ArL7O1LIT1PnEL0AZsbM6FwYLsRE8RX89PqeL9N/U4xJ7jQq
-
-
-
-Brotman & Farrell       Expires February 21, 2020              [Page 14]
-
-Internet-Draft                    RDBD                       August 2019
-
-
      SRK88bnRRFs+W7F+iQuA5erHfIZHftq+yzRG8rtgTN7HvTOewkDa2XS2Tn/z0tRV
      wNUX4Mi4e/DaEZU0u3kn7HqL0hyBXz/EEHUq9+57BURUT/ZQ41ORGgJ/4+tv2Gp8
      mp1ydOJaAhzgqky2zGBL1RS+mBFCio9dXBIJywIDAQABAoIBAQDwE7ITtcr6LKy8
@@ -793,6 +778,14 @@ Internet-Draft                    RDBD                       August 2019
      PfCwnZ/iVCjDsmSyzXB835I3XFiOET3kHvJgCiv1g3qGVvLGolB9nyGbMW1nvjSO
      hM6O4AP9po9uRVOHyR84J3K1EmOX/PgmITPel61CEe+IdYwX3K3w1Mmm9C3ZSitx
      rx8gpWHknpAG9Z+DA+f406TFTFtuTQe6xCDjKl0/uUGsT62UQqEiw00wekm8e+2b
+
+
+
+Brotman & Farrell       Expires February 26, 2020              [Page 14]
+
+Internet-Draft                    RDBD                       August 2019
+
+
      rDdtqu61Lqq1aakhtGlozXIT7ED+oobp6cAnM1QbV09z7zZevXl95yrXt9xZ3odS
      HNcHnMCRAoGBAP6N00vMmplk76OOJ738Twf6fsaL+zkwNmL74Rv85LJn96p6xQUm
      wJdMsa7HoD7LwuxhJkhDbdTiq+oV+Mc4J+FAe5xRK5vD7wVmPNWtUcvwdTZXnpNr
@@ -834,14 +827,6 @@ Internet-Draft                    RDBD                       August 2019
      0000000 8664 bd57 8cbf a8e1 9182 1b5f a4fc 5eb9
      0000010 49b4 fe21 f1c7 8097 ed90 44a5 bcb1 543c
      0000020 f784 c190 e1d9 2f2b 18ca d3c2 640f 3823
-
-
-
-Brotman & Farrell       Expires February 21, 2020              [Page 15]
-
-Internet-Draft                    RDBD                       August 2019
-
-
      0000030 7f8a e446 d0eb bd14 6077 0597 6015 a82b
      0000040 42d7 8677 b1a3 37fa a1e8 8109 07ec ff62
      0000050 16b8 3895 66de d992 dc4d ed99 9ec3 0a62
@@ -849,6 +834,14 @@ Internet-Draft                    RDBD                       August 2019
      0000070 a967 4ba0 3fb5 98db 5ff3 b070 058b 4d8f
      0000080 f198 6c1f e6b6 7a6c 1e8c ad42 237f 5440
      0000090 7856 caac f96c f87d e79c 4dc5 b833 bc03
+
+
+
+Brotman & Farrell       Expires February 26, 2020              [Page 15]
+
+Internet-Draft                    RDBD                       August 2019
+
+
      00000a0 c52e 5603 46a7 59b5 9fe3 fccd 04ee e908
      00000b0 71e7 21f8 47ad fea8 40bf 14a5 9e6b b3d4
      00000c0 c61a 5b96 c559 3491 4dfa 91a0 4c0b f3ff
@@ -887,17 +880,6 @@ Internet-Draft                    RDBD                       August 2019
      ; ZONE FILE FRAGMENT ENDS
 
 
-
-
-
-
-
-
-Brotman & Farrell       Expires February 21, 2020              [Page 16]
-
-Internet-Draft                    RDBD                       August 2019
-
-
 B.3.  Ed25519-signed Example
 
 
@@ -911,45 +893,7 @@ B.3.  Ed25519-signed Example
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Brotman & Farrell       Expires February 21, 2020              [Page 17]
+Brotman & Farrell       Expires February 26, 2020              [Page 16]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -1005,7 +949,7 @@ Internet-Draft                    RDBD                       August 2019
 
 
 
-Brotman & Farrell       Expires February 21, 2020              [Page 18]
+Brotman & Farrell       Expires February 26, 2020              [Page 17]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -1061,7 +1005,7 @@ Appendix C.  Ed25519 Signing Code
 
 
 
-Brotman & Farrell       Expires February 21, 2020              [Page 19]
+Brotman & Farrell       Expires February 26, 2020              [Page 18]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -1117,7 +1061,7 @@ Appendix D.  Changes and Open Issues
 
 
 
-Brotman & Farrell       Expires February 21, 2020              [Page 20]
+Brotman & Farrell       Expires February 26, 2020              [Page 19]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -1173,7 +1117,7 @@ D.4.  Open Issues
 
 
 
-Brotman & Farrell       Expires February 21, 2020              [Page 21]
+Brotman & Farrell       Expires February 26, 2020              [Page 20]
 
 Internet-Draft                    RDBD                       August 2019
 
@@ -1229,4 +1173,4 @@ Authors' Addresses
 
 
 
-Brotman & Farrell       Expires February 21, 2020              [Page 22]
+Brotman & Farrell       Expires February 26, 2020              [Page 21]
