@@ -96,7 +96,7 @@ use digital signatures is chosen.
 -->
 
 [[Discussion of this draft is taking place on the dnsop@ietf.org mailing list.
-Previously, there was discussion on the dbound@ietf.org list.
+Previously, discussion was on the dbound@ietf.org list.
 There's a github repo for this draft at 
 https://github.com/abrotman/related-domains-by-dns -
 issues and PRs are welcome there.]]
@@ -129,7 +129,7 @@ This mechanism is partly modelled on how DKIM [@?RFC6376] handles public keys
 and signatures - a public key is hosted at the Relating-domain (e.g.,
 `club.example.com`), using an RDBDKEY resource record, and the RDBD record of
 the Related-domain (e.g., `member.example.com`) can contain a signature
-(verifiable with the `example.com` public key) over the text representation
+(verifiable with the `club.example.com` public key) over the text representation
 ('A-label') of the two names (plus a couple of other inputs).
 
 ## RDBDKEY Resource Record Definition

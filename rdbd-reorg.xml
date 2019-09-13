@@ -103,7 +103,7 @@ extensible in a way that should allow use-cases calling for such
 declarations to be handled later.
 </t>
 <t>[[Discussion of this draft is taking place on the dnsop@ietf.org mailing list.
-Previously, there was discussion on the dbound@ietf.org list.
+Previously, discussion was on the dbound@ietf.org list.
 There's a github repo for this draft at
 <eref target="https://github.com/abrotman/related-domains-by-dns"/> -
 issues and PRs are welcome there.]]
@@ -140,7 +140,7 @@ This mechanism is partly modelled on how DKIM <xref target="RFC6376"/> handles p
 and signatures - a public key is hosted at the Relating-domain (e.g.,
 <spanx style="verb">club.example.com</spanx>), using an RDBDKEY resource record, and the RDBD record of
 the Related-domain (e.g., <spanx style="verb">member.example.com</spanx>) can contain a signature
-(verifiable with the <spanx style="verb">example.com</spanx> public key) over the text representation
+(verifiable with the <spanx style="verb">club.example.com</spanx> public key) over the text representation
 ('A-label') of the two names (plus a couple of other inputs).
 </t>
 

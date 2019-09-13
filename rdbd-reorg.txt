@@ -145,8 +145,8 @@ Internet-Draft                    RDBD                    September 2019
    declarations to be handled later.
 
    [[Discussion of this draft is taking place on the dnsop@ietf.org
-   mailing list.  Previously, there was discussion on the
-   dbound@ietf.org list.  There's a github repo for this draft at
+   mailing list.  Previously, discussion was on the dbound@ietf.org
+   list.  There's a github repo for this draft at
    <https://github.com/abrotman/related-domains-by-dns> - issues and PRs
    are welcome there.]]
 
@@ -186,7 +186,7 @@ Internet-Draft                    RDBD                    September 2019
    hosted at the Relating-domain (e.g., "club.example.com"), using an
    RDBDKEY resource record, and the RDBD record of the Related-domain
    (e.g., "member.example.com") can contain a signature (verifiable with
-   the "example.com" public key) over the text representation
+   the "club.example.com" public key) over the text representation
    ('A-label') of the two names (plus a couple of other inputs).
 
 2.1.  RDBDKEY Resource Record Definition
