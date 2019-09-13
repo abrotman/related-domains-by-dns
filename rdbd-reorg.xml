@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rfc SYSTEM 'rfc2629.dtd' []>
+<rfc ipr="trust200902" category="std" docName="draft-brotman-rdbd-03">
+<?rfc toc="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<?rfc private=""?>
+<?rfc topblock="yes"?>
+<?rfc comments="no"?>
+<front>
+<title abbrev="RDBD">Related Domains By DNS</title>
+
+<author initials="A." surname="Brotman" fullname="Alex Brotman">
+<organization>Comcast, Inc</organization>
+<address>
+<postal>
+<street></street>
+<city></city>
+<code></code>
+<country></country>
+<region></region>
+</postal>
+<phone></phone>
+<email>alex_brotman@comcast.com</email>
+<uri></uri>
+</address>
+</author>
+<author initials="S." surname="Farrell" fullname="Stephen Farrell">
+<organization>Trinity College Dublin</organization>
+<address>
+<postal>
+<street></street>
+<city></city>
+<code></code>
+<country></country>
+<region></region>
+</postal>
+<phone></phone>
+<email>stephen.farrell@cs.tcd.ie</email>
+<uri></uri>
+</address>
+</author>
+<date year="2019" month="September" day="13"/>
+
+<area>Applications</area>
+<workgroup></workgroup>
+<keyword></keyword>
+
+
+<abstract>
+<t>This document describes a mechanism by which a DNS domain can
+publicly document the existence or absence of a relationship with a different domain, called
+&quot;Related Domains By DNS&quot;, or &quot;RDBD&quot;.
+</t>
+<t>[[THIS IS A PROPOSED RESTRUCTURE FOR -03, IT MAY DISAPPEAR IF ALEX HATES IT:-)]]
+</t>
+</abstract>
+
+
+</front>
+
+<middle>
+
+<section anchor="introduction" title="Introduction">
+<t>Determining relationships between DNS domains can be one of the more difficult
+investigations on the Internet.  It is typical to see something such as
+<spanx style="verb">example.com</spanx> and <spanx style="verb">dept-example.com</spanx> and be unsure if there is an actual
+relationship between those two domains, or if one might be an attacker
+attempting to impersonate the other.  In some cases, anecdotal evidence from
+the DNS or WHOIS/RDAP may be sufficient.  However, service providers of various
+kinds may err on the side of caution and treat one of the domains as
+untrustworthy or abusive if it is not clear that the two domains are in
+fact related. This specification provides a way for one domain to
+explicitly document, or disavow, a relationship other domains, utilizing DNS records.
+</t>
+<t>The use cases for this include:
+</t>
+<t>
+<list style="symbols">
+<t>where an organisation has names below different ccTLDs, and would like to
+allow others to correlate their ownership more easily, consider <spanx style="verb">example.de</spanx>
+and <spanx style="verb">example.ie</spanx> registered by regional offices of the same company;</t>
+<t>following an acquisition, a domain holder might want to indicate that
+example.net is now related to example.com in order to make a later migration
+easier;</t>
+<t>when doing Internet surveys, we should be able to provide more accurate
+results if we have information as to which domains are, or are not, related.</t>
+<t>a domain holder may wish to declare that no relationship exists with some
+other domain, for example &quot;good.example&quot; may want to declare that it is not
+associated with &quot;g00d.example&quot; if the latter is currently being used in some
+cousin-domain style attack. In such cases, it is more likely that there can be
+a larger list of names (compared to the &quot;positive&quot; use-cases) for which there
+is a desire to disavow a relationship.</t>
+</list>
+</t>
+<t>It is not a goal of this specification to provide a high-level of
+assurance as to whether or not two domains are definitely related, nor to provide
+fine-grained detail about the kinds of relationships that may
+exist between domains. However, the mechanism defined here is
+extensible in a way that should allow use-cases calling for such
+declarations to be handled later.
+</t>
+<t>[[Discussion of this draft is taking place on the dnsop@ietf.org mailing list.
+Previously, there was discussion on the dbound@ietf.org list.
+There's a github repo for this draft at
+<eref target="https://github.com/abrotman/related-domains-by-dns"/> -
+issues and PRs are welcome there.]]
+</t>
+
+<section anchor="terminology" title="Terminology">
+<t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
+&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;NOT RECOMMENDED&quot;, &quot;MAY&quot;, and
+&quot;OPTIONAL&quot; in this document are to be interpreted as described in
+<xref target="RFC2119"/>.
+</t>
+<t>The following terms are used throughout this document:
+</t>
+<t>
+<list style="symbols">
+<t>Relating-domain: this refers to the domain that is
+declarating a relationship exists. (This was called the
+&quot;parent/primary&quot; in -00).</t>
+<t>Related-domain: This refers to the domain that is
+referenced by the Relating-domain, such as <spanx style="verb">dept-example.com</spanx>.
+(This was called the &quot;secondary&quot; in -00.)</t>
+</list>
+</t>
+</section>
+</section>
+
+<section anchor="new-resource-record-types" title="New Resource Record Types">
+<t>We define a resource record type (RDBD) that can declare, or disavow, a
+relationship.
+</t>
+<t>RDBD also includes an optional digital signature mechanism that can somewhat
+improve the level of assurance with which an RDBD declaration can be handled.
+This mechanism is partly modelled on how DKIM <xref target="RFC6376"/> handles public keys
+and signatures - a public key is hosted at the Relating-domain (e.g.,
+<spanx style="verb">club.example.com</spanx>), using an RDBDKEY resource record, and the RDBD record of
+the Related-domain (e.g., <spanx style="verb">member.example.com</spanx>) can contain a signature
+(verifiable with the <spanx style="verb">example.com</spanx> public key) over the text representation
+('A-label') of the two names (plus a couple of other inputs).
+</t>
+
+<section anchor="rdbdkey-resource-record-definition" title="RDBDKEY Resource Record Definition">
+<t>The RDBDKEY record is published at the apex of the Relating-domain zone.
+</t>
+<t>The wire and presentation format of the RDBDKEY
+resource record is identical to the DNSKEY record. <xref target="RFC4034"/>
+</t>
+<t>[[All going well, at some point we'll be able to say...]]
+IANA has allocated RR code TBD for the RDBDKEY resource record via Expert
+Review.
+<vspace/>
+[[In the meantime we're experimenting using 0xffa8, which is decimal 65448,
+from the experimental RR code range, for the RDBDKEY resource record.]]
+</t>
+<t>The RDBDKEY RR uses the same registries as DNSKEY for its
+fields. (This follows the precedent set for CDNSKEY in <xref target="RFC7344"/>.)
+</t>
+<t>No special processing is performed by authoritative servers or by
+resolvers, when serving or resolving.  For all practical purposes,
+RDBDKEY is a regular RR type.
+</t>
+<t>The flags field of RDBDKEY records MUST be zero. [[Is that correct/ok? I've
+no idea really:-)]]
+</t>
+<t>There can be multiple occurrences of the RDBDKEY resource record in the
+same zone
+</t>
+</section>
+
+<section anchor="rdbd-resource-record-definition" title="RDBD Resource Record Definition">
+<t>To declare a relationship exists an RDBD resource record is published at the
+apex of the Related-domain zone.
+</t>
+<t>To disavow a relationship an RDBD resource record is published at the apex of
+the Relating-domain zone.
+</t>
+<t>[[All going well, at some point we'll be able to say...]]
+IANA has allocated RR code TBD for the RDBD resource record via Expert
+Review.
+<vspace/>
+[[In the meantime we're experimenting using 0xffa3, which is decimal 65443,
+from the experimental RR code range, for the RDBD resource record.]]
+</t>
+<t>The RDBD RR is class independent.
+</t>
+<t>The RDBD RR has no special Time to Live (TTL) requirements.
+</t>
+<t>There can be multiple occurrences of the RDBD resource record in the
+same zone.
+</t>
+<t>RDBD relationships are uni-directional. If bi-directional relationships
+exist, then both domains can publish RDBD RRs and optionally sign those.
+</t>
+<t>The wire format for an RDBD RDATA consists of a two octet rdbd-tag, a
+domain name or URL, and the optional signature fields which are: a two-octet
+key-tag, a one-octet signature algorithm, and the digital signature bits.
+</t>
+
+<figure align="center"><artwork align="center" type="ascii-art">
+                        1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           rdbd-tag            |                               /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               /
+   /                        domain name or URL                     /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+--+-+|
+   |    key-tag                    | sig-alg     |                 /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                 /
+   /                            signature                          /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</artwork></figure>
+<t>We define two possible values for the rdbd-tag in this specification,
+later specifications can define new rdbd-tag values:
+</t>
+<t>
+<list style="symbols">
+<t>0: states that no relationship exists between the domains</t>
+<t>1: states that some relationship exists between the domains</t>
+</list>
+</t>
+<t>The domain name field contains either a single domain
+name, or an HTTPS URL. In the latter case, successfully de-referencing that
+URL is expected to result in a JSON object that contains a list of domain
+names, such as is shown in the figure below.
+</t>
+
+<figure align="center"><artwork align="center" type="ascii-art">
+
+    [ 
+        "example.com", 
+        "example.net",
+        "foo.example"
+    ]
+    
+</artwork></figure>
+<t>If an optional signature is included, the sig-alg field MUST contain
+the signature algorithm used, with the same values used as would be
+used in an RRSIG. The key-tag MUST match the RDBDKEY RR value for
+the corresponding public key, and is calculated as defined in
+<xref target="RFC4034"/> appendix B.
+</t>
+<t>If the optional signature is omitted, then the presentation form of the
+key-tag, sig-alg and signature fields MAY be omitted. If not omitted then the
+sig-alg and key-tag fields MUST be zero and the signature field MUST be a an
+empty string. [[Is that the right way to have optional fields in prsentation
+sytax for RRs? Not sure.]]
+</t>
+<t>The input to signing (&quot;to-be-signed&quot; data) is the concatenation of the
+following linefeed-separated (where linefeed has the value '0x0a') lines:
+</t>
+
+<figure align="center"><artwork align="center" type="ascii-art">
+relating=&lt;Relating-domain name&gt;
+related=&lt;Related-domain name or URL&gt;
+rdbd-tag=&lt;rdbd-tag value&gt;
+key-tag=&lt;key-tag&gt;
+sig-alg=&lt;sig-alg&gt;
+
+</artwork></figure>
+<t>The Relating-domain and Related-domain values MUST be the 'A-label'
+representation of these names.
+</t>
+<t>The trailing &quot;.&quot; representing the DNS root MUST NOT be included in
+the to-be-signed data, so a Relating-domain value above might be
+&quot;example.com&quot; but &quot;example.com.&quot; MUST NOT be used as input to
+signing.
+</t>
+<t>A linefeed MUST be included after the &quot;sig-alg&quot; value in the
+last line.
+</t>
+<t>[[Presentation syntax and to-be-signed details are very liable to change.]]
+</t>
+<t>See the examples in the Appendix for further details.
+</t>
+</section>
+</section>
+
+<section anchor="rdbd-processing" title="RDBD processing">
+<t>
+<list style="symbols">
+<t>If multiple RDBD records exist
+with conflicting <spanx style="verb">rdbd-tag</spanx> values, those RDBD records SHOULD be ignored.</t>
+<t>If an RDBD record has an invalid or undocumented <spanx style="verb">rdbd-tag</spanx>,
+that RDBD record SHOULD be ignored.</t>
+</list>
+</t>
+<t>
+<list style="symbols">
+<t>The document being referenced by a URL within an RDBD record MUST be a
+well-formed JSON [?RFC8259] document.  If the document does not validate as a
+JSON document, the contents of the document SHOULD be ignored.</t>
+<t>There is no defined maximum size for these documents, but a referring
+site ought be considerate of the retrieving entity's resources.</t>
+<t>When retrieving the document via HTTPS, the certificate presented MUST
+properly validate.  If the certificate fails to validate, the retreiving
+entity SHOULD ignore the contents of the file located at that resource.</t>
+<t>Normal HTTP processing rules apply when de-referencing a URL found
+in an RDBD record, for example, a site may employ HTTP redirection.</t>
+<t>Consumers of RDBD RRs MAY support signature verification. They
+MUST be able to parse/process unsigned or signed RDBD RRs even if they
+cannot cryptographically verify signatures.</t>
+<t>Implementations producing RDBD RRs SHOULD support optional signing of those
+and production of RDBDKEY RRs.</t>
+<t>Implementations of this specification that support signing or verifying
+signatures MUST support use of RSA with
+SHA256 (sig-alg==8) with at least 2048 bit RSA keys. <xref target="RFC5702"/></t>
+<t>RSA keys MUST use a 2048 bit or longer modulus.</t>
+<t>Implementations of this specification that support signing or verifying
+signatures SHOULD support use of Ed25519
+(sig-alg==15). <xref target="RFC8080"/><xref target="RFC8032"/></t>
+<t>A validated signature is solely meant to be additional evidence that the
+relevant domains are related, or that one disavows such a relationship.</t>
+</list>
+</t>
+</section>
+
+<section anchor="usecases-for-signatures" title="Use-cases for Signatures">
+<t>[[The signature mechanism is pretty complex, relative to anything
+else here, so it might be considered as an at-risk feature.]]
+</t>
+<t>We see two possibly interesting use-cases for the signature mechanism
+defined here. They are not mutually exclusive.
+</t>
+
+<section anchor="manytoone-usecase" title="Many-to-one Use-Case">
+<t>If a bi-directional relationship exists between one Relating-domain and many
+Related-domains and the signature scheme is not used, then making the many
+required changes to the Relating-domain zone could be onerous. Instead, the
+signature mechanism allows one to publish a stable value (the RDBDKEY) once in
+the Relating-domain.  Each Related-domain can then also publish a stable value
+(the RDBD RR with a signature) where the signature provides confirmation that
+both domains are involved in declaraing the relationship.
+</t>
+<t>This scenario also makes sense if the relationship (represented by the rdbd-tag)
+between the domains is inherently directional, for example, if the relationship
+between the Related-domains and Relating-domain is akin to a membership
+relationship.
+</t>
+</section>
+
+<section anchor="extending-dnssec" title="Extending DNSSEC">
+<t>If the Relating-domain and Related-domain zones are both DNSSEC-signed, then
+the signature mechanism defined here adds almost no value and so is unlikely to
+be worth deploying in that it provides no additional cryptorgraphic security
+(though the many-to-one advantage could still apply).
+If neither zone is DNSSEC-signed,
+then again, there may be little value in deploying RDBD signatures.
+</t>
+<t>The minimal value that remains in either such case, is that if a client
+has acquired and cached RDBDKEY values in some secure manner,
+then the RDBD signatures do offer some benefit. However, at this
+point it is fairly unklikely that RDBDKEY values will be acquired
+and cached via some secure out-of-band mechanisms, so we do not
+expect much deployment of RDBD signatures in either the full-DNSSEC
+or no-DNSSEC cases.
+</t>
+<t>However, where the Relating-domain's zone is DNSSEC-signed, but the
+Related-domain's zone is not DNSSEC signed, then the RDBD signatures
+do provide value, in essence by extending DNSSEC &quot;sideways&quot; to the
+Related-domain. The figure below illustrates this situation.
+</t>
+
+<figure align="center"><artwork align="center" type="ascii-art">
+
++-----------------+
+| Relating-domain |
+| (DNSSEC-signed) |         +---------------------+
+| RDBDKEY-1       |&lt;----+   + Related-domain      |
++-----------------+     |   | (NOT DNSSEC-signed) |
+                        +---+ RDBD RR with SIG    |
+                            +---------------------+
+
+  Extending DNSSEC use-case for RDBD signatures
+
+</artwork></figure>
+</section>
+</section>
+
+<section anchor="security-considerations" title="Security Considerations">
+
+<section anchor="efficiacy-of-signatures" title="Efficiacy of signatures">
+<t>The optional signature mechanism defined here offers no protection against an
+active attack if both the RDBD and RDBDKEY values are accessed via an untrusted
+path.
+</t>
+</section>
+
+<section anchor="dnssec" title="DNSSEC">
+<t>RDBD does not require DNSSEC. Without DNSSEC it is possible for an attacker to
+falsify DNS query responses for someone investigating a relationship.
+Conversely, an attacker could delete the response that would normally
+demonstrate the relationship, causing the investigating party to believe there
+is no link between the two domains.  An attacker could also replay an old RDBD
+value that is actually no longer published in the DNS by the Related-domain.
+</t>
+<t>Deploying signed records with DNSSEC should allow for detection
+of these kinds of attack.
+</t>
+</section>
+
+<section anchor="lookup-loops" title="Lookup Loops">
+<t>A bad actor could create a loop of relationships, such as
+a.example-&gt;b.example-&gt;c.example-&gt;a.example or similar.
+<vspace/>
+Automated systems SHOULD protect against such loops. For example,
+only perform a configured number of lookups from the first
+domain.
+Related-domain and Relating-domains
+SHOULD attempt to keep links direct and so that only the fewest number of
+lookups are needed, but it is understood this may not always be possible.
+</t>
+</section>
+</section>
+
+<section anchor="iana-considerations" title="IANA Considerations">
+<t>This document introduces two new DNS RR types, RDBD and RDBDKEY.  [[Codepoints
+for those are not yet allocated by IANA, nor have codepoints been requested so
+far.]]
+</t>
+<t>[[New rdbd-tag value handling will need to be defined if we keep that field.
+Maybe something like: 0-255: RFC required; 256-1023: reserved; 1024-2047:
+Private use; 2048-65535: FCFS. It will also likely be useful to define a string
+representation for each registered rdbd-tag value, e.g.  perhaps &quot;UNRELATED&quot;
+for rdbd-tag value 0, and &quot;RELATED&quot; for rdbd-tag value 1, so that tools
+displaying RDBD information can be consistent.]]
+</t>
+</section>
+
+<section anchor="acknowledgements" title="Acknowledgements">
+<t>Thanks to all who commented on this on the dbound and other lists,
+in particular to the following who provided comments that caused us
+to change the draft:
+Bob Harold,
+John Levine,
+Pete Resnick,
+Andrew Sullivan,
+Tim Wisinski,
+Suzanne Woolf,
+Joe St. Sauver,
+and
+Paul Wouters.
+(We're not implying any of these fine folks actually like this
+draft btw, but we did change it because of their comments:-)
+Apologies to anyone we missed, just let us know and we'll add
+your name here.
+</t>
+</section>
+
+</middle>
+<back>
+<references title="Normative References">
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4034.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5702.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8032.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8080.xml"?>
+</references>
+<references title="Informative References">
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6376.xml"?>
+<?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7344.xml"?>
+</references>
+
+<section anchor="implementation-and-toy-deployment-status" title="Implementation (and Toy Deployment:-) Status">
+<t>[[Note to RFC-editor: according to RFC 7942, sections such as
+this one ought not be part of the final RFC. I still dislike
+that idea, but whatever;-)]]
+</t>
+<t>We are not aware of any independent implementations so far.  One of the authors
+has a github repo at <eref target="https://github.com/sftcd/rdbd-deebeedeerrr"/> with scripts
+that allow one to produce zone file fragments and signatures for a set of
+domains. There is also a wrapper script for the dig tool that provides
+a nicer view of RDBD and RDBDKEY records. See the README there for details.
+</t>
+<t>In terms of deployments, we used the above for a &quot;toy&quot; deployment in the
+tolerantnetworks.ie domain and other related domains that one can determine by
+following the relevant trail:-)
+</t>
+</section>
+
+<section anchor="examples" title="Examples">
+<t>These examples have been generated using the proof-of-concept implementation
+mentioned above. These are intended for interop, not for beauty:-) The
+dig wrapper script referred to above produces more readable output,
+shown further below..
+</t>
+<t>The following names and other values are used in these
+examples.
+</t>
+<t>
+<list style="symbols">
+<t>Relating domain: my.example</t>
+<t>Related domain: my-way.example</t>
+<t>Unrelated domain: my-bad.example</t>
+<t>URL for other related domains: <eref target="https://my.example/related-names"/></t>
+<t>URL for other unrelaed domains: <eref target="https://my.example/unrelateds"/></t>
+</list>
+</t>
+<t>my.example zone file fragments:
+</t>
+
+<figure align="center"><artwork align="center">
+
+my.example.	3600 IN TYPE65448 \# 298 (
+             0000030830820122300d06092a864886f70d010101050
+             00382010f003082010a0282010100bb3b09979b3c4e61
+             0f231dafbd8295d5b6d9475eba8df1cff49b08b99a768
+             15e660c243b8ce7175cc9857be00847cff865ca81e56a
+             f0ec1813a43787902e8b2560b64016c4c8e64262b7b8e
+             ae2e6f735e1186237fff49110227b69fbcefa1cfddf7f
+             df052f250871bb03be114493a8e29a95d04b50b9e99b5
+             8e40e70381384c159d02d781e6837791c2ead0c547e7f
+             fb0aa198b2aef259c42273a69af4f22c7439972d3052d
+             4a581895e203115963689044b4cbbdb6cf90ff1866630
+             593aad625772e6f540bd93801c5781fdd74481fbb6399
+             f745b4525c767e3fb4a4d919e265d541f6bee95d0b9e1
+             15bd4749a3a9748e2d8745466629fa6682d36e83cbae8
+             30203010001
+             )
+my.example.	3600 IN TYPE65443 \# 85 (
+             0001066d792d776179076578616d706c650039820f039
+             b08e9d5a8e057a87c6e7ddb92a680b7a2e69baef46404
+             b3bc9fcd93f4fe261bda56c107dba2d672255a86a771f
+             cc3eca0f12cdd1b302f20b2234de8610e03
+             )
+my.example.	3600 IN TYPE65443 \# 18 (
+             0000066d792d626164076578616d706c6500
+             )
+my.example.	3600 IN TYPE65443 \# 39 (
+             00012368747470733a2f2f6d792d7761792e6578616d7
+             06c652f6d7973747566662e6a736f6e00
+             )
+my.example.	3600 IN TYPE65443 \# 42 (
+             00002668747470733a2f2f6d792d7761792e6578616d7
+             06c652f6e6f746d7973747566662e6a736f6e00
+             )
+
+</artwork></figure>
+<t>my.example private key:
+</t>
+
+<figure align="center"><artwork align="center">
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAuzsJl5s8TmEPIx2vvYKV1bbZR166jfHP9JsIuZp2gV5mDCQ7
+jOcXXMmFe+AIR8/4ZcqB5Wrw7BgTpDeHkC6LJWC2QBbEyOZCYre46uLm9zXhGGI3
+//SRECJ7afvO+hz933/fBS8lCHG7A74RRJOo4pqV0EtQuembWOQOcDgThMFZ0C14
+Hmg3eRwurQxUfn/7CqGYsq7yWcQic6aa9PIsdDmXLTBS1KWBiV4gMRWWNokES0y7
+22z5D/GGZjBZOq1iV3Lm9UC9k4AcV4H910SB+7Y5n3RbRSXHZ+P7Sk2RniZdVB9r
+7pXQueEVvUdJo6l0ji2HRUZmKfpmgtNug8uugwIDAQABAoIBAF1sJuwkBGJjocb2
+4CLijtsVorMu/E0pdIdr+F2MSkdhD/BM//3drVWaJGXcMqWKizpXYptT0iUsGljd
+cGIsJzgeWrH96nEIG+XgIH/rei2uD8Q39hNcOCnh2szWXb+FSdQEnQacMJFXFmbW
+pw0d1K5FTi2h9wTdIKupF988y9h4OzVkW9qIDqOzKAKnxoyYZ0xiglaUq6NeHRs2
+Sv7ow5CErKm4ZDqvtcqxs+uWblm3i5LsPGKexDZfXDQqle7hjFbXKUw+ZREF8hzc
+bCfa3A5Xyo7nLdgGR2DOZlzOQA+iz5Cnpb35gdOV+giptlwndrn8Lc8U1Zf1f47T
+aOxh2YECgYEA4u/VQ2B4Ux4NNX8g3womc/rJZOMWVxkd8odRhBy4s0c+atGy3ztp
+SOprBQrkjcFE831b596MOE11y1GpmKK7q5nI2IcMuStnLoj27a95QVznswnbyA6a
+g3cIAz/lOHCexLzi8edjcwTxJv1XNE9518SbkU0EbW2OY5jZsHU4I0MCgYEA0zVt
+m3PrU5/JW1GqmRhDa7PyfB9ESq5mIXIaT6mPh0XLryMn2uUmFBMC3iuxNayjQgzI
+Gg3XVClcb4vvrVDrkxY5aTDmizvVvF0MletBiLYjCwWHsOGql4hxwhvENYcYvCjs
+T0WShG8FuuuHaH371+2hBkREeLHQRlyh0om2c8ECgYEA4JCb5PSNnRJb19hZWtzc
+eGBu8lqVPNMqA1lMnQMe8qlJZsLj0mskIHd4N6Ez0eKyrJAcZjKfZwefzPaecOB3
+/bNMQJhDSulcTXxTfZjq0HdzAIR87FcnJ3iegTi1R0iKk/ymRuLGUodNa1u+85DB
+7XYsy3f/LZoAESasJCWay6kCgYAyGpuc5BvwY5iF5FK/LMVZuH+OuHAf801hI8tg
+GI5m/cS7EHD0+aVV38ivYdgRLpowIg4aOCxb19AI2j6KdAbehsgpzyLx5sjmfYBt
+1DhgsSyRAcfVy0MH3aN289VRCXJxuJeOmqeOaTQHyrX9sN1ctQ+dB/biVvRcrL7q
+ziaNQQKBgQC9MECoVH/bYJVY6RoC5ZYAa6A4CYDhaXnw40lQ90ckSgWr3FenV7gw
+b2xg7zLOX2HZZ+6HejMNGC/efZKVN2Okkpe4KGOXcDH3pYrrkLsLCNRXzxBsyOIt
+e3e1kAriqiXcr3sPBbn7nakUa7G23O7Hb31C0KGMyf9znN+qWda+3g==
+-----END RSA PRIVATE KEY-----
+
+</artwork></figure>
+<t>my-way.example zone file fragments:
+</t>
+
+<figure align="center"><artwork align="center">
+
+my-way.example.	3600 IN TYPE65448 \# 36 (
+             0000030f6d5a2d3caf0d740e139d36a0e52325c4e078e
+             7623f19be3b872367dc8027ef42
+             )
+my-way.example.	3600 IN TYPE65443 \# 273 (
+             0001026d79076578616d706c65003e6c088d887950e26
+             305a59bbe63263b65d34e11656968497500cbef7af12b
+             e14d173d7368e24da54258c851456d3c2d94437692879
+             d1d2b5d3f0acf1e3de6ebb345f8c31f209af6fd7f2731
+             3804fc79db421231126e3e42115ce51a81d2619ed221a
+             fea2b64d1d9ffbef0bd4786fbe5f42c75951ae645078d
+             b7a5a88ed3173d4a209734f49a23a0920ce38ed44011d
+             784e47cf7658cc313cf01349c80b936b17fca3542f32a
+             ff956e808c2520736a917df648e4e5f2eea5de994ce90
+             dba6d5051a4e0934da4a9f6ff01ef5df98d3b4da52b12
+             ea3b8e7ebabcf6d7a0a170dc1284753e3e6b039f8a32c
+             e707312ea5b02180072b517a6056db6e47f8dd5240ab1
+             874646
+             )
+
+</artwork></figure>
+<t>my-way.example private key:
+</t>
+
+<figure align="center"><artwork align="center">
+
+0000000 5f24 3132 daa0 4cc4 0a77 4cb6 e834 16db
+0000020 05b0 faf7 ca27 16b6 0ae7 e177 d3f9 db5f
+0000040
+
+</artwork></figure>
+</section>
+
+<section anchor="possible-dig-output" title="Possible dig output...">
+<t>Below we show the output that a modified dig tool might display
+for the my.example assertions above.
+</t>
+
+<figure align="center"><artwork align="center">
+$ dig RDBD my.example
+
+; &lt;&lt;&gt;&gt; DiG 9.11.5-P1-1ubuntu2.5-Ubuntu &lt;&lt;&gt;&gt; RDBD my.example
+;; global options: +cmd
+;; Got answer:
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 4289
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+; COOKIE: e69085d4b9a18cca63ae96035d7bc0aa96580e0d6255c122 (good)
+;; QUESTION SECTION:
+;my.example. IN RDBD
+
+;; ANSWER SECTION:
+my.example. 3600 IN RDBD RELATED may-way.example KeyId: 50885 Alg: 15 Sig: UIi04agb...
+my.example. 3600 IN RDBD UNRELATED my-bad.example
+my.example. 3600 IN RDBD RELATED https://my-way.example/mystuff.json
+my.example. 3600 IN RDBD UNRELATED https://my-way.example/notmystuff.json
+
+;; Query time: 721 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; WHEN: Fri Sep 13 17:15:38 IST 2019
+;; MSG SIZE rcvd: 600
+
+
+</artwork></figure>
+</section>
+
+<section anchor="changes-and-open-issues" title="Changes and Open Issues">
+<t>[[RFC editor: please delete this appendix ]]
+</t>
+
+<section anchor="changes-from-02-to-03" title="Changes from -02 to -03">
+<t>
+<list style="symbols">
+<t>Incorporated feedback/comments from IETF-105</t>
+<t>Adopted some experimental RRCODE value</t>
+<t>Fixed normative vs. informative refs</t>
+<t>Changed the examples to use the PoC implementation.</t>
+<t>Restructured text a lot</t>
+</list>
+</t>
+</section>
+
+<section anchor="changes-from-01-to-02" title="Changes from -01 to -02">
+<t>
+<list style="symbols">
+<t>Added negative assertions based on IETF104 feedback</t>
+<t>Added URL option based on IETF104 feedback</t>
+<t>Made sample generation script</t>
+<t>Typo fixes etc.</t>
+</list>
+</t>
+</section>
+
+<section anchor="changes-from-00-to-01" title="Changes from -00 to -01">
+<t>
+<list style="symbols">
+<t>Changed from primary/secondary to relating/related (better suggestions
+are still welcome)</t>
+<t>Moved away from abuse of TXT RRs</t>
+<t>We now specify optional DNSSEC-like signatures (we'd be fine with moving
+back to a more DKIM-like mechanism, but wanted to see how this looked)</t>
+<t>Added Ed25519 option</t>
+<t>Re-worked and extended examples</t>
+</list>
+</t>
+</section>
+
+<section anchor="open-issues" title="Open Issues">
+<t>Current open github issues include:
+</t>
+<t>
+<list style="symbols">
+<t>#5: specify input for signing more precisely - e.g. is there a CR or NULL or not</t>
+<t>#6: what, if anything, does rdbd for example.com mean for foo.example.com?</t>
+</list>
+</t>
+<t>These can be seen at: <eref target="https://github.com/abrotman/related-domains-by-dns/issues"/>
+</t>
+</section>
+</section>
+
+</back>
+</rfc>

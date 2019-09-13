@@ -1,6 +1,6 @@
 MMARK=mmark
 XML2RFC=xml2rfc
-SOURCES=rdbd-newrrs.md
+SOURCES=rdbd-reorg.md
 XML=$(SOURCES:.md=.xml)
 TXT=$(SOURCES:.md=.txt)
 
@@ -12,13 +12,13 @@ all: $(XML) $(TXT)
 %.txt : %.xml
 	$(XML2RFC) $< --text $@
 
-rdbd-newrrs.md: appendix.md
-	touch rdbd-newrrs.md
+rdbd-reorg.md: newapp.md
+	touch rdbd-reorg.md
 
 upload:
-	scp rdbd-newrrs.md  down.dsg.cs.tcd.ie:/var/www/misc/
-	scp rdbd-newrrs.xml  down.dsg.cs.tcd.ie:/var/www/misc/
-	scp rdbd-newrrs.txt  down.dsg.cs.tcd.ie:/var/www/misc/
+	scp rdbd-reorg.md  down.dsg.cs.tcd.ie:/var/www/misc/
+	scp rdbd-reorg.xml  down.dsg.cs.tcd.ie:/var/www/misc/
+	scp rdbd-reorg.txt  down.dsg.cs.tcd.ie:/var/www/misc/
 
 clean:
 	rm $(XML)
