@@ -30,26 +30,32 @@
 
 .# Abstract
 
-This document describes a mechanism by which a DNS domain can 
-publicly document the existence or absence of a relationship with a different domain, called 
-"Related Domains By DNS", or "RDBD".
-
-[[THIS IS A PROPOSED RESTRUCTURE FOR -03, IT MAY DISAPPEAR IF ALEX HATES IT:-)]]
+This document describes a mechanism by which a DNS domain can publicly document
+the existence or absence of a relationship with a different domain, called
+"Related Domains By DNS", or "RDBD."
 
 {mainmatter}
 
 # Introduction
 
 Determining relationships between DNS domains can be one of the more difficult
-investigations on the Internet.  It is typical to see something such as 
+investigations on the Internet.  It is typical to see something such as
 `example.com` and `dept-example.com` and be unsure if there is an actual
-relationship between those two domains, or if one might be an attacker 
-attempting to impersonate the other.  In some cases, anecdotal evidence from 
+relationship between those two domains, or if one might be an attacker
+attempting to impersonate the other.  In some cases, anecdotal evidence from
 the DNS or WHOIS/RDAP may be sufficient.  However, service providers of various
-kinds may err on the side of caution and treat one of the domains as 
-untrustworthy or abusive if it is not clear that the two domains are in 
-fact related. This specification provides a way for one domain to 
-explicitly document, or disavow, a relationship other domains, utilizing DNS records.
+kinds may err on the side of caution and treat one of the domains as
+untrustworthy or abusive if it is not clear that the two domains are in fact
+related. This specification provides a way for one domain to explicitly
+document, or disavow, relationships with other domains, utilizing DNS records.
+
+It is not a goal of this specification to provide a high-level of assurance as
+to whether or not two domains are definitely related, nor to provide
+fine-grained detail about the kinds of relationships that may exist between
+domains. However, the mechanism defined here is extensible in a way that should
+allow use-cases calling for such declarations to be handled later. 
+
+## Use-Cases
 
 The use cases for this include: 
 
@@ -60,20 +66,13 @@ and `example.ie` registered by regional offices of the same company;
   example.net is now related to example.com in order to make a later migration
 easier;
 - when doing Internet surveys, we should be able to provide more accurate
-  results if we have information as to which domains are, or are not, related.
+  results if we have information as to which domains are, or are not, related;
 - a domain holder may wish to declare that no relationship exists with some
   other domain, for example "good.example" may want to declare that it is not
 associated with "g00d.example" if the latter is currently being used in some
-cousin-domain style attack. In such cases, it is more likely that there can be
+cousin-domain style attack in which case, it is more likely that there can be
 a larger list of names (compared to the "positive" use-cases) for which there
 is a desire to disavow a relationship.
-
-It is not a goal of this specification to provide a high-level of
-assurance as to whether or not two domains are definitely related, nor to provide
-fine-grained detail about the kinds of relationships that may 
-exist between domains. However, the mechanism defined here is 
-extensible in a way that should allow use-cases calling for such
-declarations to be handled later. 
 
 <!--
 Using "Related Domains By DNS", or "RDBD", it is possible to
@@ -121,16 +120,14 @@ referenced by the Relating-domain, such as `dept-example.com`.
 # New Resource Record Types
 
 We define a resource record type (RDBD) that can declare, or disavow, a
-relationship.
-
-RDBD also includes an optional digital signature mechanism that can somewhat
-improve the level of assurance with which an RDBD declaration can be handled.
-This mechanism is partly modelled on how DKIM [@?RFC6376] handles public keys
-and signatures - a public key is hosted at the Relating-domain (e.g.,
-`club.example.com`), using an RDBDKEY resource record, and the RDBD record of
-the Related-domain (e.g., `member.example.com`) can contain a signature
-(verifiable with the `club.example.com` public key) over the text representation
-('A-label') of the two names (plus a couple of other inputs).
+relationship.  RDBD also includes an optional digital signature mechanism that
+can somewhat improve the level of assurance with which an RDBD declaration can
+be handled.  This mechanism is partly modelled on how DKIM [@?RFC6376] handles
+public keys and signatures - a public key is hosted at the Relating-domain
+(e.g., `club.example.com`), using an RDBDKEY resource record, and the RDBD
+record of the Related-domain (e.g., `member.example.com`) can contain a
+signature (verifiable with the `club.example.com` public key) over the text
+representation ('A-label') of the two names (plus a couple of other inputs).
 
 ## RDBDKEY Resource Record Definition
 
@@ -139,24 +136,22 @@ The RDBDKEY record is published at the apex of the Relating-domain zone.
 The wire and presentation format of the RDBDKEY 
 resource record is identical to the DNSKEY record. [@!RFC4034]
 
-[[All going well, at some point we'll be able to say...]]
-IANA has allocated RR code TBD for the RDBDKEY resource record via Expert
-Review.  
-[[In the meantime we're experimenting using 0xffa8, which is decimal 65448,
-from the experimental RR code range, for the RDBDKEY resource record.]]  
+[[All going well, at some point we'll be able to say...]] IANA has allocated RR
+code TBD for the RDBDKEY resource record via Expert Review.  [[In the meantime
+we're experimenting using 0xffa8, which is decimal 65448, from the experimental
+RR code range, for the RDBDKEY resource record.]]  
 
-The RDBDKEY RR uses the same registries as DNSKEY for its
-fields. (This follows the precedent set for CDNSKEY in [@?RFC7344].)
+The RDBDKEY RR uses the same registries as DNSKEY for its fields. (This follows
+the precedent set for CDNSKEY in [@?RFC7344].)
 
-No special processing is performed by authoritative servers or by
-resolvers, when serving or resolving.  For all practical purposes,
-RDBDKEY is a regular RR type.
+No special processing is performed by authoritative servers or by resolvers,
+when serving or resolving.  For all practical purposes, RDBDKEY is a regular RR
+type.
 
-The flags field of RDBDKEY records MUST be zero. [[Is that correct/ok? I've
-no idea really:-)]]
+The flags field of RDBDKEY records MUST be zero. [[Is that correct/ok?]] 
 
 There can be multiple occurrences of the RDBDKEY resource record in the
-same zone
+same zone.
 
 ## RDBD Resource Record Definition
 
@@ -231,7 +226,7 @@ If the optional signature is omitted, then the presentation form of the
 key-tag, sig-alg and signature fields MAY be omitted. If not omitted then the
 sig-alg and key-tag fields MUST be zero and the signature field MUST be a an
 empty string. [[Is that the right way to have optional fields in prsentation
-sytax for RRs? Not sure.]]
+syntax for RRs?]]
 
 The input to signing ("to-be-signed" data) is the concatenation of the 
 following linefeed-separated (where linefeed has the value '0x0a') lines:
@@ -246,12 +241,14 @@ sig-alg=<sig-alg>
 ~~~
 
 The Relating-domain and Related-domain values MUST be the 'A-label'
-representation of these names.
-
+representation of these names. 
 The trailing "." representing the DNS root MUST NOT be included in
 the to-be-signed data, so a Relating-domain value above might be
 "example.com" but "example.com." MUST NOT be used as input to 
 signing.
+
+The rdbd-tag and key-tag and sig-alg
+fields MUST be in decimal with leading zeros omitted.
 
 A linefeed MUST be included after the "sig-alg" value in the
 last line.
@@ -285,11 +282,10 @@ https://www.example.com/.well-known/rdbd/affirmative.json
 -->
 
 - The document being referenced by a URL within an RDBD record MUST be a
-well-formed JSON [?RFC8259] document.  If the document does not validate as a
-JSON document, the contents of the document SHOULD be ignored.
-
-- There is no defined maximum size for these documents, but a referring 
-site ought be considerate of the retrieving entity's resources.
+well-formed JSON [@!RFC8259] document.  If the document does not validate as
+a JSON document, the contents of the document SHOULD be ignored.  There is no
+defined maximum size for these documents, but a referring site ought be
+considerate of the retrieving entity's resources.
 
 - When retrieving the document via HTTPS, the certificate presented MUST 
 properly validate.  If the certificate fails to validate, the retreiving 
@@ -353,7 +349,7 @@ then again, there may be little value in deploying RDBD signatures.
 The minimal value that remains in either such case, is that if a client
 has acquired and cached RDBDKEY values in some secure manner, 
 then the RDBD signatures do offer some benefit. However, at this
-point it is fairly unklikely that RDBDKEY values will be acquired
+point it seems fairly unlikely that RDBDKEY values will be acquired
 and cached via some secure out-of-band mechanisms, so we do not 
 expect much deployment of RDBD signatures in either the full-DNSSEC
 or no-DNSSEC cases.
@@ -400,11 +396,9 @@ of these kinds of attack.
 ## Lookup Loops
 
 A bad actor could create a loop of relationships, such as
-a.example->b.example->c.example->a.example or similar.  
-Automated systems SHOULD protect against such loops. For example,
-only perform a configured number of lookups from the first
-domain.
-Related-domain and Relating-domains
+a.example->b.example->c.example->a.example or similar.  Automated systems
+SHOULD protect against such loops. For example, only performing a configured
+number of lookups from the first domain.  Publishers of RDBD records
 SHOULD attempt to keep links direct and so that only the fewest number of
 lookups are needed, but it is understood this may not always be possible.
 
@@ -445,14 +439,15 @@ your name here.
 # Implementation (and Toy Deployment:-) Status
 
 [[Note to RFC-editor: according to RFC 7942, sections such as
-this one ought not be part of the final RFC. I still dislike
+this one ought not be part of the final RFC. We still dislike
 that idea, but whatever;-)]]
 
 We are not aware of any independent implementations so far.  One of the authors
 has a github repo at https://github.com/sftcd/rdbd-deebeedeerrr with scripts
 that allow one to produce zone file fragments and signatures for a set of
 domains. There is also a wrapper script for the dig tool that provides
-a nicer view of RDBD and RDBDKEY records. See the README there for details.
+a nicer view of RDBD and RDBDKEY records, and that verifies signatures. 
+See the README there for details.
 
 In terms of deployments, we used the above for a "toy" deployment in the
 tolerantnetworks.ie domain and other related domains that one can determine by
@@ -497,10 +492,11 @@ $ dig RDBD my.example
 ;my.example. IN RDBD
 
 ;; ANSWER SECTION:
-my.example. 3600 IN RDBD RELATED may-way.example KeyId: 50885 Alg: 15 Sig: UIi04agb...
+my.example. 3600 IN RDBD RELATED may-way.example Sig: good 
+                           KeyId: 50885 Alg: 15 Sig: UIi04agb...
 my.example. 3600 IN RDBD UNRELATED my-bad.example
 my.example. 3600 IN RDBD RELATED https://my-way.example/mystuff.json
-my.example. 3600 IN RDBD UNRELATED https://my-way.example/notmystuff.json
+my.example. 3600 IN RDBD UNRELATED https://my-way.example/notmine.json
 
 ;; Query time: 721 msec
 ;; SERVER: 127.0.0.1#53(127.0.0.1)
@@ -517,7 +513,8 @@ my.example. 3600 IN RDBD UNRELATED https://my-way.example/notmystuff.json
 ## Changes from -02 to -03
 
 - Incorporated feedback/comments from IETF-105
-- Adopted some experimental RRCODE value
+- Suggest list dicussion move to dnsop@ietf.org
+- Adopted some experimental RRCODE values
 - Fixed normative vs. informative refs
 - Changed the examples to use the PoC implementation.
 - Restructured text a lot
@@ -538,13 +535,4 @@ my.example. 3600 IN RDBD UNRELATED https://my-way.example/notmystuff.json
   back to a more DKIM-like mechanism, but wanted to see how this looked)
 - Added Ed25519 option 
 - Re-worked and extended examples 
-
-## Open Issues
-
-Current open github issues include: 
-
-* #5: specify input for signing more precisely - e.g. is there a CR or NULL or not
-* #6: what, if anything, does rdbd for example.com mean for foo.example.com?
-
-These can be seen at: https://github.com/abrotman/related-domains-by-dns/issues
 
